@@ -1,6 +1,6 @@
-% Procurar solocoes
-find_solucoes(X, XS, R) :- XS, assert(tmp(X)), fail.
-find_solucoes(X, XS, R) :- solucoesAux([], R).
+% Procurar solucoes
+find_solucoes(X, XS, _) :- XS, assert(tmp(X)), fail.
+find_solucoes(_, _, R) :- solucoesAux([], R).
 
 solucoesAux(L, R) :- retract(tmp(X)), !, solucoesAux([X|L], R).
 solucoesAux(R, R).
