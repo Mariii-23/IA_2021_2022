@@ -1,21 +1,3 @@
-% freguesia: #Nome,Custo,Tempo,[Ruas] -> {V,F}
-%freguesia('Taipas',23,23,
-%          [
-%              rua('Rua Nova'),
-%              rua('Rua Santo Antonio')
-%          ]
-%         ).
-%freguesia('Briteiros',30,100,
-%          [
-%              rua('Rua Velha')
-%          ]
-%         ).
-%freguesia('Sao Vitor',50,120,
-%          [
-%              rua('Rua Bernardo')
-%          ]
-%         ).
-
 % freguesia: Nome, custo de ir la
 freguesia('Taipas',23).
 freguesia('Briteiros',10).
@@ -27,6 +9,10 @@ rua('Santo Antonio','Taipas').
 rua('Velha','Briteiros').
 rua('Bernardo','Sao Vitor').
 
+% transporte: Id,Nome,Velocidade,Carga,Nivel_Ecologico -> {V,F}
+transporte(1,'bicicleta',10,5,5).
+transporte(2,'mota',35,20,20).
+transporte(3,'carro',25,100,100).
 
 % estafeta: #ID,Nome -> {V,F}
 estafeta(1,'Bernardo').

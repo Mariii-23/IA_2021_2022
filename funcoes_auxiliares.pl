@@ -1,9 +1,9 @@
 % Procurar solucoes
-find_solucoes(X, XS, _) :- XS, assert(tmp(X)), fail.
-find_solucoes(_, _, R) :- solucoesAux([], R).
+find_all(X, XS, _) :- XS, assert(tmp(X)), fail.
+find_all(_, _, R) :- findAux([], R).
 
-solucoesAux(L, R) :- retract(tmp(X)), !, solucoesAux([X|L], R).
-solucoesAux(R, R).
+findAux(L, R) :- retract(tmp(X)), !, findAux([X|L], R).
+findAux(R, R).
 
 % length lista
 len([],0).
@@ -23,11 +23,11 @@ remover(X):- retract(X).
 remover(X):- assert(X), !, fail.
 
 % Inserir um novo conhecimento verificando se este se encontra valido
-new_predicado(P):- find_solucoes(X,+P::X,R),
+new_predicado(P):- find_all(X,+P::X,R),
                    inserir(P),
                    valid(R).
 
 % Remover um dado conhecimento, garantindo que este pode ser removido
-remover_predicado(P):- find_solucoes(X,-P::X,R),
+remover_predicado(P):- find_all(X,-P::X,R),
                        remover(P),
                        valid(R).
