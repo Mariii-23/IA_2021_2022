@@ -31,3 +31,16 @@ new_predicado(P):- find_all(X,+P::X,R),
 remover_predicado(P):- find_all(X,-P::X,R),
                        remover(P),
                        valid(R).
+% Retorna apenas os elementos iguais
+iguais([],_,[]).
+iguais(_,[],[]).
+iguais([X|T],L2,[X|R]):-
+    member(X,L2),
+    iguais(T,L2,R).
+
+iguais([_|T],L2,R):-
+    iguais(T,L2,R).
+
+% Soma de todos os elementos
+sum([],0).
+sum([X|T],N):- sum(T,R), N is R+X.

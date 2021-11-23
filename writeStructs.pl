@@ -46,6 +46,8 @@ writeEncomenda(Stream):- encomenda(Id, C, P,V,D,L),
                           write(Stream,V), write(Stream, ','),
                           write(Stream,D), write(Stream, ','),
                           write(Stream,L), write(Stream, ').\n'),
+                          %write(Stream,'\''),write(Stream,R), write(Stream,'\'/'),
+                          %write(Stream,E), write(Stream, ').\n'),
                           fail; true
 .
 
@@ -72,7 +74,7 @@ saveIn(X) :-
     writeEstafeta(Stream),
     write(Stream, '\n% cliente: Id, Nome, morada(Rua, Freguesia)\n'),
     writeCliente(Stream),
-    write(Stream, '\n% encomeda: Id, Id_Cliente, Peso, Volume, DiaPedido: D/M/Y/H, Limite: D/H\n'),
+    write(Stream, '\n% encomeda: Id, Id_Cliente, Peso, Volume, DiaPedido: D/M/Y/H, Limite: D/H, Realizou?/Id encomeda\n'),
     writeEncomenda(Stream),
     write(Stream, '\n% servico: Id, Id_estafeta, Id_encomenda, Id_transporte, DiaEntrega: D/M/Y/H, Classificacao\n'),
     writeServico(Stream),

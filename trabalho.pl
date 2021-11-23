@@ -14,6 +14,7 @@
 
 :- include('funcoes_auxiliares.pl').
 :- include('writeStructs.pl').
+:- include('queries.pl').
 
 %%%%%%%%%%%%%%%%%%%% Validar dados %%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%% TODO faltam adicinar muitos destes
@@ -66,7 +67,7 @@
      number(Y),number(H), number(D1),
      number(H1)).
 
-+encomenda(Id,C,_,_,_,_) :: (find_all(Id,encomenda(Id,_,_,_,_,_),R),
++encomenda(Id,C,_,_,_,_,_) :: (find_all(Id,encomenda(Id,_,_,_,_,_),R),
                            len(R,1),
                            find_all(C,cliente(C,_,_),R1),
                            len(R1,1)).
@@ -100,7 +101,10 @@ newCliente(Id):- cliente(Id,Nome,M), remover_predicado(cliente(Id,Nome,M)).
 
 removeEncomenda(Id):- encomenda(Id,C,P,V,D,L), remover_predicado(encomenda(Id,C,P,V,D,L)).
 
-removeServico(Id):-  servico(Id,E,En,C,D,C), remover_predicado(servico(Id,E,En,C,D,C)).
+removeServico(Id):-  servico(Id,E,En,C,D,C), encomenda(E,C1,P1,V1,D1,L1) ,
+                     remover_predicado(servico(Id,E,En,C,D,C)),
+                     remover_predicado(encomenda(E,C1,P1,V1,D1,L1))
+.
 
 % ----------
 morada(R,F):- rua(R,F), freguesia(F,_).
