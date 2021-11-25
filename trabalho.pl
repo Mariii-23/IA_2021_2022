@@ -19,24 +19,24 @@
 %%%%%%%%%%%%%%%%%%%% Validar dados %%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%% TODO faltam adicinar muitos destes
 %%% Freguesia %%%
-+freguesia(Nome,_) :: (find_all(Nome,freguesia(Nome,_),R),
++freguesia(Nome,_) :: (findall(Nome,freguesia(Nome,_),R),
                        len(R,1)).
 
 % TODO nao esta a funcionar bem
--freguesia(Nome,_) :: (find_all(morada(Nome,F),cliente(_,_,morada(Nome,F)),R),
+-freguesia(Nome,_) :: (findall(morada(Nome,F),cliente(_,_,morada(Nome,F)),R),
                        len(R,0)).
 
 %%% Rua %%%
-+rua(Nome,_) :: (find_all(Nome,rua(Nome,_),R),
++rua(Nome,_) :: (findall(Nome,rua(Nome,_),R),
                        len(R,1)).
 
 % TODO nao esta a funcionar bem
--rua(Nome,_) :: (find_all(Nome,morada(Nome,_),R),
+-rua(Nome,_) :: (findall(Nome,morada(Nome,_),R),
                        len(R,0)).
 
 %%%  Transportes  %%%%
 % Garantir que o id dos transportes é único
-+transporte(Id,_,_,_,_) :: (find_all(Id,transporte(Id,_,_,_,_), R),
++transporte(Id,_,_,_,_) :: (findall(Id,transporte(Id,_,_,_,_), R),
                             len(R,1)).
 
 % Garantir que os dados inseridos encontram-se no formato certo
@@ -48,14 +48,14 @@
                            ).
 %%%  Estafeta  %%%%
 % Garantir que o id dos estafetas é único
-+estafeta(Id,_) :: (find_all(Id,estafeta(Id,_),R),
++estafeta(Id,_) :: (findall(Id,estafeta(Id,_),R),
                    len(R,1)).
 
 % Garantir que os dados inseridos encontram-se no formato certo
 +estafeta(Id,_) :: (number(Id)).
 
 % Garantir que um estafeta só pode ser removido no caso de não estar associado a nenhum serviço
--estafeta(Id,_) :: (find_all(Id,servico(_,Id,_,_,_,_),R),
+-estafeta(Id,_) :: (findall(Id,servico(_,Id,_,_,_,_),R),
                     len(R,0)).
 
 %%--------- Cliente
@@ -67,9 +67,9 @@
      number(Y),number(H), number(D1),
      number(H1)).
 
-+encomenda(Id,C,_,_,_,_,_) :: (find_all(Id,encomenda(Id,_,_,_,_,_),R),
++encomenda(Id,C,_,_,_,_,_) :: (findall(Id,encomenda(Id,_,_,_,_,_),R),
                            len(R,1),
-                           find_all(C,cliente(C,_,_),R1),
+                           findall(C,cliente(C,_,_),R1),
                            len(R1,1)).
 
 

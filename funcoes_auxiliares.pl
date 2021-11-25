@@ -23,12 +23,12 @@ remover(X):- retract(X).
 remover(X):- assert(X), !, fail.
 
 % Inserir um novo conhecimento verificando se este se encontra valido
-new_predicado(P):- find_all(X,+P::X,R),
+new_predicado(P):- findall(X,+P::X,R),
                    inserir(P),
                    valid(R).
 
 % Remover um dado conhecimento, garantindo que este pode ser removido
-remover_predicado(P):- find_all(X,-P::X,R),
+remover_predicado(P):- findall(X,-P::X,R),
                        remover(P),
                        valid(R).
 % Retorna apenas os elementos iguais

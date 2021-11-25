@@ -1,11 +1,11 @@
 
-encomendaById(Id,R):- find_all(encomenda(Id,C,P,V,D,L),encomenda(Id,C,P,V,D,L),R).
-encomendaByIdCliente(Id,R):- find_all(encomenda(Id1,Id,P,V,D,L),encomenda(Id1,Id,P,V,D,L),R).
+encomendaById(Id,R):- findall(encomenda(Id,C,P,V,D,L),encomenda(Id,C,P,V,D,L),R).
+encomendaByIdCliente(Id,R):- findall(encomenda(Id1,Id,P,V,D,L),encomenda(Id1,Id,P,V,D,L),R).
 
-servicoByIdEstafeta(Id,R):- find_all(servico(Id1,Id,E,T,D,C),servico(Id1,Id,E,T,D,C),R).
+servicoByIdEstafeta(Id,R):- findall(servico(Id1,Id,E,T,D,C),servico(Id1,Id,E,T,D,C),R).
 
 cargaEncomendaById(Id,R):- encomenda(Id,_,R,_,_,_).
-cargaEncomendaByIdCliente(Id,R):- find_all(P,encomenda(_,Id,P,_,_,_),R).
+cargaEncomendaByIdCliente(Id,R):- findall(P,encomenda(_,Id,P,_,_,_),R).
 
 cargaEncomendasId([],[]).
 cargaEncomendasId([X|T],[C|R]):-
@@ -13,11 +13,11 @@ cargaEncomendasId([X|T],[C|R]):-
     cargaEncomendasId(T,R).
 
 cargaEstafeta(Id1,R):-
-    find_all(Id,servico(Id,Id1,_,_,_,_),R1), % buscar os ids das encomendas q ele realizou
+    findall(Id,servico(Id,Id1,_,_,_,_),R1), % buscar os ids das encomendas q ele realizou
     cargaEncomendasId(R1,R).
 
 cargaEstafetaDia(Id1,D/M/Y,R):-
-    find_all(Id,servico(_,Id1,Id,_,D/M/Y/_,_),R1), % buscar os ids das encomendas q ele realizou
+    findall(Id,servico(_,Id1,Id,_,D/M/Y/_,_),R1), % buscar os ids das encomendas q ele realizou
     cargaEncomendasId(R1,R).
 
 %cargaCliente(Id1,R):-
