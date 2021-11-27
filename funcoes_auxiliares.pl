@@ -33,10 +33,11 @@ remover_predicado(P):- findall(X,-P::X,R),
                        valid(R).
 % Retorna apenas os elementos iguais
 iguais([],_,[]).
-iguais(_,[],[]).
 iguais([X|T],L2,[X|R]):-
-    member(X,L2),
-    iguais(T,L2,R).
+    member(X,L2), !,
+    iguais(T,L2,R)
+    %not(member(X,R)),
+.
 
 iguais([_|T],L2,R):-
     iguais(T,L2,R).
