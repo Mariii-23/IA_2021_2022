@@ -1,3 +1,6 @@
+:- op(900,xfy,'::').
+
+
 % Procurar solucoes
 find_all(X, XS, _) :- XS, assert(tmp(X)), fail.
 find_all(_, _, R) :- findAux([], R).
@@ -23,14 +26,17 @@ remover(X):- retract(X).
 remover(X):- assert(X), !, fail.
 
 % Inserir um novo conhecimento verificando se este se encontra valido
-new_predicado(P):- findall(X,+P::X,R),
-                   inserir(P),
-                   valid(R).
+new_predicado(P):- 
+    not(P),
+    findall(X,+P::X,R),
+    inserir(P),
+    valid(R).
 
 % Remover um dado conhecimento, garantindo que este pode ser removido
-remover_predicado(P):- findall(X,-P::X,R),
-                       remover(P),
-                       valid(R).
+remover_predicado(P):-  
+    findall(X,-P::X,R),
+    remover(P),
+    valid(R).
 % Retorna apenas os elementos iguais
 iguais([],_,[]).
 iguais([X|T],L2,[X|R]):-

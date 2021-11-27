@@ -22,16 +22,14 @@
 +freguesia(Nome,_) :: (findall(Nome,freguesia(Nome,_),R),
                        len(R,1)).
 
-% TODO nao esta a funcionar bem
--freguesia(Nome,_) :: (findall(morada(Nome,F),cliente(_,_,morada(Nome,F)),R),
+-freguesia(Nome,_) :: (findall(Nome,cliente(_,_,morada(_,Nome)),R),
                        len(R,0)).
 
 %%% Rua %%%
 +rua(Nome,_) :: (findall(Nome,rua(Nome,_),R),
                        len(R,1)).
 
-% TODO nao esta a funcionar bem
--rua(Nome,_) :: (findall(Nome,morada(Nome,_),R),
+-rua(Nome,_) :: (findall(Nome,cliente(_,_,morada(Nome,_)),R),
                        len(R,0)).
 
 %%%  Transportes  %%%%
@@ -44,8 +42,7 @@
 
 % Garantir que um transporte só pode ser removido no caso de não estar presente em nenhum serviço
 -transporte(Id,_,_,_,_) :: (find_all(Id,servico(_,_,_,Id,_,_),R),
-                            len(R,0)
-                           ).
+                            len(R,0)).
 %%%  Estafeta  %%%%
 % Garantir que o id dos estafetas é único
 +estafeta(Id,_) :: (findall(Id,estafeta(Id,_),R),
