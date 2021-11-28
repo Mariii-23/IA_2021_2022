@@ -1,10 +1,25 @@
 
 :-dynamic cargaEncomedaById/2.
 
-encomendaById(Id, X):- findall(encomenda(Id,Id1,P,V,D,L),encomenda(Id,Id1,P,V,D,L),[X|_]).
-encomendaByIdCliente(Id,R):- findall(encomenda(Id1,Id,P,V,D,L),encomenda(Id1,Id,P,V,D,L),R).
+% QUERY PEDIDA - identificar que estafetas entregaram determinada(s) encomenda(s) a um  cliente
+estafetasQueEntregaram(IdsEncomendas, R) :-  maplist(estafetaQueEntregou, IdsEncomendas , R).
+estafetaQueEntregou(IdEncomenda, R) :-
+    servico(_,IdEstafeta,IdEncomenda,_,_,_),
+    findall(estafeta(IdEstafeta,Nome),
+    estafeta(IdEstafeta,Nome),[R|_]).
 
-clienteByIdEncomenda(Id, X):- findall(Id1,encomenda(Id,Id1,_,_,_,_),[X|_]).
+% QUERY PEDIDA - calcular a classificação média de satisfação de cliente para um determinado estafeta;
+classificacaoEstafeta(IdEstafeta, Media) :-
+    findall(C, servico(_,IdEstafeta,_,_,_,C), [X|L]), avg([X|L], Media).
+
+avg(L, R) :- sum(L,Soma), length(L,Len), R is Soma/Len.
+
+encomendaById(Id, X):-
+    findall(encomenda(Id,Id1,P,V,D,L),encomenda(Id,Id1,P,V,D,L),[X|_]).
+encomendaByIdCliente(Id,R):-
+    findall(encomenda(Id1,Id,P,V,D,L),encomenda(Id1,Id,P,V,D,L),R).
+
+clienteByIdEncomenda(Id, jG):- findall(Id1,encomenda(Id,Id1,_,_,_,_),[_|_]).
 
 %% retirar repetidos
 %% TODO nao esta a funcionar
