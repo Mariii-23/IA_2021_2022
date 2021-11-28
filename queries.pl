@@ -1,16 +1,32 @@
 
 :-dynamic cargaEncomedaById/2.
 
-% QUERY PEDIDA - identificar que estafetas entregaram determinada(s) encomenda(s) a um  cliente
+% QUERY 2 - identificar que estafetas entregaram determinada(s) encomenda(s)
+% a um  cliente
 estafetasQueEntregaram(IdsEncomendas, R) :-  maplist(estafetaQueEntregou, IdsEncomendas , R).
 estafetaQueEntregou(IdEncomenda, R) :-
     servico(_,IdEstafeta,IdEncomenda,_,_,_),
     findall(estafeta(IdEstafeta,Nome),
     estafeta(IdEstafeta,Nome),[R|_]).
 
-% QUERY PEDIDA - calcular a classificação média de satisfação de cliente para um determinado estafeta;
+% QUERY 4 - calcular o valor faturado pela Green Distribution num determinado
+% dia.
+% 1- Obter todos os serviços num dia
+% 2- Ordernar lista por hora
+% 3- Maplist para freguesia
+% 4- Somar valores
+valorFaturado(Dia/Mes/Ano,Valor) :-
+    findall(servico(A,B,C,D,Dia/Mes/Ano/Hora/Minuto,F),
+    servico(A,B,C,D,Dia/Mes/Ano/Hora/Minuto,F),L),
+    predsort(compara_servico_por_data_com_duplicados,L,LSorted),
+    servicos_para_custo(LSorted,'',Valor).
+    
+
+% QUERY 6 - calcular a classificação média de satisfação de cliente para
+% um determinado estafeta
 classificacaoEstafeta(IdEstafeta, Media) :-
     findall(C, servico(_,IdEstafeta,_,_,_,C), [X|L]), avg([X|L], Media).
+
 
 avg(L, R) :- sum(L,Soma), length(L,Len), R is Soma/Len.
 
@@ -64,3 +80,37 @@ totalCargaEstafetaDia(Id,D,R):- cargaEstafetaDia(Id,D,L), sum(L,R).
 totalCargaEncomendaCliente(Id,R):- cargaEncomendaByIdCliente(Id,L), sum(L,R).
 
 totalCargaServicoCliente(Id,R):- cargaCliente(Id,L), sum(L,R).
+
+
+compara_servico_por_data_com_duplicados(
+    >, servico(_,_,_,_,D1,_), servico(_,_,_,_,D2,_)) :-
+        compara_data(>,D1,D2).
+compara_servico_por_data_com_duplicados(
+    >, servico(_,_,_,_,D1,_), servico(_,_,_,_,D2,_)) :-
+        compara_data(=,D1,D2).
+compara_servico_por_data_com_duplicados(
+    <, servico(_,_,_,_,D1,_), servico(_,_,_,_,D2,_)) :-
+        compara_data(<,D1,D2).
+
+compara_data(Op,Data1,Data2) :-
+    data_em_minutos(Data1,Minutos1),
+    data_em_minutos(Data2,Minutos2),
+    compare(Op,Minutos1,Minutos2).
+
+data_em_minutos(D/M/Y/H/Min,Minutos) :-
+    Minutos is Min + (60 * H) + (1440 * D) + (44640 * M) + (535680 * Y).
+
+servicos_para_custo([],_,0).
+servicos_para_custo([servico(A,B,IDEnc,C,D,E)|S],Ultima,Total) :-
+    encomenda(IDEnc,IDCliente,_,_,_,_),
+    cliente(IDCliente,_,morada(_,Freguesia)),
+    Freguesia \= Ultima,
+    freguesia(Freguesia,Custo,_),
+    servicos_para_custo(S,Freguesia,Resto),
+    Total is Custo + Resto.
+servicos_para_custo([servico(A,B,IDEnc,C,D,E)|S],Ultima,Total) :-
+    encomenda(IDEnc,IDCliente,_,_,_,_),
+    cliente(IDCliente,_,morada(_,Freguesia)),
+    Freguesia = Ultima,
+    freguesia(Freguesia,Custo,_),
+    servicos_para_custo(S,Freguesia,Total).
