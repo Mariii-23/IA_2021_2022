@@ -1,12 +1,10 @@
-:- op(900,xfy,'::').
-
-
+% % TODO apagar antes de entregar
 % Procurar solucoes
-find_all(X, XS, _) :- XS, assert(tmp(X)), fail.
-find_all(_, _, R) :- findAux([], R).
-
-findAux(L, R) :- retract(tmp(X)), !, findAux([X|L], R).
-findAux(R, R).
+%find_all(X, XS, _) :- XS, assert(tmp(X)), fail.
+%find_all(_, _, R) :- findAux([], R).
+%
+%findAux(L, R) :- retract(tmp(X)), !, findAux([X|L], R).
+%findAux(R, R).
 
 % length lista
 len([],0).

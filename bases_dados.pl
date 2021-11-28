@@ -1,7 +1,7 @@
-% freguesia: Nome, custo de ir la
-freguesia('Taipas',23).
-freguesia('Briteiros',10).
-freguesia('Sao Vitor',50).
+% freguesia: Nome, custo de ir la, tempo: H/M
+freguesia('Taipas',23, 0/15).
+freguesia('Briteiros',10, 0/30).
+freguesia('Sao Vitor',50, 1/30 ).
 
 %rua: nome da rua, freguesia
 rua('Nova','Taipas').
@@ -11,14 +11,16 @@ rua('Bernardo','Sao Vitor').
 
 % transporte: Id,Nome,Velocidade,Carga,Nivel_Ecologico -> {V,F}
 transporte(1,'bicicleta',10,5,5).
-transporte(2,'mota',35,20,20).
-transporte(3,'carro',25,100,100).
+transporte(2,'mota',35,20,-2).
+transporte(3,'carro',25,100,-5).
 
 % estafeta: #ID,Nome -> {V,F}
 estafeta(1,'Bernardo').
 estafeta(2,'Sofia').
 estafeta(3,'Costa').
 estafeta(4,'Filipe').
+
+%ranking id estafeta, Classifficacao
 
 % cliente: #Id,Nome,Morada -> {V,F}
 cliente(1,'Leonardo',      morada('Nova','Taipas')).
@@ -28,17 +30,17 @@ cliente(4,'Maria Dinis',   morada('Santo Antonio','Taipas')).
 cliente(5,'Mafalda Bravo', morada('Velha','Briteiros')).
 cliente(6,'Tomas Faria',   morada('Bernardo','Sao Vitor')).
 
-% encomenda: #Id,Id Cliente, Peso, Volume, Dia Pedido: #D/M/Y/H , Limite: #D/H
-encomenda(1, 1 ,2,  2,  10/11/2021/8, 0/2 ).
-encomenda(2, 1 ,5,  10, 24/11/2021/23, 4/0 ).
-encomenda(3, 3 ,2,  2,  23/11/2021/16, 1/0 ).
-encomenda(4, 5 ,5,  2,  10/11/2021/9,  0/2 ).
-encomenda(5, 6 ,10, 10, 12/10/2021/11, 4/0 ).
-encomenda(6, 2 ,5,  2,  13/09/2021/17, 1/0 ).
+% encomenda: #Id,Id Cliente, Peso, Volume, Dia Pedido: #D/M/Y/H/M , Limite: #D/H
+encomenda(1, 1 ,2,  2,  10/11/2021/8/0, 0/2 ).
+encomenda(2, 1 ,5,  10, 24/11/2021/23/0, 4/0 ).
+encomenda(3, 3 ,2,  2,  23/11/2021/16/0, 1/0 ).
+encomenda(4, 5 ,5,  2,  10/11/2021/9/0,  0/2 ).
+encomenda(5, 6 ,10, 10, 12/10/2021/11/0, 4/0 ).
+encomenda(6, 2 ,5,  2,  13/09/2021/17/0, 1/0 ).
 
-% servico: #Id,Id_estafeta,Id_encomenda,Id Transporte,DiaEntrega:# D/M/Y/H,Classificacao
-servico(1, 3, 4, 3, 10/11/2021/10, 5).
-servico(2, 4, 5, 2, 14/10/2021/12, 2).
-servico(3, 1, 6, 1, 14/09/2021/14, 4).
-servico(4, 3, 2, 1, 14/09/2021/14, 4).
-servico(5, 3, 1, 2, 10/11/2021/10, 5).
+% servico: #Id,Id_estafeta,Id_encomenda,Id Transporte,DiaEntrega:# D/M/Y/H/M,Classificacao
+servico(1, 3, 4, 3, 10/11/2021/10/0, 5).
+servico(2, 4, 5, 2, 14/10/2021/12/0, 2).
+servico(3, 1, 6, 1, 14/09/2021/14/0, 4).
+servico(4, 3, 2, 1, 14/09/2021/14/0, 4).
+servico(5, 3, 1, 2, 10/11/2021/10/0, 5).
