@@ -94,7 +94,7 @@ removeTransporte(Id):- transporte(Id,N,V,C,E) , remover_predicado( transporte(Id
 
 removeEstafeta(Id):- estafeta(Id,Nome) , remover_predicado( estafeta(Id,Nome)).
 
-newCliente(Id):- cliente(Id,Nome,M), remover_predicado(cliente(Id,Nome,M)).
+removeCliente(Id):- cliente(Id,Nome,M), remover_predicado(cliente(Id,Nome,M)).
 
 removeEncomenda(Id):- encomenda(Id,C,P,V,D,L), remover_predicado(encomenda(Id,C,P,V,D,L)).
 

@@ -9,7 +9,7 @@ rua('Santo Antonio','Taipas').
 rua('Velha','Briteiros').
 rua('Bernardo','Sao Vitor').
 
-% transporte: Id,Nome,Velocidade,Carga,Nivel_Ecologico -> {V,F}
+% transporte: Id,Nome,Velocidade,Carga,Pontos_Ecologicos -> {V,F}
 transporte(1,'bicicleta',10,5,5).
 transporte(2,'mota',35,20,-2).
 transporte(3,'carro',25,100,-5).

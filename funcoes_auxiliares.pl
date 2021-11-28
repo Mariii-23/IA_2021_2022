@@ -32,6 +32,7 @@ new_predicado(P):-
 
 % Remover um dado conhecimento, garantindo que este pode ser removido
 remover_predicado(P):-  
+    P,
     findall(X,-P::X,R),
     remover(P),
     valid(R).
