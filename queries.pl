@@ -16,6 +16,14 @@ estafetaQueEntregou(IdEncomenda, R) :-
     findall(estafeta(IdEstafeta,Nome),
     estafeta(IdEstafeta,Nome),[R|_]).
 
+% QUERY 3 - identificar os clientes servidos por um determinado estafeta
+clientesServidosIdEstafeta(Id,C):-
+    estafetaById(Id,_), % verificar se existe estafeta
+    findall(IdEncomenda,servico(_,Id,IdEncomenda,_,_,_),L),
+    maplist(clienteByIdEncomenda,L,C_),
+    eliminaRepetidos(C_,C)
+.
+
 % QUERY 4 - calcular o valor faturado pela Green Distribution num determinado
 % dia.
 % 1- Obter todos os serviços num dia
@@ -45,6 +53,11 @@ encomendasEntregues(I,F,R) :-
 isBetween(D/Mon/Y/H/Min, D1/Mon1/Y1/H1/Min1, D2/Mon2/Y2/H2/Min2)
     :- Y/Mon/D/H/Min @< Y2/Mon2/D2/H2/Min2, Y/Mon/D/H/Min @> Y1/Mon1/D1/H1/Min1.
 
+% QUERY 10 - calcular o peso total transportado por estafeta num determinado dia
+pesoTotalByEstafetaNoDia(estafeta(Id,Nome),D, R) :-
+    estafeta(Id,Nome), % verificar se o estafeta é válido
+    totalCargaEstafetaDia(Id,D,R)
+.
 
 %% TRANSPORTE
 transporteById(Id,T):- findall(transporte(Id,N,V,C,P),transporte(Id,N,V,C,P),[T|_]).
@@ -123,7 +136,7 @@ servicoByIdEstafeta(Id,R):- findall(servico(Id1,Id,E,T,D,C),servico(Id1,Id,E,T,D
 
 
 %% CARGA
-cargaEncomendaById(Id,R):- encomenda(Id,_,R,_,_,_).
+cargaEncomendaById(Id,R):- findall(C,encomenda(Id,_,C,_,_,_),[R|_]).
 cargaEncomendaByIdCliente(Id,R):- findall(P,encomenda(_,Id,P,_,_,_),R).
 
 cargaEstafeta(Id1,R):-
@@ -131,7 +144,7 @@ cargaEstafeta(Id1,R):-
     maplist(cargaEncomendaById,R1,R).
 
 cargaEstafetaDia(Id1,D/M/Y,R):-
-    findall(Id,servico(_,Id1,Id,_,D/M/Y/_,_),R1), % buscar os ids das encomendas q ele realizou nesse dia
+    findall(Id,servico(_,Id1,Id,_,D/M/Y/_/_,_),R1), % buscar os ids das encomendas q ele realizou nesse dia
     maplist(cargaEncomendaById,R1,R).
 
 cargaCliente(Id1,R):-

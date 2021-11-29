@@ -47,11 +47,26 @@ iguais([X|T],L2,[X|R]):-
 iguais([_|T],L2,R):-
     iguais(T,L2,R).
 
+% Remover todos os elementos repetidos numa lista
+% NAO SEI porque esta maneira nao da...
+%eliminaRepetidos([X], [X]).
+%eliminaRepetidos([X|T], R)
+%    :- member(X,R), eliminaRepetidos(T,R).
+%eliminaRepetidos([X|T], [X|R])
+%:-  eliminaRepetidos(T,R).
+
+eliminaRepetidos(X, R) :- eliminaRepAux(X,[],R).
+
+eliminaRepAux([],Acc,Acc).
+eliminaRepAux([X|XS],Acc,R) :- member(X,Acc),!, eliminaRepAux(XS,Acc,R).
+eliminaRepAux([X|XS],Acc,R) :- eliminaRepAux(XS,[X|Acc],R).
+
 % Soma de todos os elementos
 sum([],0).
 sum([X|T],N):- sum(T,R), N is R+X.
 
 avg(L, R) :- sum(L,Soma), length(L,Len), R is Soma/Len.
+
 
 % Valor mais repetido
 % TODO NAO È NOSSO
