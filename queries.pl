@@ -18,8 +18,7 @@ estafetaQueEntregou(IdEncomenda, R) :-
 valorFaturado(Dia/Mes/Ano,Valor) :-
     findall(servico(A,B,C,D,Dia/Mes/Ano/Hora/Minuto,F),
     servico(A,B,C,D,Dia/Mes/Ano/Hora/Minuto,F),L),
-    predsort(compara_servico_por_data_com_duplicados,L,LSorted),
-    servicos_para_custo(LSorted,'',Valor).
+    servicos_para_custo(L,Valor).
     
 
 % QUERY 6 - calcular a classificação média de satisfação de cliente para
@@ -101,16 +100,9 @@ data_em_minutos(D/M/Y/H/Min,Minutos) :-
     Minutos is Min + (60 * H) + (1440 * D) + (44640 * M) + (535680 * Y).
 
 servicos_para_custo([],_,0).
-servicos_para_custo([servico(A,B,IDEnc,C,D,E)|S],Ultima,Total) :-
+servicos_para_custo([servico(A,B,IDEnc,C,D,E)|S],Total) :-
     encomenda(IDEnc,IDCliente,_,_,_,_),
     cliente(IDCliente,_,morada(_,Freguesia)),
-    Freguesia \= Ultima,
     freguesia(Freguesia,Custo,_),
     servicos_para_custo(S,Freguesia,Resto),
     Total is Custo + Resto.
-servicos_para_custo([servico(A,B,IDEnc,C,D,E)|S],Ultima,Total) :-
-    encomenda(IDEnc,IDCliente,_,_,_,_),
-    cliente(IDCliente,_,morada(_,Freguesia)),
-    Freguesia = Ultima,
-    freguesia(Freguesia,Custo,_),
-    servicos_para_custo(S,Freguesia,Total).
