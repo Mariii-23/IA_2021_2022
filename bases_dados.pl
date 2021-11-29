@@ -13,6 +13,7 @@ rua('Bernardo','Sao Vitor').
 transporte(1,'bicicleta',10,5,5).
 transporte(2,'mota',35,20,-2).
 transporte(3,'carro',25,100,-5).
+transporte(4,'bicicleta elétrica',40,15,3).
 
 % estafeta: #ID,Nome -> {V,F}
 estafeta(1,'Bernardo').
@@ -21,6 +22,10 @@ estafeta(3,'Costa').
 estafeta(4,'Filipe').
 
 %ranking id estafeta, Classifficacao
+ranking(1,5).
+ranking(2,4).
+ranking(3,3).
+ranking(4,1).
 
 % cliente: #Id,Nome,Morada -> {V,F}
 cliente(1,'Leonardo',      morada('Nova','Taipas')).
@@ -44,3 +49,7 @@ servico(2, 4, 5, 2, 14/10/2021/12/0, 2).
 servico(3, 1, 6, 1, 14/09/2021/14/0, 4).
 servico(4, 3, 2, 1, 14/09/2021/14/0, 4).
 servico(5, 3, 1, 2, 10/11/2021/10/0, 5).
+servico(6, 3, _, 1, _,_).
+servico(7, 3, _, 4, _,_).
+servico(8, 2, _, 4, _,_).
+servico(9, 2, _, 4, _,_).

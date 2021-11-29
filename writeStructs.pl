@@ -1,7 +1,8 @@
-writeFreguesia(Stream):- freguesia(Nome,Custo),
+writeFreguesia(Stream):- freguesia(Nome,Custo,Tempo),
                           write(Stream,'freguesia('),
                           write(Stream,'\''), write(Stream,Nome), write(Stream,'\','),
-                          write(Stream,Custo), write(Stream, ').\n'),
+                          write(Stream,Custo), write(Stream, ','),
+                          write(Stream,Tempo), write(Stream, ').\n'),
                           fail; true
 .
 
@@ -26,6 +27,13 @@ writeEstafeta(Stream):- estafeta(Id,Nome),
                           write(Stream,'estafeta('),
                           write(Stream,Id), write(Stream, ','),
                           write(Stream,'\''), write(Stream,Nome), write(Stream,'\').\n'),
+                          fail; true
+.
+
+writeRanking(Stream):- ranking(Id,Nota),
+                          write(Stream,'ranking('),
+                          write(Stream,Id), write(Stream, ','),
+                          write(Stream,Nota), write(Stream, ').\n'),
                           fail; true
 .
 
@@ -64,19 +72,21 @@ writeServico(Stream):- servico(Id,Es,E,T,D,C),
 
 saveIn(X) :-
     open(X,write,Stream),
-    write(Stream, '\n% freguesia: Nome, Custo\n'),
+    write(Stream, '\n% freguesia: Nome, Custo, Tempo: H/M -> {V,F}\n'),
     writeFreguesia(Stream),
-    write(Stream, '\n% rua: Nome, Freguesia\n'),
+    write(Stream, '\n% rua: Nome, Freguesia -> {V,F}\n'),
     writeRua(Stream),
-    write(Stream, '\n% transporte: Id, Nome, Velocidade Média, Carga Máxima, Nível Ecológico\n'),
+    write(Stream, '\n% transporte: Id, Nome, Velocidade Média, Carga Máxima, Nível Ecológico -> {V,F}\n'),
     writeTransporte(Stream),
-    write(Stream, '\n% estafeta: Id, Nome\n'),
+    write(Stream, '\n% estafeta: Id, Nome -> {V,F}\n'),
     writeEstafeta(Stream),
-    write(Stream, '\n% cliente: Id, Nome, morada(Rua, Freguesia)\n'),
+    write(Stream, '\n% ranking: Id Estafeta, Classificação -> {V,F}\n'),
+    writeRanking(Stream),
+    write(Stream, '\n% cliente: Id, Nome, morada(Rua, Freguesia) -> {V,F}\n'),
     writeCliente(Stream),
-    write(Stream, '\n% encomeda: Id, Id_Cliente, Peso, Volume, DiaPedido: D/M/Y/H, Limite: D/H, Realizou?/Id encomeda\n'),
+    write(Stream, '\n% encomeda: Id, Id_Cliente, Peso, Volume, DiaPedido: D/M/Y/H/M, Limite: D/H, -> {V,F}\n'),
     writeEncomenda(Stream),
-    write(Stream, '\n% servico: Id, Id_estafeta, Id_encomenda, Id_transporte, DiaEntrega: D/M/Y/H, Classificacao\n'),
+    write(Stream, '\n% servico: Id, Id_estafeta, Id_encomenda, Id_transporte, DiaEntrega: D/M/Y/H/M, Classificacao -> {V,F}\n'),
     writeServico(Stream),
     close(Stream)
 .

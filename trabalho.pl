@@ -5,6 +5,7 @@
 :- dynamic morada/2.
 :- dynamic transporte/5.
 :- dynamic estafeta/2.
+:- dynamic ranking/3.
 :- dynamic cliente/3.
 :- dynamic encomenda/6.
 :- dynamic servico/6.
@@ -20,7 +21,11 @@
 %%%%%%%%%%%%%%%%%%%% TODO faltam adicinar muitos destes
 %%% Freguesia %%%
 +freguesia(Nome,_,_) :: (findall(Nome,freguesia(Nome,_,_),R),
-                       len(R,1)).
+                         len(R,1)).
+
++freguesia(_,Custo,H/M) :: (number(Custo),number(H),number(M)
+                           , -1 < H, H < 25 , -1 < M, M < 61
+                           ).
 
 -freguesia(Nome,_,_) :: (findall(Nome,cliente(_,_,morada(_,Nome)),R),
                        len(R,0)).
@@ -56,6 +61,17 @@
                     len(R,0)).
 
 %%--------- Cliente
++cliente(Id,_,Morada) :: (
+     number(Id),
+     Morada,
+     findall(Id, cliente(Id,_,_), R),
+     len(R,1)
+ ).
+
+-cliente(Id,_,_) :: (
+     findall(Id, encomenda(_,Id,_,_,_,_),R),
+     len(R,0)
+ ).
 
 %%--------- Encomenda
 +encomenda(Id,C,P,V,D/M/Y/H,D1,H1) :: (
@@ -64,14 +80,16 @@
      number(Y),number(H), number(D1),
      number(H1)).
 
-+encomenda(Id,C,_,_,_,_,_) :: (findall(Id,encomenda(Id,_,_,_,_,_),R),
-                           len(R,1),
-                           findall(C,cliente(C,_,_),R1),
-                           len(R1,1)).
++encomenda(Id,C,_,_,_,_) :: (
+     findall(Id,encomenda(Id,_,_,_,_,_),R),
+     len(R,1),
+     findall(C,cliente(C,_,_),R1),
+     len(R1,1)
+ ).
 
 
 % -------- Adicionar predicados ---
-newRua(Nome,F):- freguesia(F,_), new_predicado(rua(Nome,F)).
+newRua(Nome,F):- freguesia(F,_,_), new_predicado(rua(Nome,F)).
 
 newFreguesia(Nome,C,T):- new_predicado(freguesia(Nome,C,T)).
 
@@ -88,7 +106,7 @@ newServico(Id,E,En,C,D,C):- new_predicado(servico(Id,E,En,C,D,C)).
 % -------- Remover predicados ---
 removeRua(Nome):- rua(Nome,F), remover_predicado(rua(Nome,F)).
 
-removeFreguesia(Nome):- freguesia(Nome,C), remover_predicado(freguesia(Nome,C)).
+removeFreguesia(Nome):- freguesia(Nome,C,T), remover_predicado(freguesia(Nome,C,T)).
 
 removeTransporte(Id):- transporte(Id,N,V,C,E) , remover_predicado( transporte(Id,N,V,C,E)).
 
