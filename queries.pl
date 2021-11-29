@@ -1,5 +1,4 @@
-
-:-dynamic cargaEncomedaById/2.
+:- dynamic cargaEncomedaById/2.
 
 % QUERY 2 - identificar que estafetas entregaram determinada(s) encomenda(s)
 % a um  cliente
@@ -19,15 +18,24 @@ valorFaturado(Dia/Mes/Ano,Valor) :-
     findall(servico(A,B,C,D,Dia/Mes/Ano/Hora/Minuto,F),
     servico(A,B,C,D,Dia/Mes/Ano/Hora/Minuto,F),L),
     servicos_para_custo(L,Valor).
-    
+
 
 % QUERY 6 - calcular a classificação média de satisfação de cliente para
 % um determinado estafeta
 classificacaoEstafeta(IdEstafeta, Media) :-
     findall(C, servico(_,IdEstafeta,_,_,_,C), [X|L]), avg([X|L], Media).
 
+% QUERY 9 - calcular o número de encomendas entregues e não entregues
+% pela Green Distribution, num determinado período de tempo
+% INCOMPLETA
 
-avg(L, R) :- sum(L,Soma), length(L,Len), R is Soma/Len.
+encomendasEntregues(I,F,R) :-
+    findall(encomenda(Id,IdC,P,V,D,L),
+    (encomenda(Id,IdC,P,V,D,L),servico(_,_,Id,_,DataEntrega,_),
+    isBetween(DataEntrega,I,F)), R).
+
+isBetween(D/Mon/Y/H/Min, D1/Mon1/Y1/H1/Min1, D2/Mon2/Y2/H2/Min2)
+    :- Y/Mon/D/H/Min @< Y2/Mon2/D2/H2/Min2, Y/Mon/D/H/Min @> Y1/Mon1/D1/H1/Min1.
 
 encomendaById(Id, X):-
     findall(encomenda(Id,Id1,P,V,D,L),encomenda(Id,Id1,P,V,D,L),[X|_]).
