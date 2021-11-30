@@ -162,7 +162,6 @@ totalCargaEncomendaCliente(Id,R):- cargaEncomendaByIdCliente(Id,L), sum(L,R).
 
 totalCargaServicoCliente(Id,R):- cargaCliente(Id,L), sum(L,R).
 
-
 compara_servico_por_data_com_duplicados(
     >, servico(_,_,_,_,D1,_), servico(_,_,_,_,D2,_)) :-
         compara_data(>,D1,D2).
@@ -188,3 +187,44 @@ servicos_para_custo([servico(A,B,IDEnc,C,D,E)|S],Total) :-
     freguesia(Freguesia,Custo,_),
     servicos_para_custo(S,Freguesia,Resto),
     Total is Custo + Resto.
+
+%% Query 5
+getRua(morada(Rua,_), Rua).
+getFreguesia(morada(_,Freguesia), Freguesia).
+
+moradasEncomendas(R) :-
+    findall(CId, encomenda(_,CId,_,_,_,_), _),
+    findall(Morada, cliente(CId,_,Morada), R).
+
+ruasEncomendas(R) :-
+    moradasEncomendas(L),
+    maplist(getRua, L, R).
+
+freguesiasEncomendas(R) :-
+    moradasEncomendas(L),
+    maplist(getFreguesia, L, R).
+
+% Como usar: freq([1,2,3,1,2,1,3,4], [], R).
+freq([], R, R).
+freq([X | Xs], Temp, R) :-
+    select((N, X), Temp, Outros), % Encontra o elemento X e o seu numero de ocorrencias
+    M is N + 1,
+    freq(Xs, [ (M, X) | Outros], R).
+freq([X | Xs], Temp, R) :-
+    not(select((_, X), Temp, _)),
+    freq(Xs, [ (1, X) | Temp], R).
+
+freguesiasMaisFrequentes(R) :-
+    freguesiasEncomendas(Freguesias),
+    freq(Freguesias, [], Freqs),
+    sort(Freqs, R).
+
+ruasMaisFrequentes(R) :-
+    ruasEncomendas(Ruas),
+    freq(Ruas, [], Freqs),
+    sort(1, @>=, Freqs, R).
+
+moradasMaisFrequentes(R) :-
+    moradasEncomendas(Moradas),
+    freq(Moradas, [], Freqs),
+    sort(1, @>=, Freqs, R).
