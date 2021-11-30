@@ -5,8 +5,7 @@
 
 estafetasEcologicos(R):-
     transportesEcologicos(T),
-    maplist(tupleEstafetaMaisUtilizouTransporte,T,R)
-.
+    maplist(tupleEstafetaMaisUtilizouTransporte,T,R).
 
 % QUERY 2 - identificar que estafetas entregaram determinada(s) encomenda(s)
 % a um  cliente
@@ -26,20 +25,41 @@ clientesServidosIdEstafeta(Id,C):-
 
 % QUERY 4 - calcular o valor faturado pela Green Distribution num determinado
 % dia.
-% 1- Obter todos os serviços num dia
-% 2- Ordernar lista por hora
-% 3- Maplist para freguesia
-% 4- Somar valores
 valorFaturado(Dia/Mes/Ano,Valor) :-
     findall(servico(A,B,C,D,Dia/Mes/Ano/Hora/Minuto,F),
     servico(A,B,C,D,Dia/Mes/Ano/Hora/Minuto,F),L),
     servicos_para_custo(L,Valor).
+
+servicos_para_custo([],0).
+servicos_para_custo([servico(_,_,IDEnc,_,_,_)|S],Total) :-
+    encomenda(IDEnc,IDCliente,_,_,_,_),
+    cliente(IDCliente,_,morada(_,Freguesia)),
+    freguesia(Freguesia,Custo,_),
+    servicos_para_custo(S,Resto),
+    Total is Custo + Resto.
 
 
 % QUERY 6 - calcular a classificação média de satisfação de cliente para
 % um determinado estafeta
 classificacaoEstafeta(IdEstafeta, Media) :-
     findall(C, servico(_,IdEstafeta,_,_,_,C), [X|L]), avg([X|L], Media).
+
+% QUERY 7 - identificar o número total de entregas pelos diferentes meios de
+% transporte, num determinado intervalo de tempo
+
+total_entregas_por_transporte(Init,Fin,Freq) :-
+    findall(servico(A,B,C,D,E,F),
+            (servico(A,B,C,D,E,F),isBetween(E,Init,Fin)),
+            Servicos),
+            servicos_para_transportes(Servicos, Transportes),
+            freq(Transportes,[],Freq).
+
+servicos_para_transportes([],[]).
+servicos_para_transportes([servico(_,_,_,IdTrs,_,_)|Ss],[transporte(IdTrs,A,B,C,D)|Ts]) :-
+    transporte(IdTrs,A,B,C,D),
+    servicos_para_transportes(Ss,Ts).
+    
+    
 
 % QUERY 9 - calcular o número de encomendas entregues e não entregues
 % pela Green Distribution, num determinado período de tempo
@@ -157,8 +177,8 @@ cargaEstafetaDia(Id1,D/M/Y,R):-
     maplist(cargaEncomendaById,R1,R).
 
 cargaCliente(Id1,R):-
-    find_all(Id,encomenda(Id,Id1,_,_,_,_),R2), % ids de todas as encomendas desse Cliente
-    find_all(Id,servico(_,_,Id,_,_,_),R1),     % id de todas as encomendas feitas
+    findall(Id,encomenda(Id,Id1,_,_,_,_),R2), % ids de todas as encomendas desse Cliente
+    findall(Id,servico(_,_,Id,_,_,_),R1),     % id de todas as encomendas feitas
     iguais(R1,R2,R3),
     maplist(cargaEncomendaById,R3,R).
 
@@ -171,31 +191,23 @@ totalCargaEncomendaCliente(Id,R):- cargaEncomendaByIdCliente(Id,L), sum(L,R).
 
 totalCargaServicoCliente(Id,R):- cargaCliente(Id,L), sum(L,R).
 
-compara_servico_por_data_com_duplicados(
-    >, servico(_,_,_,_,D1,_), servico(_,_,_,_,D2,_)) :-
-        compara_data(>,D1,D2).
-compara_servico_por_data_com_duplicados(
-    >, servico(_,_,_,_,D1,_), servico(_,_,_,_,D2,_)) :-
-        compara_data(=,D1,D2).
-compara_servico_por_data_com_duplicados(
-    <, servico(_,_,_,_,D1,_), servico(_,_,_,_,D2,_)) :-
-        compara_data(<,D1,D2).
-
-compara_data(Op,Data1,Data2) :-
-    data_em_minutos(Data1,Minutos1),
-    data_em_minutos(Data2,Minutos2),
-    compare(Op,Minutos1,Minutos2).
-
-data_em_minutos(D/M/Y/H/Min,Minutos) :-
-    Minutos is Min + (60 * H) + (1440 * D) + (44640 * M) + (535680 * Y).
-
-servicos_para_custo([],_,0).
-servicos_para_custo([servico(A,B,IDEnc,C,D,E)|S],Total) :-
-    encomenda(IDEnc,IDCliente,_,_,_,_),
-    cliente(IDCliente,_,morada(_,Freguesia)),
-    freguesia(Freguesia,Custo,_),
-    servicos_para_custo(S,Freguesia,Resto),
-    Total is Custo + Resto.
+% compara_servico_por_data_com_duplicados(
+%     >, servico(_,_,_,_,D1,_), servico(_,_,_,_,D2,_)) :-
+%         compara_data(>,D1,D2).
+% compara_servico_por_data_com_duplicados(
+%     >, servico(_,_,_,_,D1,_), servico(_,_,_,_,D2,_)) :-
+%         compara_data(=,D1,D2).
+% compara_servico_por_data_com_duplicados(
+%     <, servico(_,_,_,_,D1,_), servico(_,_,_,_,D2,_)) :-
+%         compara_data(<,D1,D2).
+% 
+% compara_data(Op,Data1,Data2) :-
+%     data_em_minutos(Data1,Minutos1),
+%     data_em_minutos(Data2,Minutos2),
+%     compare(Op,Minutos1,Minutos2).
+% 
+% data_em_minutos(D/M/Y/H/Min,Minutos) :-
+%     Minutos is Min + (60 * H) + (1440 * D) + (44640 * M) + (535680 * Y).
 
 %% Query 5
 getRua(morada(Rua,_), Rua).
