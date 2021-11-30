@@ -20,20 +20,29 @@
 %%%%%%%%%%%%%%%%%%%% Validar dados %%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%% TODO faltam adicinar muitos destes
 %%% Freguesia %%%
+% Garantir que o nome de cada freguesia é único
 +freguesia(Nome,_,_) :: (findall(Nome,freguesia(Nome,_,_),R),
                          len(R,1)).
 
+% Garantir que o Custo, as Horas e os Minutos inseridos são números válidos
 +freguesia(_,Custo,H/M) :: (number(Custo),number(H),number(M)
-                           , -1 < H, H < 25 , -1 < M, M < 61
+                            , -1 < H, H < 25 , -1 < M, M < 61, C > 0
                            ).
 
+% Garantir que não é possível remover nenhuma freguesia que pertença a uma
+% morada de algum cliente
 -freguesia(Nome,_,_) :: (findall(Nome,cliente(_,_,morada(_,Nome)),R),
                        len(R,0)).
 
 %%% Rua %%%
+% Garantir que o nome de cada rua é único
 +rua(Nome,_) :: (findall(Nome,rua(Nome,_),R),
                        len(R,1)).
 
++rua(_,NomeFreguesia) :: (freguesia(NomeFreguesia,_,_)).
+
+% Garantir que não é possível remover nenhuma rua no caso de esta encontrar-se
+% associada a alguma morada de um cliente
 -rua(Nome,_) :: (findall(Nome,cliente(_,_,morada(Nome,_)),R),
                        len(R,0)).
 
@@ -43,11 +52,15 @@
                             len(R,1)).
 
 % Garantir que os dados inseridos encontram-se no formato certo
-+transporte(Id,_,V,C,E) :: (number(Id), number(V),number(C),number(E)).
++transporte(Id,_,V,C,E) :: (number(Id), number(V),number(C),number(E)
+                             ,-1 < V, -1 < C, -6 < E, E < 6
+                            ).
 
-% Garantir que um transporte só pode ser removido no caso de não estar presente em nenhum serviço
+% Garantir que um transporte só pode ser removido no caso de não estar presente
+% em nenhum serviço
 -transporte(Id,_,_,_,_) :: (findall(Id,servico(_,_,_,Id,_,_),R),
                             len(R,0)).
+
 %%%  Estafeta  %%%%
 % Garantir que o id dos estafetas é único
 +estafeta(Id,_) :: (findall(Id,estafeta(Id,_),R),
@@ -89,7 +102,7 @@
 
 
 % -------- Adicionar predicados ---
-newRua(Nome,F):- freguesia(F,_,_), new_predicado(rua(Nome,F)).
+newRua(Nome,F):- new_predicado(rua(Nome,F)).
 
 newFreguesia(Nome,C,T):- new_predicado(freguesia(Nome,C,T)).
 
