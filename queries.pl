@@ -249,3 +249,24 @@ moradasMaisFrequentes(R) :-
     moradasEncomendas(Moradas),
     freq(Moradas, [], Freqs),
     sort(1, @>=, Freqs, R).
+
+%% Query 8
+getEstafeta(servico(_,Id,_,_,_,_), R) :-
+    estafetaById(Id, R).
+
+% Trocamos a ordem dos argumentos do isBetween para funcionar como filtro
+isBetweenFilter(I, F, servico(_,_,_,_,Data,_)) :- isBetween(Data, I, F).
+
+servicosEntre(I, F, Servicos) :-
+    findall(
+        servico(Id,IdE,IdEnc,IdTrans,Data,Class),
+        servico(Id,IdE,IdEnc,IdTrans,Data,Class),
+        Lista),
+    include(isBetweenFilter(I, F), Lista, Servicos).
+
+servicosPorEstafetaEntre(I, F, R) :-
+    servicosEntre(I, F, Servicos),
+    maplist(getEstafeta, Servicos, Estafetas),
+    freq(Estafetas, [], Freqs),
+    sort(1, @>=, Freqs, R).
+
