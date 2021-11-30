@@ -45,10 +45,19 @@ classificacaoEstafeta(IdEstafeta, Media) :-
 % pela Green Distribution, num determinado período de tempo
 % INCOMPLETA
 
+todasEncomendas(I,F,Entregues,NaoEntregues) :- encomendasEntregues(I,F,Entregues),encomendasNaoEntregues(Entregues,NaoEntregues).
+
 encomendasEntregues(I,F,R) :-
-    findall(encomenda(Id,IdC,P,V,D,L),
-    (encomenda(Id,IdC,P,V,D,L),servico(_,_,Id,_,DataEntrega,_),
-    isBetween(DataEntrega,I,F)), R).
+    findall(E,
+    foiEntregueEntre(E,I,F),
+    R).
+
+encomendasNaoEntregues(Entregues,R) :- findall(encomenda(Id,A,B,C,D,E),
+    encomenda(Id,A,B,C,D,E), Todas), subtract(Todas,Entregues,R).
+
+foiEntregueEntre(encomenda(Id,A,B,C,D,E), I,F) :-
+    encomenda(Id,A,B,C,D,E), servico(_,_,Id,_,Data,_),
+    isBetween(Data,I,F).
 
 isBetween(D/Mon/Y/H/Min, D1/Mon1/Y1/H1/Min1, D2/Mon2/Y2/H2/Min2)
     :- Y/Mon/D/H/Min @< Y2/Mon2/D2/H2/Min2, Y/Mon/D/H/Min @> Y1/Mon1/D1/H1/Min1.
