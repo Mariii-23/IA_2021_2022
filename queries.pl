@@ -149,6 +149,27 @@ pesoTotalByEstafetaNoDia(estafeta(Id,Nome),D, R) :-
     estafeta(Id,Nome), % verificar se o estafeta é válido
     totalCargaEstafetaDia(Id,D,R).
 
+tuplePesoTotalByEstafetaByDia(E,D,(E,P)):- pesoTotalByEstafetaNoDia(E,D,P).
+
+pesoAllAux([],_,[]).
+pesoAllAux([X|T],D,[ A | R ]):-
+    tuplePesoTotalByEstafetaByDia(X,D,A),
+    pesoAllAux(T,D,R).
+
+pesoTotalAllEstafetaNoDia(D,R):-
+    findall(estafeta(Id,Nome),estafeta(Id,Nome),L),
+    pesoAllAux(L,D,R).
+
+pesoTotalAux([],0).
+pesoTotalAux([(_,N)|T], R):-
+    pesoTotalAux(T,Rs),
+    R is Rs + N.
+
+pesoTotalByDia(D,R):-
+    pesoTotalAllEstafetaNoDia(D,L),
+    pesoTotalAux(L,R).
+
+
 %% TRANSPORTE
 transporteById(Id,T):- 
     findall(transporte(Id,N,V,C,P),

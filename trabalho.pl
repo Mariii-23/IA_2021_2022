@@ -18,7 +18,6 @@
 :- include('queries.pl').
 
 %%%%%%%%%%%%%%%%%%%% Validar dados %%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%% TODO faltam adicinar muitos destes
 %%% Freguesia %%%
 % Garantir que o nome de cada freguesia é único
 +freguesia(Nome,_,_) :: (findall(Nome,freguesia(Nome,_,_),R),
@@ -95,7 +94,7 @@
 
 %%% Encomenda %%%
 % Garantir que os dados inseridos encontram-se no formato correto.
-+encomenda(Id,C,P,V,D/M/Y/H,D1/H1) :: (
++encomenda(Id,C,P,V,D/M/Y/H/Min,D1/H1) :: (
      number(Id),number(C), number(P),
      number(V),number(D), number(M),
      number(Y),number(H), number(D1),
@@ -104,16 +103,47 @@
      -1 < H, H < 25 ,
      -1 < P,
      -1 < V,
-     number(H1),
-     -1 < H1, H1 < 25 ).
+     -1 < Min, Min < 61,
+     number(H1), number(Min),
+     -1 < H1, H1 < 25).
 
+% Garantir que o id das encomendas é único e o cliente associado a ela é válido.
 +encomenda(Id,C,_,_,_,_) :: (
      findall(Id,encomenda(Id,_,_,_,_,_),R),
      len(R,1),
      findall(C,cliente(C,_,_),R1),
      len(R1,1)
- ).
+     ).
 
+% Garantir que não é possível remover uma encomenda no caso de esta, se
+% encontrar associada a um serviço
+-encomenda(Id,_,_,_,_,_) :: (
+     findall(Id,servico(_,_,Id,_,_,_),R),
+     len(R,0)).
+
+%%% Serviço %%%
+%%% TODO
+% Garantir que os dados inseridos encontram-se no formato correto.
++servico(Id,E,Enc,T,D/M/Y/H/Min,C):- (
+     number(Id),number(E), number(Enc),
+     number(T),number(D), number(M),
+     number(Y),number(H), number(C),
+     -1 < D, D < 32 ,
+     -1 < M, M < 61,
+     -1 < H, H < 25 ,
+     -1 < Min, Min < 61,
+     -1 < E,
+     -1 < Id,
+     -1 < Enc,
+     -1 < C,
+     number(Min)).
+
+% Garantir que o id dos serviços são únicos..... TODO acabar e ver query 10
++servico(Id,E,Enc,T,_,_):- (
+    findall(Id,servico(Id,_,_,_,_,_),R), len(R,1),
+    findall(E,servico(_,E,_,_,_,_),R1), len(R1,1),
+    findall(Enc,servico(_,_,Enc,_,_,_),R2), len(R2,1),
+    findall(T,servico(_,_,_,T,_,_),R3), len(R3,1)).
 
 % -------- Adicionar predicados ---
 newRua(Nome,F):- new_predicado(rua(Nome,F)).
