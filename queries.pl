@@ -130,15 +130,19 @@ encomendasEntregues(I,F,R) :-
     foiEntregueEntre(E,I,F),
     R).
 
-encomendasNaoEntregues(Entregues,R) :- findall(encomenda(Id,A,B,C,D,E),
-    encomenda(Id,A,B,C,D,E), Todas), subtract(Todas,Entregues,R).
+encomendasNaoEntregues(Entregues,R) :- 
+    findall(encomenda(Id,A,B,C,D,E),
+    encomenda(Id,A,B,C,D,E), Todas),
+    subtract(Todas,Entregues,R).
 
 foiEntregueEntre(encomenda(Id,A,B,C,D,E), I,F) :-
-    encomenda(Id,A,B,C,D,E), servico(_,_,Id,_,Data,_),
+    encomenda(Id,A,B,C,D,E),
+    servico(_,_,Id,_,Data,_),
     isBetween(Data,I,F).
 
-isBetween(D/Mon/Y/H/Min, D1/Mon1/Y1/H1/Min1, D2/Mon2/Y2/H2/Min2)
-    :- Y/Mon/D/H/Min @< Y2/Mon2/D2/H2/Min2, Y/Mon/D/H/Min @> Y1/Mon1/D1/H1/Min1.
+isBetween(D/Mon/Y/H/Min, D1/Mon1/Y1/H1/Min1, D2/Mon2/Y2/H2/Min2) :-
+    Y/Mon/D/H/Min @< Y2/Mon2/D2/H2/Min2,
+    Y/Mon/D/H/Min @> Y1/Mon1/D1/H1/Min1.
 
 % QUERY 10 - calcular o peso total transportado por estafeta num determinado dia
 pesoTotalByEstafetaNoDia(estafeta(Id,Nome),D, R) :-
@@ -146,22 +150,27 @@ pesoTotalByEstafetaNoDia(estafeta(Id,Nome),D, R) :-
     totalCargaEstafetaDia(Id,D,R).
 
 %% TRANSPORTE
-transporteById(Id,T):- findall(transporte(Id,N,V,C,P),transporte(Id,N,V,C,P),[T|_]).
+transporteById(Id,T):- 
+    findall(transporte(Id,N,V,C,P),
+    transporte(Id,N,V,C,P),[T|_]).
 
-nivelEcologicoByIdTransporte(Id,E):- transporte(Id,_,_,_,E).
+nivelEcologicoByIdTransporte(Id,E):-
+    transporte(Id,_,_,_,E).
 
 onlyEcologicos([],[]).
 onlyEcologicos([transporte(I,N,V,C,P)|T], [transporte(I,N,V,C,P)|R]):-
     P>0,
     onlyEcologicos(T,R),!.
-onlyEcologicos([transporte(_,_,_,_,P)|T], R):- P<1,onlyEcologicos(T,R).
+onlyEcologicos([transporte(_,_,_,_,P)|T], R):-
+    P<1,onlyEcologicos(T,R).
 
 transportesEcologicos(R):-
     findall(transporte(I,N,V,C,P), transporte(I,N,V,C,P),T),
     onlyEcologicos(T,R).
 
 %% ESTAFETA
-estafetaById(Id,E):- findall(estafeta(Id,N),estafeta(Id,N),[E|_]).
+estafetaById(Id,E):-
+    findall(estafeta(Id,N),estafeta(Id,N),[E|_]).
 
 %% pode ter repetidos
 estafetasIdByIdTransporte(Id,E):-
@@ -174,7 +183,7 @@ estafetaMaisUtilizouIdTransporte(Id,E):-
 estafetaMaisUtilizouIdTransporte(_,[]).
 
 estafetaMaisUtilizouTransporte(transporte(Id,_,_,_,_),E):-
-    estafetaMaisUtilizouIdTransporte(Id,E)  .
+    estafetaMaisUtilizouIdTransporte(Id,E).
 
 tupleEstafetaMaisUtilizouTransporte(E, (E,R) ):-
     estafetaMaisUtilizouTransporte(E,R).
@@ -206,24 +215,19 @@ clienteByIdServico(Id,C):-
     encomenda(Id1,CId,_,_,_,_),
     clienteById(CId,C).
 
-%% retirar repetidos
-%% TODO nao esta a funcionar
-clientesByIdEstafeta(Id,R):-
-    findall(E,servico(_,Id,E,_,_,_),R2),
-    findall(Id,encomenda(Id,_,_,_,_,_),R1),     % id de todas as encomendas feitas
-    iguais(R1,R2,R3),
-    maplist(clienteByIdEncomenda,R3,R).
-
-
 %%% SERVICOS
-servicoById(Id,R):- findall(servico(Id,Id1,E,T,D,C),servico(Id,Id1,E,T,D,C),[R|_]).
+servicoById(Id,R):-
+    findall(servico(Id,Id1,E,T,D,C),servico(Id,Id1,E,T,D,C),[R|_]).
 
-servicoByIdEstafeta(Id,R):- findall(servico(Id1,Id,E,T,D,C),servico(Id1,Id,E,T,D,C),R).
+servicoByIdEstafeta(Id,R):-
+    findall(servico(Id1,Id,E,T,D,C),servico(Id1,Id,E,T,D,C),R).
 
 
 %% CARGA
-cargaEncomendaById(Id,R):- findall(C,encomenda(Id,_,C,_,_,_),[R|_]).
-cargaEncomendaByIdCliente(Id,R):- findall(P,encomenda(_,Id,P,_,_,_),R).
+cargaEncomendaById(Id,R):-
+    findall(C,encomenda(Id,_,C,_,_,_),[R|_]).
+cargaEncomendaByIdCliente(Id,R):-
+    findall(P,encomenda(_,Id,P,_,_,_),R).
 
 cargaEstafeta(Id1,R):-
     findall(Id,servico(Id,Id1,_,_,_,_),R1), % buscar os ids das encomendas q ele realizou
@@ -240,10 +244,18 @@ cargaCliente(Id1,R):-
     maplist(cargaEncomendaById,R3,R).
 
 %% Carga TOTAL
-totalCargaEstafeta(Id,R):- cargaEstafeta(Id,L), sum(L,R).
+totalCargaEstafeta(Id,R):-
+    cargaEstafeta(Id,L),
+    sum(L,R).
 
-totalCargaEstafetaDia(Id,D,R):- cargaEstafetaDia(Id,D,L), sum(L,R).
+totalCargaEstafetaDia(Id,D,R):-
+    cargaEstafetaDia(Id,D,L),
+    sum(L,R).
 
-totalCargaEncomendaCliente(Id,R):- cargaEncomendaByIdCliente(Id,L), sum(L,R).
+totalCargaEncomendaCliente(Id,R):-
+    cargaEncomendaByIdCliente(Id,L),
+    sum(L,R).
 
-totalCargaServicoCliente(Id,R):- cargaCliente(Id,L), sum(L,R).
+totalCargaServicoCliente(Id,R):-
+    cargaCliente(Id,L),
+    sum(L,R).
