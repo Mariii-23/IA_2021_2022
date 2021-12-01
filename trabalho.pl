@@ -4,6 +4,7 @@
 :- dynamic rua/2.
 :- dynamic morada/2.
 :- dynamic transporte/5.
+:- dynamic ranking/2.
 :- dynamic estafeta/2.
 :- dynamic ranking/3.
 :- dynamic cliente/3.
@@ -75,6 +76,9 @@
 %%% Ranking %%%
 % Garantir que só se consegue associar um ranking a um estafeta já existente
 +ranking(Id,_) :: ( findall(Id,estafeta(Id,_),R), len(R,N), 0 < N).
+
+% Garantir que só existe 1 ranking para cada estafeta
++ranking(Id,_) :: ( findall(Id,ranking(Id,_),R), len(R,1)).
 
 % Garantir que o valor do ranking encontra-se entre 0 e 5.
 +ranking(Id,C) :: (number(Id),number(C), -1 < C, C < 6).
@@ -166,6 +170,8 @@ newTransporte(Id,N,V,C,E):- new_predicado(transporte(Id,N,V,C,E)).
 
 newEstafeta(Id,Nome):- new_predicado(estafeta(Id,Nome)).
 
+newRanking(Id,Ranking):- new_predicado(ranking(Id,Ranking)).
+
 newCliente(Id,Nome,M):- new_predicado(cliente(Id,Nome,M)).
 
 newEncomenda(Id,C,P,V,D,L):- new_predicado(encomenda(Id,C,P,V,D,L)).
@@ -179,6 +185,8 @@ removeFreguesia(Nome):- freguesia(Nome,C,T), remover_predicado(freguesia(Nome,C,
 
 removeTransporte(Id):- transporte(Id,N,V,C,E) , remover_predicado( transporte(Id,N,V,C,E)).
 
+removeRanking(Id):- ranking(Id,C),remover_predicado(ranking(Id,C)).
+
 removeEstafeta(Id):- estafeta(Id,Nome) , remover_predicado( estafeta(Id,Nome)).
 
 removeCliente(Id):- cliente(Id,Nome,M), remover_predicado(cliente(Id,Nome,M)).
@@ -187,8 +195,7 @@ removeEncomenda(Id):- encomenda(Id,C,P,V,D,L), remover_predicado(encomenda(Id,C,
 
 removeServico(Id):-  servico(Id,E,En,C,D,C), encomenda(E,C1,P1,V1,D1,L1) ,
                      remover_predicado(servico(Id,E,En,C,D,C)),
-                     remover_predicado(encomenda(E,C1,P1,V1,D1,L1))
-.
+                     remover_predicado(encomenda(E,C1,P1,V1,D1,L1)).
 
 % ----------
 morada(R,F):- rua(R,F), freguesia(F,_,_).
