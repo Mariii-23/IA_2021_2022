@@ -122,9 +122,27 @@
      len(R,0)).
 
 %%% Serviço %%%
-%%% TODO
+% Garantir que o id dos serviços são únicos
++servico(Id,_,_,_,_,_) :: (
+    findall(Id,servico(Id,_,_,_,_,_),R),
+    len(R,1)).
+
+% Garantir que os estafetas associados são válidos
++servico(_,E,_,_,_,_) :: (
+    findall(E,estafeta(E,_),R1),
+    len(R1,1)).
+
+% Garantir que as encomendas associadas são válidos
++servico(_,_,Enc,_,_,_) :: (
+    findall(Enc,encomenda(Enc,_,_,_,_,_),R2),
+    len(R2,1)).
+
+% Garantir que os transportes associados são válidos
++servico(_,_,_,T,_,_) :: (
+    findall(T,transporte(T,_,_,_,_),R3), len(R3,1)).
+
 % Garantir que os dados inseridos encontram-se no formato correto.
-+servico(Id,E,Enc,T,D/M/Y/H/Min,C):- (
++servico(Id,E,Enc,T,D/M/Y/H/Min,C) :: (
      number(Id),number(E), number(Enc),
      number(T),number(D), number(M),
      number(Y),number(H), number(C),
@@ -138,12 +156,6 @@
      -1 < C,
      number(Min)).
 
-% Garantir que o id dos serviços são únicos..... TODO acabar e ver query 10
-+servico(Id,E,Enc,T,_,_):- (
-    findall(Id,servico(Id,_,_,_,_,_),R), len(R,1),
-    findall(E,servico(_,E,_,_,_,_),R1), len(R1,1),
-    findall(Enc,servico(_,_,Enc,_,_,_),R2), len(R2,1),
-    findall(T,servico(_,_,_,T,_,_),R3), len(R3,1)).
 
 % -------- Adicionar predicados ---
 newRua(Nome,F):- new_predicado(rua(Nome,F)).
