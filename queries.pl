@@ -1,11 +1,22 @@
-:- dynamic cargaEncomedaById/2.
-
-% QUERY 1 - dentificar o estafeta que utilizou mais vezes um meio de
+% QUERY 1 - Identificar o estafeta que utilizou mais vezes um meio de
 % transporte mais ecológico
+estafetaServicoEcologico(servico(_,IdEstafeta,_,IdT,_,_), IdEstafeta):-
+    nivelEcologicoByIdTransporte(IdT,E),
+    -1 < E.
 
-estafetasEcologicos(R):-
-    transportesEcologicos(T),
-    maplist(tupleEstafetaMaisUtilizouTransporte,T,R).
+estafetasServicoEcologico([], []).
+estafetasServicoEcologico([X|T], [Id|R]) :-
+    estafetaServicoEcologico(X,Id),
+    estafetasServicoEcologico(T,R).
+estafetasServicoEcologico([X|T], R) :-
+    not(estafetaServicoEcologico(X,_)),
+    estafetasServicoEcologico(T,R).
+
+estafetaEcologicos(R):-
+    findall(servico(Id,E,Enc,T,D,C),servico(Id,E,Enc,T,D,C),L),
+    estafetasServicoEcologico(L,LS),
+    maxFreq(LS,IdEstafeta),
+    estafetaById(IdEstafeta,R).
 
 % QUERY 2 - identificar que estafetas entregaram determinada(s) encomenda(s)
 % a um  cliente
@@ -52,16 +63,6 @@ ruasEncomendas(R) :-
 freguesiasEncomendas(R) :-
     moradasEncomendas(L),
     maplist(getFreguesia, L, R).
-
-% Como usar: freq([1,2,3,1,2,1,3,4], [], R).
-freq([], R, R).
-freq([X | Xs], Temp, R) :-
-    select((N, X), Temp, Outros), % Encontra o elemento X e o seu numero de ocorrencias
-    M is N + 1,
-    freq(Xs, [ (M, X) | Outros], R).
-freq([X | Xs], Temp, R) :-
-    not(select((_, X), Temp, _)),
-    freq(Xs, [ (1, X) | Temp], R).
 
 freguesiasMaisFrequentes(R) :-
     freguesiasEncomendas(Freguesias),
@@ -145,19 +146,24 @@ transportesEcologicos(R):-
 estafetaById(Id,E):- findall(estafeta(Id,N),estafeta(Id,N),[E|_]).
 
 %% pode ter repetidos
-estafetasIdByIdTrasnporte(Id,E):-
+estafetasIdByIdTransporte(Id,E):-
     findall(Id1,servico(_,Id1,_,Id,_,_),E).
 
 estafetaMaisUtilizouIdTransporte(Id,E):-
     findall(Id1,servico(_,Id1,_,Id,_,_),R),
-    maxRepeated(R, (IdE,_)),
+    maxFreq(R,IdE),
     estafetaById(IdE,E),!.
+estafetaMaisUtilizouIdTransporte(_,[]).
 
 estafetaMaisUtilizouTransporte(transporte(Id,_,_,_,_),E):-
-    estafetaMaisUtilizouIdTransporte(Id,E).
+    estafetaMaisUtilizouIdTransporte(Id,E)  .
 
 tupleEstafetaMaisUtilizouTransporte(E, (E,R) ):-
     estafetaMaisUtilizouTransporte(E,R).
+
+listaEstafetasUtilizouMaisTransporte(R):-
+    findall(transporte(Id,N,V,C,E),transporte(Id,N,V,C,E),LT),
+    maplist(tupleEstafetaMaisUtilizouTransporte,LT,R).
 
 %%%%% ENCOMENDA
 encomendaById(Id, X):-

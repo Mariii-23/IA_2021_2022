@@ -44,7 +44,7 @@ encomenda(5, 6 ,10, 10, 12/10/2021/11/0, 4/0 ).
 encomenda(6, 2 ,5,  2,  13/09/2021/17/0, 1/0 ).
 
 % servico: #Id,Id_estafeta,Id_encomenda,Id Transporte,DiaEntrega:# D/M/Y/H/M,Classificacao
-servico(1, 3, 4, 3, 10/11/2021/10/0, 5).
+servico(1, 1, 4, 3, 10/11/2021/10/0, 5).
 servico(2, 4, 5, 2, 14/10/2021/12/0, 2).
 servico(3, 1, 6, 1, 14/09/2021/14/0, 4).
 servico(4, 3, 2, 1, 14/09/2021/14/0, 4).

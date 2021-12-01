@@ -26,7 +26,7 @@
 
 % Garantir que o Custo, as Horas e os Minutos inseridos são números válidos
 +freguesia(_,Custo,H/M) :: (number(Custo),number(H),number(M)
-                            , -1 < H, H < 25 , -1 < M, M < 61, C > 0
+                            , -1 < H, H < 25 , -1 < M, M < 61, Custo > 0
                            ).
 
 % Garantir que não é possível remover nenhuma freguesia que pertença a uma
@@ -73,25 +73,39 @@
 -estafeta(Id,_) :: (findall(Id,servico(_,Id,_,_,_,_),R),
                     len(R,0)).
 
-%%--------- Cliente
+%%% Ranking %%%
+% Garantir que só se consegue associar um ranking a um estafeta já existente
++ranking(Id,_) :: ( findall(Id,estafeta(Id,_),R), len(R,N), 0 < N).
+
+% Garantir que o valor do ranking encontra-se entre 0 e 5.
++ranking(Id,C) :: (number(Id),number(C), -1 < C, C < 6).
+
+%%% Cliente %%%
+% Garantir que o id dos clientes são únicos e a morada dada é válida.
 +cliente(Id,_,Morada) :: (
      number(Id),
      Morada,
      findall(Id, cliente(Id,_,_), R),
-     len(R,1)
- ).
+     len(R,1)).
 
+% Garantir que não é possível remover nenhum cliente que se encontre associado a uma dada encomenda.
 -cliente(Id,_,_) :: (
      findall(Id, encomenda(_,Id,_,_,_,_),R),
-     len(R,0)
- ).
+     len(R,0)).
 
-%%--------- Encomenda
-+encomenda(Id,C,P,V,D/M/Y/H,D1,H1) :: (
+%%% Encomenda %%%
+% Garantir que os dados inseridos encontram-se no formato correto.
++encomenda(Id,C,P,V,D/M/Y/H,D1/H1) :: (
      number(Id),number(C), number(P),
      number(V),number(D), number(M),
      number(Y),number(H), number(D1),
-     number(H1)).
+     -1 < D, D < 32 ,
+     -1 < M, M < 61,
+     -1 < H, H < 25 ,
+     -1 < P,
+     -1 < V,
+     number(H1),
+     -1 < H1, H1 < 25 ).
 
 +encomenda(Id,C,_,_,_,_) :: (
      findall(Id,encomenda(Id,_,_,_,_,_),R),

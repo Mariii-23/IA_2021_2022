@@ -69,20 +69,16 @@ sum([X|T],N):- sum(T,R), N is R+X.
 avg(L, R) :- sum(L,Soma), length(L,Len), R is Soma/Len.
 
 
-% Valor mais repetido
-% TODO NAO È NOSSO
-modify([],X,[(X,1)]).
-modify([(X,Y)|Xs],X,[(X,K)|Xs]):- K is Y+1.
-modify([(Z,Y)|Xs],X,[(Z,Y)|K]):- Z =\= X, modify(Xs,X,K).
+% Como usar: freq([1,2,3,1,2,1,3,4], [], R).
+freq([], R, R).
+freq([X | Xs], Temp, R) :-
+    select((N, X), Temp, Outros), % Encontra o elemento X e o seu numero de ocorrencias
+    M is N + 1,
+    freq(Xs, [ (M, X) | Outros], R).
+freq([X | Xs], Temp, R) :-
+    not(select((_, X), Temp, _)),
+    freq(Xs, [ (1, X) | Temp], R).
 
-highest((X1,Y1),(_,Y2),(X1,Y1)):- Y1 >= Y2.
-highest((_,Y1),(X2,Y2),(X2,Y2)):- Y2 > Y1.
-
-maxR([X],X).
-maxR([X|Xs],K):- maxR(Xs,Z),highest(X,Z,K).
-
-rep([],R,R).
-rep([X|Xs],R,R1):-modify(R,X,R2),rep(Xs,R2,R1).
-
-maxRepeated(X,R):- rep(X,[],K),maxR(K,R).
-%% ATE AQUI
+maxFreq(L,R):-
+    freq(L,[],RL),
+    sort(1, @>=, RL, [(_,R)|_]).
