@@ -20,8 +20,7 @@ clientesServidosIdEstafeta(Id,C):-
     estafetaById(Id,_), % verificar se existe estafeta
     findall(IdEncomenda,servico(_,Id,IdEncomenda,_,_,_),L),
     maplist(clienteByIdEncomenda,L,C_),
-    eliminaRepetidos(C_,C)
-.
+    eliminaRepetidos(C_,C).
 
 % QUERY 4 - calcular o valor faturado pela Green Distribution num determinado
 % dia.
@@ -38,6 +37,46 @@ servicos_para_custo([servico(_,_,IDEnc,_,_,_)|S],Total) :-
     servicos_para_custo(S,Resto),
     Total is Custo + Resto.
 
+%% Query 5
+getRua(morada(Rua,_), Rua).
+getFreguesia(morada(_,Freguesia), Freguesia).
+
+moradasEncomendas(R) :-
+    findall(CId, encomenda(_,CId,_,_,_,_), _),
+    findall(Morada, cliente(CId,_,Morada), R).
+
+ruasEncomendas(R) :-
+    moradasEncomendas(L),
+    maplist(getRua, L, R).
+
+freguesiasEncomendas(R) :-
+    moradasEncomendas(L),
+    maplist(getFreguesia, L, R).
+
+% Como usar: freq([1,2,3,1,2,1,3,4], [], R).
+freq([], R, R).
+freq([X | Xs], Temp, R) :-
+    select((N, X), Temp, Outros), % Encontra o elemento X e o seu numero de ocorrencias
+    M is N + 1,
+    freq(Xs, [ (M, X) | Outros], R).
+freq([X | Xs], Temp, R) :-
+    not(select((_, X), Temp, _)),
+    freq(Xs, [ (1, X) | Temp], R).
+
+freguesiasMaisFrequentes(R) :-
+    freguesiasEncomendas(Freguesias),
+    freq(Freguesias, [], Freqs),
+    sort(Freqs, R).
+
+ruasMaisFrequentes(R) :-
+    ruasEncomendas(Ruas),
+    freq(Ruas, [], Freqs),
+    sort(1, @>=, Freqs, R).
+
+moradasMaisFrequentes(R) :-
+    moradasEncomendas(Moradas),
+    freq(Moradas, [], Freqs),
+    sort(1, @>=, Freqs, R).
 
 % QUERY 6 - calcular a classificação média de satisfação de cliente para
 % um determinado estafeta
@@ -85,8 +124,7 @@ isBetween(D/Mon/Y/H/Min, D1/Mon1/Y1/H1/Min1, D2/Mon2/Y2/H2/Min2)
 % QUERY 10 - calcular o peso total transportado por estafeta num determinado dia
 pesoTotalByEstafetaNoDia(estafeta(Id,Nome),D, R) :-
     estafeta(Id,Nome), % verificar se o estafeta é válido
-    totalCargaEstafetaDia(Id,D,R)
-.
+    totalCargaEstafetaDia(Id,D,R).
 
 %% TRANSPORTE
 transporteById(Id,T):- findall(transporte(Id,N,V,C,P),transporte(Id,N,V,C,P),[T|_]).
@@ -96,14 +134,12 @@ nivelEcologicoByIdTransporte(Id,E):- transporte(Id,_,_,_,E).
 onlyEcologicos([],[]).
 onlyEcologicos([transporte(I,N,V,C,P)|T], [transporte(I,N,V,C,P)|R]):-
     P>0,
-    onlyEcologicos(T,R),!
-.
+    onlyEcologicos(T,R),!.
 onlyEcologicos([transporte(_,_,_,_,P)|T], R):- P<1,onlyEcologicos(T,R).
 
 transportesEcologicos(R):-
     findall(transporte(I,N,V,C,P), transporte(I,N,V,C,P),T),
-    onlyEcologicos(T,R)
-.
+    onlyEcologicos(T,R).
 
 %% ESTAFETA
 estafetaById(Id,E):- findall(estafeta(Id,N),estafeta(Id,N),[E|_]).
@@ -115,12 +151,10 @@ estafetasIdByIdTrasnporte(Id,E):-
 estafetaMaisUtilizouIdTransporte(Id,E):-
     findall(Id1,servico(_,Id1,_,Id,_,_),R),
     maxRepeated(R, (IdE,_)),
-    estafetaById(IdE,E),!
-.
+    estafetaById(IdE,E),!.
 
 estafetaMaisUtilizouTransporte(transporte(Id,_,_,_,_),E):-
-    estafetaMaisUtilizouIdTransporte(Id,E)
-.
+    estafetaMaisUtilizouIdTransporte(Id,E).
 
 tupleEstafetaMaisUtilizouTransporte(E, (E,R) ):-
     estafetaMaisUtilizouTransporte(E,R).
@@ -154,8 +188,7 @@ clientesByIdEstafeta(Id,R):-
     findall(E,servico(_,Id,E,_,_,_),R2),
     findall(Id,encomenda(Id,_,_,_,_,_),R1),     % id de todas as encomendas feitas
     iguais(R1,R2,R3),
-    maplist(clienteByIdEncomenda,R3,R)
-.
+    maplist(clienteByIdEncomenda,R3,R).
 
 
 %%% SERVICOS
@@ -190,83 +223,3 @@ totalCargaEstafetaDia(Id,D,R):- cargaEstafetaDia(Id,D,L), sum(L,R).
 totalCargaEncomendaCliente(Id,R):- cargaEncomendaByIdCliente(Id,L), sum(L,R).
 
 totalCargaServicoCliente(Id,R):- cargaCliente(Id,L), sum(L,R).
-
-% compara_servico_por_data_com_duplicados(
-%     >, servico(_,_,_,_,D1,_), servico(_,_,_,_,D2,_)) :-
-%         compara_data(>,D1,D2).
-% compara_servico_por_data_com_duplicados(
-%     >, servico(_,_,_,_,D1,_), servico(_,_,_,_,D2,_)) :-
-%         compara_data(=,D1,D2).
-% compara_servico_por_data_com_duplicados(
-%     <, servico(_,_,_,_,D1,_), servico(_,_,_,_,D2,_)) :-
-%         compara_data(<,D1,D2).
-% 
-% compara_data(Op,Data1,Data2) :-
-%     data_em_minutos(Data1,Minutos1),
-%     data_em_minutos(Data2,Minutos2),
-%     compare(Op,Minutos1,Minutos2).
-% 
-% data_em_minutos(D/M/Y/H/Min,Minutos) :-
-%     Minutos is Min + (60 * H) + (1440 * D) + (44640 * M) + (535680 * Y).
-
-%% Query 5
-getRua(morada(Rua,_), Rua).
-getFreguesia(morada(_,Freguesia), Freguesia).
-
-moradasEncomendas(R) :-
-    findall(CId, encomenda(_,CId,_,_,_,_), _),
-    findall(Morada, cliente(CId,_,Morada), R).
-
-ruasEncomendas(R) :-
-    moradasEncomendas(L),
-    maplist(getRua, L, R).
-
-freguesiasEncomendas(R) :-
-    moradasEncomendas(L),
-    maplist(getFreguesia, L, R).
-
-% Como usar: freq([1,2,3,1,2,1,3,4], [], R).
-freq([], R, R).
-freq([X | Xs], Temp, R) :-
-    select((N, X), Temp, Outros), % Encontra o elemento X e o seu numero de ocorrencias
-    M is N + 1,
-    freq(Xs, [ (M, X) | Outros], R).
-freq([X | Xs], Temp, R) :-
-    not(select((_, X), Temp, _)),
-    freq(Xs, [ (1, X) | Temp], R).
-
-freguesiasMaisFrequentes(R) :-
-    freguesiasEncomendas(Freguesias),
-    freq(Freguesias, [], Freqs),
-    sort(Freqs, R).
-
-ruasMaisFrequentes(R) :-
-    ruasEncomendas(Ruas),
-    freq(Ruas, [], Freqs),
-    sort(1, @>=, Freqs, R).
-
-moradasMaisFrequentes(R) :-
-    moradasEncomendas(Moradas),
-    freq(Moradas, [], Freqs),
-    sort(1, @>=, Freqs, R).
-
-%% Query 8
-getEstafeta(servico(_,Id,_,_,_,_), R) :-
-    estafetaById(Id, R).
-
-% Trocamos a ordem dos argumentos do isBetween para funcionar como filtro
-isBetweenFilter(I, F, servico(_,_,_,_,Data,_)) :- isBetween(Data, I, F).
-
-servicosEntre(I, F, Servicos) :-
-    findall(
-        servico(Id,IdE,IdEnc,IdTrans,Data,Class),
-        servico(Id,IdE,IdEnc,IdTrans,Data,Class),
-        Lista),
-    include(isBetweenFilter(I, F), Lista, Servicos).
-
-servicosPorEstafetaEntre(I, F, R) :-
-    servicosEntre(I, F, Servicos),
-    maplist(getEstafeta, Servicos, Estafetas),
-    freq(Estafetas, [], Freqs),
-    sort(1, @>=, Freqs, R).
-
