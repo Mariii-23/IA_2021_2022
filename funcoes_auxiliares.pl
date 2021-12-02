@@ -1,11 +1,3 @@
-% % TODO apagar antes de entregar
-% Procurar solucoes
-%find_all(X, XS, _) :- XS, assert(tmp(X)), fail.
-%find_all(_, _, R) :- findAux([], R).
-%
-%findAux(L, R) :- retract(tmp(X)), !, findAux([X|L], R).
-%findAux(R, R).
-
 % length lista
 len([],0).
 len([_|T],NS) :-
@@ -47,14 +39,6 @@ iguais([X|T],L2,[X|R]):-
 
 iguais([_|T],L2,R):-
     iguais(T,L2,R).
-
-% Remover todos os elementos repetidos numa lista
-% NAO SEI porque esta maneira nao da...
-%eliminaRepetidos([X], [X]).
-%eliminaRepetidos([X|T], R)
-%    :- member(X,R), eliminaRepetidos(T,R).
-%eliminaRepetidos([X|T], [X|R])
-%:-  eliminaRepetidos(T,R).
 
 eliminaRepetidos(X, R) :- eliminaRepAux(X,[],R).
 

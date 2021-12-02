@@ -40,6 +40,8 @@
 +rua(Nome,_) :: (findall(Nome,rua(Nome,_),R),
                        len(R,1)).
 
+ % Garantir que o nome de freguesia dado é verdadeiro e existe na nossa
+ % base de conhecimento
 +rua(_,NomeFreguesia) :: (freguesia(NomeFreguesia,_,_)).
 
 % Garantir que não é possível remover nenhuma rua no caso de esta encontrar-se
