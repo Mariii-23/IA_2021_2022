@@ -171,10 +171,6 @@ pesoTotalByDia(D,R):-
 
 
 %% TRANSPORTE
-transporteById(Id,T):- 
-    findall(transporte(Id,N,V,C,P),
-    transporte(Id,N,V,C,P),[T|_]).
-
 nivelEcologicoByIdTransporte(Id,E):-
     transporte(Id,_,_,_,E).
 
@@ -189,9 +185,8 @@ transportesEcologicos(R):-
     findall(transporte(I,N,V,C,P), transporte(I,N,V,C,P),T),
     onlyEcologicos(T,R).
 
+
 %% ESTAFETA
-estafetaById(Id,E):-
-    findall(estafeta(Id,N),estafeta(Id,N),[E|_]).
 
 %% pode ter repetidos
 estafetasIdByIdTransporte(Id,E):-
@@ -212,37 +207,6 @@ tupleEstafetaMaisUtilizouTransporte(E, (E,R) ):-
 listaEstafetasUtilizouMaisTransporte(R):-
     findall(transporte(Id,N,V,C,E),transporte(Id,N,V,C,E),LT),
     maplist(tupleEstafetaMaisUtilizouTransporte,LT,R).
-
-%%%%% ENCOMENDA
-encomendaById(Id, X):-
-    findall(encomenda(Id,Id1,P,V,D,L),encomenda(Id,Id1,P,V,D,L),[X|_]).
-% encomenda by id cliente
-encomendaByIdCliente(Id,R):-
-    findall(encomenda(Id1,Id,P,V,D,L),encomenda(Id1,Id,P,V,D,L),R).
-
-%% clienteByIdEncomenda(Id, jG):- findall(Id1,encomenda(Id,Id1,_,_,_,_),[_|_]).
-%%%% CLIENTE
-clienteById(Id, X):-
-    findall(cliente(Id,N,M),cliente(Id,N,M),[X|_]).
-
-clienteByIdEncomenda(Id, R):-
-    idClienteByIdEncomenda(Id, X),
-    clienteById(X,R).
-
-idClienteByIdEncomenda(Id, X):- findall(Id1,encomenda(Id,Id1,_,_,_,_),[X|_]).
-
-clienteByIdServico(Id,C):-
-    servico(Id,Id1,_,_,_,_),
-    encomenda(Id1,CId,_,_,_,_),
-    clienteById(CId,C).
-
-%%% SERVICOS
-servicoById(Id,R):-
-    findall(servico(Id,Id1,E,T,D,C),servico(Id,Id1,E,T,D,C),[R|_]).
-
-servicoByIdEstafeta(Id,R):-
-    findall(servico(Id1,Id,E,T,D,C),servico(Id1,Id,E,T,D,C),R).
-
 
 %% CARGA
 cargaEncomendaById(Id,R):-

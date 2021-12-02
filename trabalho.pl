@@ -15,6 +15,7 @@
 :- include('base_dados.pl').
 
 :- include('funcoes_auxiliares.pl').
+:- include('pesquisa.pl').
 :- include('writeStructs.pl').
 :- include('queries.pl').
 
