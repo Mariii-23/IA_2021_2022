@@ -91,4 +91,4 @@ saveIn(X) :-
     close(Stream)
 .
 
-save:- saveIn('ola.pl').
+save:- saveIn('base_dados.pl').

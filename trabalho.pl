@@ -12,7 +12,7 @@
 :- dynamic servico/6.
 
 
-:- include('bases_dados.pl').
+:- include('base_dados.pl').
 
 :- include('funcoes_auxiliares.pl').
 :- include('writeStructs.pl').
