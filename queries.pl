@@ -12,7 +12,7 @@ estafetasServicoEcologico([X|T], R) :-
     not(estafetaServicoEcologico(X,_)),
     estafetasServicoEcologico(T,R).
 
-estafetaEcologicos(R):-
+estafetaMaisEcologico(R):-
     findall(servico(Id,E,Enc,T,D,C),servico(Id,E,Enc,T,D,C),L),
     estafetasServicoEcologico(L,LS),
     maxFreq(LS,IdEstafeta),
@@ -98,7 +98,7 @@ servicos_para_transportes([],[]).
 servicos_para_transportes([servico(_,_,_,IdTrs,_,_)|Ss],[transporte(IdTrs,A,B,C,D)|Ts]) :-
     transporte(IdTrs,A,B,C,D),
     servicos_para_transportes(Ss,Ts).
-    
+
 %% Query 8
 getEstafeta(servico(_,Id,_,_,_,_), R) :-
     estafetaById(Id, R).
@@ -130,7 +130,7 @@ encomendasEntregues(I,F,R) :-
     foiEntregueEntre(E,I,F),
     R).
 
-encomendasNaoEntregues(Entregues,R) :- 
+encomendasNaoEntregues(Entregues,R) :-
     findall(encomenda(Id,A,B,C,D,E),
     encomenda(Id,A,B,C,D,E), Todas),
     subtract(Todas,Entregues,R).
