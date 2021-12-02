@@ -220,6 +220,7 @@ listaEstafetasUtilizouMaisTransporte(R):-
 %% CARGA
 cargaEncomendaById(Id,R):-
     findall(C,encomenda(Id,_,C,_,_,_),[R|_]).
+
 cargaEncomendaByIdCliente(Id,R):-
     findall(P,encomenda(_,Id,P,_,_,_),R).
 

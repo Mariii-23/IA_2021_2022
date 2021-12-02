@@ -27,7 +27,7 @@
 
 % Garantir que o Custo, as Horas e os Minutos inseridos são números válidos
 +freguesia(_,Custo,H/M) :: (number(Custo),number(H),number(M)
-                            , -1 < H, H < 25 , -1 < M, M < 61, Custo > 0
+                            , -1 < H, H < 24 , -1 < M, M < 60, Custo > 0
                            ).
 
 % Garantir que não é possível remover nenhuma freguesia que pertença a uma
@@ -104,13 +104,13 @@
      number(V),number(D), number(M),
      number(Y),number(H), number(D1),
      -1 < D, D < 32 ,
-     -1 < M, M < 61,
-     -1 < H, H < 25 ,
+     -1 < M, M < 60,
+     -1 < H, H < 24 ,
      -1 < P,
      -1 < V,
-     -1 < Min, Min < 61,
+     -1 < Min, Min < 60,
      number(H1), number(Min),
-     -1 < H1, H1 < 25).
+     -1 < H1, H1 < 24).
 
 % Garantir que o id das encomendas é único e o cliente associado a ela é válido.
 +encomenda(Id,C,_,_,_,_) :: (
@@ -152,9 +152,9 @@
      number(T),number(D), number(M),
      number(Y),number(H), number(C),
      -1 < D, D < 32 ,
-     -1 < M, M < 61,
-     -1 < H, H < 25 ,
-     -1 < Min, Min < 61,
+     -1 < M, M < 60,
+     -1 < H, H < 24 ,
+     -1 < Min, Min < 60,
      -1 < E,
      -1 < Id,
      -1 < Enc,
