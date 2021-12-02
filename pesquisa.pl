@@ -28,6 +28,13 @@ transporteByCarga(C,T):-
 transporteByPontosEcologicos(P,T):-
     findall(transporte(Id,N,V,C,P), transporte(Id,N,V,C,P),T).
 
+%
+nivelEcologicoByIdTransporte(Id,E):-
+    transporte(Id,_,_,_,E).
+
+transportesEcologicos(R):-
+    findall(transporte(I,N,V,C,P), (transporte(I,N,V,C,P), P > 0),R).
+
 %% ESTAFETA
 estafetaById(Id,E):-
     findall(estafeta(Id,N),estafeta(Id,N),[E|_]).

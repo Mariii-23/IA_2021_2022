@@ -178,23 +178,6 @@ pesoTotalByDia(D,R):-
     pesoTotalAllEstafetaNoDia(D,L),
     pesoTotalAux(L,R).
 
-
-%% TRANSPORTE
-nivelEcologicoByIdTransporte(Id,E):-
-    transporte(Id,_,_,_,E).
-
-onlyEcologicos([],[]).
-onlyEcologicos([transporte(I,N,V,C,P)|T], [transporte(I,N,V,C,P)|R]):-
-    P>0,
-    onlyEcologicos(T,R),!.
-onlyEcologicos([transporte(_,_,_,_,P)|T], R):-
-    P<1,onlyEcologicos(T,R).
-
-transportesEcologicos(R):-
-    findall(transporte(I,N,V,C,P), transporte(I,N,V,C,P),T),
-    onlyEcologicos(T,R).
-
-
 %% ESTAFETA
 
 %% pode ter repetidos
