@@ -87,12 +87,21 @@ classificacaoEstafeta(IdEstafeta, Media) :-
 % QUERY 7 - identificar o número total de entregas pelos diferentes meios de
 % transporte, num determinado intervalo de tempo
 
-total_entregas_por_transporte(Init,Fin,Freq) :-
+total_entregas_por_transporte(D1/M1/Y1/H1/Min1,D2/M2/Y2/H2/Min2,Freq) :-
     findall(servico(A,B,C,D,E,F),
-            (servico(A,B,C,D,E,F),isBetween(E,Init,Fin)),
+            (servico(A,B,C,D,E,F),isBetween(E,D1/M1/Y1/H1/Min1,D2/M2/Y2/H2/Min2)),
+            Servicos), !,
+            servicos_para_transportes(Servicos, Transportes),
+            freq(Transportes,[],Freq).
+
+total_entregas_por_transporte(D1/M1/Y1,D2/M2/Y2,Freq) :-
+    findall(servico(A,B,C,D,E,F),
+            (servico(A,B,C,D,E,F),isBetween(E,D1/M1/Y1/0/0,D2/M2/Y2/23/59)),
             Servicos),
             servicos_para_transportes(Servicos, Transportes),
             freq(Transportes,[],Freq).
+
+
 
 servicos_para_transportes([],[]).
 servicos_para_transportes([servico(_,_,_,IdTrs,_,_)|Ss],[transporte(IdTrs,A,B,C,D)|Ts]) :-

@@ -74,7 +74,7 @@ cliente(1,'Alexandra Epifânio', morada('Rua do Taxa','Sao Vitor')).
 cliente(2,'Filipa Simão'  ,   morada('Rua do Coucão','Priscos')).
 cliente(3,'Ana Reigada',  morada('Rua de Santa Marta','Esporões')).
 cliente(4,'Maria Dinis',   morada('Santo Antonio','Taipas')).
-cliente(5,'Mafalda Bravo', morada('Velha','Briteiros')).
+cliente(5,'Mafalda Bravo', morada('Rua Dr. Lindoso','Briteiros')).
 cliente(6,'Alexandre Rosas', morada('Rua da Mota','Adaúfe')).
 
 % encomenda: #Id,Id Cliente, Peso, Volume, Dia Pedido: #D/M/Y/H/M , Limite: #D/H
