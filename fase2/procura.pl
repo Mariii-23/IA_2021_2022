@@ -1,13 +1,4 @@
 % Adjacente
-%adjacente(X,Y,C,T) :- aresta(X,Y,C,T).
-%adjacente(X,Y,C,T) :- aresta(Y,X,C,T).
-
-% %% ou
-% Adjacente
-%adjacente(morada(A,X),morada(B,X),0,0):-  rua(A,X), rua(B,X).
-%adjacente(morada(A,X),morada(B,Y),C,D) :- rua(A,X), rua(B,Y) ,aresta(X,Y,C,D).
-%adjacente(morada(A,X),morada(B,Y),C,D) :- rua(A,X), rua(B,Y) ,aresta(Y,X,C,D).
-
 adjacente(A,B,D) :-
     aresta(A,B),
     distancia(A,B,D).
@@ -26,11 +17,10 @@ distancia(M1,M2,R):-
     coordenadaByMorada(M2,C2),
     distancia(C1,C2,R).
 
-
 estima( A ,R):-
     coordenadaByMorada(A,M1),
-    centroDistribuicao(rua(X,Y)),
-    coordenadaByMorada(morada(X,Y),M2),
+    centroDistribuicao(X),
+    coordenadaByMorada(X,M2),
     distancia(M1,M2,R).
 
 % caminho acíclico P, que comeca no nó A para o nó B
@@ -132,13 +122,9 @@ buscaIterativaAux(X, Dest, Cam, N , L ,S):-
   buscaIterativaAux(Novo, Dest, [Novo|Cam], N_ ,L, S).
 
 %%%% A Estrela
-%%%% FIXME Depois de alterar a estrutura de dados deixou de dar
-%% FIXME Dar os caminhos por onde tem q ir
-%% Garantir q passa por todas as moradas dadas
-%% TODO add peso das embalagens
+%% TODO Fazer a pesquisa ou em funcao do custo ou do tempo
+%% TODO adicionar Peso das encomendas
 resolve_aestrela(Nodo, Caminho/Custo) :-
-    %% podemos comecar por uma aresta q esteja liga a central
-    %% a com menos distancia
     estima(Nodo,  Estima),
     %No início o custo é 0
     aestrela([[Nodo]/0/Estima], InuCam/Custo/_),
@@ -173,17 +159,21 @@ adjacenteAux([Nodo|Caminho]/Custo/_, [ProxNodo, Nodo| Caminho]/NovoC/Est) :-
     NovoC is Custo+EsteCusto,
     estima(ProxNodo, Est).
 
+% TODO Converter para funcionar para o AEstrela e para o Gulosa
 %Obtem Caminho só serve para o AEstrela
 obtem_caminho([Caminho], Caminho) :- !.
-    %Percorre todos os caminhos e guarda no MCam o melhor
 obtem_caminho([ Caminho1/Custo1/Estima1, _/Custo2/Estima2|Caminhos], MCam) :-
         Custo1+Estima1 =< Custo2+Estima2, !,
         obtem_caminho([Caminho1/Custo1/Estima1|Caminhos], MCam).
 
 obtem_caminho([_|Caminhos], MCam) :- obtem_caminho(Caminhos, MCam).
 
-%Tira da lista do meio o melhor caminho
+%Tira da lista dos caminhos q tinhamos o melhor caminho
 seleciona(E, [E|Xs], Xs).
 seleciona(E, [X|Xs], [X|Ys]) :-
     seleciona(E, Xs, Ys).
 
+%% TODO fazer A estrela que recebe varias moradas e tem q passar
+%% por todas elas
+
+%% TODO Fazer a gulosa (ou adaptar as funcoes de cima ;)

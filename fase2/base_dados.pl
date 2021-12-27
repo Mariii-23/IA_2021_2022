@@ -12,7 +12,7 @@ freguesia('Esporões').
 freguesia('Lamas').
 freguesia('Braga').
 
-%rua: nome da rua, freguesia
+%rua: Nome da Rua, Freguesia, Coordenada: x, y
 rua('Rua do Taxa','Sao Vitor',coordenada(0,1)).
 rua('Avenida Dom João II','Nogueiró',coordenada(3,7)).
 rua('Rua de São Bento','Merelim',coordenada(4,5)).
@@ -26,8 +26,7 @@ rua('Rua de Santa Marta','Esporões',coordenada(1,4)).
 rua('Rua do Sol','Lamas',coordenada(1,8)).
 rua('Rua da Universidade', 'Braga',coordenada(5,1)).
 
-%aresta: Freguesia , Freguesia , custo, Distancia
-%
+%aresta: Freguesia , Freguesia -> {V,F}
 aresta(morada('Rua do Taxa','Sao Vitor'), morada('Avenida Dom João II','Nogueiró')).
 aresta(morada('Avenida Dom João II','Nogueiró'), morada('Rua do Moinho','Caldelas')).
 aresta(morada('Rua de São Bento','Merelim'), morada('Rua Doutor José Alves Correia Da Silva','Frossos')).
@@ -51,6 +50,7 @@ aresta(morada('Rua da Universidade', 'Braga'), morada('Rua de Santa Marta','Espo
 %% aresta('Lamas', 'Frossos',26,10).
 %% aresta('Caldelas', 'Braga',5, 15).
 
+% centroDistribuicao: Morada
 centroDistribuicao(morada('Rua da Universidade', 'Braga')).
 
 % transporte: Id,Nome,Velocidade,Carga,Pontos_Ecologicos -> {V,F}

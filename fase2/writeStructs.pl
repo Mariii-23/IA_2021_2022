@@ -12,10 +12,22 @@ writeRua(Stream):- rua(Nome,Freguesia,Coord),
                           fail; true
 .
 
-writeAresta(Stream):- aresta(NomeA,NomeB),
+writeAresta(Stream):- aresta(morada(A,B),morada(C,D)),
                           write(Stream,'aresta('),
-                          write(Stream,'\''), write(Stream,NomeA), write(Stream,'\','),
-                          write(Stream,'\''), write(Stream,NomeB), write(Stream,'\').\n'),
+                          write(Stream,'morada('),
+                          write(Stream,'\''), write(Stream,A), write(Stream,'\',\''),
+                          write(Stream,B), write(Stream,'\'),'),
+                          write(Stream,'morada('),
+                          write(Stream,'\''), write(Stream,C), write(Stream,'\',\''),
+                          write(Stream,D), write(Stream,'\')).\n'),
+                          fail; true
+.
+
+writeCentroDistribuicao(Stream):- centroDistribuicao(morada(A,B)),
+                          write(Stream,'centroDistribuicao('),
+                          write(Stream,'morada('),
+                          write(Stream,'\''), write(Stream,A), write(Stream,'\',\''),
+                          write(Stream,B), write(Stream,'\')).\n'),
                           fail; true
 .
 
@@ -82,10 +94,12 @@ saveIn(X) :-
     open(X,write,Stream),
     write(Stream, '\n% freguesia: Nome -> {V,F}\n'),
     writeFreguesia(Stream),
-    write(Stream, '\n% rua: Nome, Nome da Freguesia, Coordenadas -> {V,F}\n'),
+    write(Stream, '\n% rua: Nome, Nome da Freguesia, Coordenada -> {V,F}\n'),
     writeRua(Stream),
-    write(Stream, '\n% aresta: Freguesia, Freguesia, Custo, Tempo: H/M -> {V,F}\n'),
+    write(Stream, '\n% aresta: Morada, Morada -> {V,F}\n'),
     writeAresta(Stream),
+    write(Stream, '\n% centroDistribuicao: Morada -> {V,F}\n'),
+    writeCentroDistribuicao(Stream),
     write(Stream, '\n% transporte: Id, Nome, Velocidade Média, Carga Máxima, Nível Ecológico -> {V,F}\n'),
     writeTransporte(Stream),
     write(Stream, '\n% estafeta: Id, Nome -> {V,F}\n'),
