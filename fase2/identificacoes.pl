@@ -1,9 +1,13 @@
 %% RUA
-ruaByName(N,R):- findall(rua(N,F),rua(N,F),[R|_]).
+ruaByName(N,R):- findall(rua(N,F,C),rua(N,F,C),[R|_]).
 
-ruaByNomeFreguesia(N,R):- findall(rua(N,F),rua(N,F),R).
+ruaByNomeFreguesia(N,R):- findall(rua(N,F,C),rua(N,F,C),R).
 
-ruaByFreguesia(freguesia(F),R):- findall(rua(N,F),rua(N,F),R).
+ruaByFreguesia(freguesia(F),R):- findall(rua(N,F,C),rua(N,F,C),R).
+
+%% MORADA
+coordenadaByMorada(morada(R,F),E):-
+    findall(C, rua(R,F,C) , [E|_]).
 
 %% TRANSPORTE
 transporteById(Id,T):-

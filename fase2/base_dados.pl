@@ -13,34 +13,45 @@ freguesia('Lamas').
 freguesia('Braga').
 
 %rua: nome da rua, freguesia
-rua('Rua do Taxa','Sao Vitor').
-rua('Avenida Dom João II','Nogueiró').
-rua('Rua de São Bento','Merelim').
-rua('Rua Doutor José Alves Correia Da Silva','Frossos').
-rua('Rua do Moinho','Caldelas').
-rua('Rua Dr. Lindoso','Briteiros').
-rua('Rua do Coucão','Priscos').
-rua('Rua da Mota','Adaúfe').
-rua('Rua Joãozinho Azeredo','Maximinos').
-rua('Rua de Santa Marta','Esporões').
-rua('Rua do Sol','Lamas').
-rua('Rua da Universidade', 'Braga').
+rua('Rua do Taxa','Sao Vitor',coordenada(0,1)).
+rua('Avenida Dom João II','Nogueiró',coordenada(3,7)).
+rua('Rua de São Bento','Merelim',coordenada(4,5)).
+rua('Rua Doutor José Alves Correia Da Silva','Frossos',coordenada(2,6)).
+rua('Rua do Moinho','Caldelas',coordenada(3,1)).
+rua('Rua Dr. Lindoso','Briteiros',coordenada(2,3)).
+rua('Rua do Coucão','Priscos',coordenada(3,0)).
+rua('Rua da Mota','Adaúfe',coordenada(1,1)).
+rua('Rua Joãozinho Azeredo','Maximinos',coordenada(0,2)).
+rua('Rua de Santa Marta','Esporões',coordenada(1,4)).
+rua('Rua do Sol','Lamas',coordenada(1,8)).
+rua('Rua da Universidade', 'Braga',coordenada(5,1)).
 
 %aresta: Freguesia , Freguesia , custo, Distancia
-aresta('Sao Vitor', 'Lamas',13, 6 ).
-aresta('Nogueiró','Lamas' ,20,9).
-aresta('Merelim','Nogueiró' ,31, 14).
-aresta('Frossos', 'Merelim',19, 8).
-aresta('Caldelas', 'Briteiros',60,28).
-aresta('Briteiros', 'Priscos',53, 25).
-aresta('Priscos', 'Adaúfe',31,14).
-aresta('Adaúfe', 'Maximinos',28,11).
-aresta('Maximinos', 'Esporões',6,3).
-aresta('Esporões', 'Lamas',28,11).
-aresta('Lamas', 'Frossos',26,10).
-aresta('Caldelas', 'Braga',5, 15).
+%
+aresta(morada('Rua do Taxa','Sao Vitor'), morada('Avenida Dom João II','Nogueiró')).
+aresta(morada('Avenida Dom João II','Nogueiró'), morada('Rua do Moinho','Caldelas')).
+aresta(morada('Rua de São Bento','Merelim'), morada('Rua Doutor José Alves Correia Da Silva','Frossos')).
+aresta(morada('Rua Dr. Lindoso','Briteiros'),  morada('Rua da Mota','Adaúfe')).
+aresta(morada('Rua do Coucão','Priscos'), morada('Rua da Universidade', 'Braga')).
+aresta(morada('Rua da Mota','Adaúfe'), morada('Rua Dr. Lindoso','Briteiros')).
+aresta(morada('Rua Joãozinho Azeredo','Maximinos'), morada('Rua do Sol','Lamas')).
+aresta(morada('Rua de Santa Marta','Esporões'), morada('Rua do Sol','Lamas')).
+aresta(morada('Rua do Sol','Lamas'), morada('Rua do Moinho','Caldelas')).
+aresta(morada('Rua da Universidade', 'Braga'), morada('Rua de Santa Marta','Esporões')).
+%% aresta('Sao Vitor', 'Lamas',6 ).
+%% aresta('Nogueiró','Lamas' ,20,9).
+%% aresta('Merelim','Nogueiró' ,31, 14).
+%% aresta('Frossos', 'Merelim',19, 8).
+%% aresta('Caldelas', 'Briteiros',60,28).
+%% aresta('Briteiros', 'Priscos',53, 25).
+%% aresta('Priscos', 'Adaúfe',31,14).
+%% aresta('Adaúfe', 'Maximinos',28,11).
+%% aresta('Maximinos', 'Esporões',6,3).
+%% aresta('Esporões', 'Lamas',28,11).
+%% aresta('Lamas', 'Frossos',26,10).
+%% aresta('Caldelas', 'Braga',5, 15).
 
-centroDistribuicao(rua('Rua da Universidade', 'Braga')).
+centroDistribuicao(morada('Rua da Universidade', 'Braga')).
 
 % transporte: Id,Nome,Velocidade,Carga,Pontos_Ecologicos -> {V,F}
 transporte(1,'bicicleta',10,5,5).

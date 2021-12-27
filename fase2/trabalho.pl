@@ -1,9 +1,9 @@
 :- op(900,xfy,'::').
 
 :- dynamic freguesia/1.
-:- dynamic rua/2.
+:- dynamic rua/3.
 :- dynamic morada/2.
-:- dynamic aresta/4.
+:- dynamic aresta/3.
 :- dynamic transporte/5.
 :- dynamic ranking/2.
 :- dynamic estafeta/2.
@@ -25,7 +25,8 @@
 %%% Freguesia %%%
 % Garantir que o nome de cada freguesia é único
 +freguesia(Nome) :: (findall(Nome,freguesia(Nome),R),
-                         len(R,1)).
+                     len(R,1)).
+
 
 % Garantir que o Custo, as Horas e os Minutos inseridos são números válidos
 %+freguesia(_,Custo,H/M) :: (number(Custo),number(H),number(M)
@@ -39,16 +40,16 @@
 
 %%% Rua %%%
 % Garantir que o nome de cada rua é único
-+rua(Nome,_) :: (findall(Nome,rua(Nome,_),R),
++rua(Nome,_,_) :: (findall(Nome,rua(Nome,_,_),R),
                        len(R,1)).
 
  % Garantir que o nome de freguesia dado é verdadeiro e existe na nossa
  % base de conhecimento
-+rua(_,NomeFreguesia) :: (freguesia(NomeFreguesia)).
++rua(_,NomeFreguesia,_) :: (freguesia(NomeFreguesia,_,_)).
 
 % Garantir que não é possível remover nenhuma rua no caso de esta encontrar-se
 % associada a alguma morada de um cliente
--rua(Nome,_) :: (findall(Nome,cliente(_,_,morada(Nome,_)),R),
+-rua(Nome,_,_) :: (findall(Nome,cliente(_,_,morada(Nome,_)),R),
                        len(R,0)).
 
 %%%  Transportes  %%%%
@@ -165,7 +166,7 @@
 
 
 % -------- Adicionar predicados ---
-newRua(Nome,F):- new_predicado(rua(Nome,F)).
+newRua(Nome,F,Cor):- new_predicado(rua(Nome,F,Cor)).
 
 newFreguesia(Nome):- new_predicado(freguesia(Nome)).
 
@@ -182,7 +183,7 @@ newEncomenda(Id,C,P,V,D,L):- new_predicado(encomenda(Id,C,P,V,D,L)).
 newServico(Id,E,En,C,D,C,Cam,Custo):- new_predicado(servico(Id,E,En,C,D,C,Cam,Custo)).
 
 % -------- Remover predicados ---
-removeRua(Nome):- rua(Nome,F), remover_predicado(rua(Nome,F)).
+removeRua(Nome):- rua(Nome,F,Coor), remover_predicado(rua(Nome,F,Coor)).
 
 removeFreguesia(Nome):- freguesia(Nome), remover_predicado(freguesia(Nome)).
 
@@ -202,4 +203,4 @@ removeEncomenda(Id):- encomenda(Id,C,P,V,D,L), remover_predicado(encomenda(Id,C,
 %                     remover_predicado(encomenda(E,C1,P1,V1,D1,L1)).
 
 % ----------
-morada(R,F):- rua(R,F), freguesia(F).
+morada(R,F):- rua(R,F,_), freguesia(F).

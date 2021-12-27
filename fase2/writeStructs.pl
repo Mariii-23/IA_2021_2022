@@ -4,19 +4,18 @@ writeFreguesia(Stream):- freguesia(Nome),
                           fail; true
 .
 
-writeRua(Stream):- rua(Nome,Freguesia),
+writeRua(Stream):- rua(Nome,Freguesia,Coord),
                           write(Stream,'rua('),
                           write(Stream,'\''), write(Stream,Nome), write(Stream,'\','),
-                          write(Stream,'\''), write(Stream,Freguesia), write(Stream,'\').\n'),
+                          write(Stream,'\''), write(Stream,Freguesia), write(Stream,'\','),
+                          write(Stream,Coord), write(Stream,').\n'),
                           fail; true
 .
 
-writeAresta(Stream):- aresta(NomeA,NomeB,Custo,Tempo),
+writeAresta(Stream):- aresta(NomeA,NomeB),
                           write(Stream,'aresta('),
                           write(Stream,'\''), write(Stream,NomeA), write(Stream,'\','),
-                          write(Stream,'\''), write(Stream,NomeB), write(Stream,'\','),
-                          write(Stream,Custo), write(Stream, ','),
-                          write(Stream,Tempo), write(Stream, ').\n'),
+                          write(Stream,'\''), write(Stream,NomeB), write(Stream,'\').\n'),
                           fail; true
 .
 
@@ -83,7 +82,7 @@ saveIn(X) :-
     open(X,write,Stream),
     write(Stream, '\n% freguesia: Nome -> {V,F}\n'),
     writeFreguesia(Stream),
-    write(Stream, '\n% rua: Nome, Nome da Freguesia -> {V,F}\n'),
+    write(Stream, '\n% rua: Nome, Nome da Freguesia, Coordenadas -> {V,F}\n'),
     writeRua(Stream),
     write(Stream, '\n% aresta: Freguesia, Freguesia, Custo, Tempo: H/M -> {V,F}\n'),
     writeAresta(Stream),
