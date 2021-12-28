@@ -99,8 +99,8 @@ total_entregas_por_transporte(D1/M1/Y1,D2/M2/Y2,Freq) :-
 
 servicos_para_transportes([],[]).
 servicos_para_transportes([servico(_,_,_,IdTrs,_,_,_,_)|Ss],
-                          [transporte(IdTrs,A,B,C,D)|Ts]) :-
-    transporte(IdTrs,A,B,C,D),
+                          [transporte(IdTrs,A,B,C,D,Q)|Ts]) :-
+    transporte(IdTrs,A,B,C,D,Q),
     servicos_para_transportes(Ss,Ts).
 
 %% Query 8
@@ -184,14 +184,14 @@ estafetaMaisUtilizouIdTransporte(Id,E):-
     estafetaById(IdE,E),!.
 estafetaMaisUtilizouIdTransporte(_,[]).
 
-estafetaMaisUtilizouTransporte(transporte(Id,_,_,_,_),E):-
+estafetaMaisUtilizouTransporte(transporte(Id,_,_,_,_,_),E):-
     estafetaMaisUtilizouIdTransporte(Id,E).
 
 tupleEstafetaMaisUtilizouTransporte(E, (E,R) ):-
     estafetaMaisUtilizouTransporte(E,R).
 
 listaEstafetasUtilizouMaisTransporte(R):-
-    findall(transporte(Id,N,V,C,E),transporte(Id,N,V,C,E),LT),
+    findall(transporte(Id,N,V,C,E,Q),transporte(Id,N,V,C,E,Q),LT),
     maplist(tupleEstafetaMaisUtilizouTransporte,LT,R).
 
 %% CARGA
@@ -249,6 +249,12 @@ velocidadeMediaEntrega('carro',Carga,R) :-
 velocidadeMediaEntrega('mota',Carga,R) :-
     velocidadeMediaByTransporteName('mota',V),
     R is V - 0.5*Carga.
+
+%% Custo do Gasoleo // aka comida se for bike
+custoConsumoEntrega(IdVeiculo,Dist,R) :-
+    mediaConsumoByIdTransporte(IdVeiculo,Media),
+    Custo = 1.45, %% preco dos combustiveis
+    R is (Dist * Media * Custo) / 100.
 
 %% Id encomendas -> lista de freguesias a ir
 freguesiasByIdEncomendas([],[]).

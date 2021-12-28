@@ -11,29 +11,32 @@ coordenadaByMorada(morada(R,F),E):-
 
 %% TRANSPORTE
 transporteById(Id,T):-
-    findall(transporte(Id,N,V,C,P), transporte(Id,N,V,C,P),[T|_]).
+    findall(transporte(Id,N,V,C,P,Q), transporte(Id,N,V,C,P,Q),[T|_]).
 
 transporteByName(N,T):-
-    findall(transporte(Id,N,V,C,P), transporte(Id,N,V,C,P),T).
+    findall(transporte(Id,N,V,C,P,Q), transporte(Id,N,V,C,P,Q),T).
 
 transporteByVelocidade(V,T):-
-    findall(transporte(Id,N,V,C,P), transporte(Id,N,V,C,P),T).
+    findall(transporte(Id,N,V,C,P,Q), transporte(Id,N,V,C,P,Q),T).
 
 transporteByCarga(C,T):-
-    findall(transporte(Id,N,V,C,P), transporte(Id,N,V,C,P),T).
+    findall(transporte(Id,N,V,C,P,Q), transporte(Id,N,V,C,P,Q),T).
 
 transporteByPontosEcologicos(P,T):-
-    findall(transporte(Id,N,V,C,P), transporte(Id,N,V,C,P),T).
+    findall(transporte(Id,N,V,C,P,Q), transporte(Id,N,V,C,P,Q),T).
 
 velocidadeMediaByTransporteName(N,X):-
-    findall(V, transporte(_,N,V,_,_),[X|_]).
+    findall(V, transporte(_,N,V,_,_,_),[X|_]).
+
+mediaConsumoByIdTransporte(Id,X):-
+    findall(C, transporte(Id,_,_,_,_,C),[X|_]).
 
 %
 nivelEcologicoByIdTransporte(Id,E):-
-    transporte(Id,_,_,_,E).
+    transporte(Id,_,_,_,E,_).
 
 transportesEcologicos(R):-
-    findall(transporte(I,N,V,C,P), (transporte(I,N,V,C,P), P > 0),R).
+    findall(transporte(I,N,V,C,P,Q), (transporte(I,N,V,C,P,Q), P > 0),R).
 
 %% ESTAFETA
 estafetaById(Id,E):-

@@ -121,52 +121,68 @@ buscaIterativaAux(X, Dest, Cam, N , L ,S):-
   N_ is N + 1,
   buscaIterativaAux(Novo, Dest, [Novo|Cam], N_ ,L, S).
 
+%% Calcular o custo tendo em conta a distancia, o veiculo e o peso da encomenda
+custoTempo(Id,Peso,Dist,EsteCusto):-
+    transporteById(Id, transporte(_,Veiculo,_,_,_,_)),
+    velocidadeMediaEntrega(Veiculo,Peso,V),
+    EsteCusto is Dist / V
+.
+
+%% Calcular o custo que se gastaria de gasoleo de um dado transporte
+% relacao a uma dada distancia
+custoConsumo(Id,_,Dist,Custo):-
+    custoConsumoEntrega(Id,Dist,Custo).
+
 %%%% A Estrela
-%% TODO Fazer a pesquisa ou em funcao do custo ou do tempo
-%% TODO adicionar Peso das encomendas
-resolve_aestrela(Nodo, Caminho/Custo) :-
+resolve_aestrela(Nome, Nodo, Id ,Peso, Caminho/Custo) :-
+    goal(Final),
+    resolve_aestrela(Nome, Nodo, Final, Id, Peso, Caminho/Custo).
+
+resolve_aestrela(Nome, Nodo, Final, Id, Peso, Caminho/Custo):-
     estima(Nodo,  Estima),
-    %No início o custo é 0
-    aestrela([[Nodo]/0/Estima], InuCam/Custo/_),
+    ((Nome == tempo, Funcao = custoTempo) ;
+     (Nome == custo, Funcao = custoConsumo) ),
+    aestrela(Funcao, Id, Peso, Final, [[Nodo]/0/Estima], InuCam/Custo/_),
     reverse(InuCam, Caminho).
 
-aestrela(Caminhos,Caminho):-
-    obtem_caminho(Caminhos,Caminho),
-    Caminho=[Nodo|_]/_/_,
-    goal(Nodo).
+% Caso de paragem
+aestrela(_,_,_,Nodo,Caminhos,Caminho):-
+    obtem_caminho(aestrela,Caminhos,Caminho),
+    Caminho=[Nodo|_]/_/_.
 
-aestrela(Caminhos, SCaminho) :-
+% aestrela recebe
+% Funcao -> funcao que calcula o custo real de ir de um nodo para o outro
+% Id -> id do transporte
+% Peso -> Peso da encomenda
+aestrela(Funcao,Id ,Peso, Final ,Caminhos, SCaminho) :-
     %O Caminho é o ótimo dos vários Caminhos
-    obtem_caminho(Caminhos, MelhorCaminho),
+    obtem_caminho(aestrela,Caminhos, MelhorCaminho),
     seleciona(MelhorCaminho, Caminhos, OutrosCam),
-    expande_aestrela(MelhorCaminho, ExpCam),
+    expande_aestrela(Funcao, Id, Peso,Final,MelhorCaminho, ExpCam),
     append(OutrosCam, ExpCam, NCam),
-    aestrela(NCam, SCaminho).
+    aestrela(Funcao, Id, Peso, Final, NCam, SCaminho).
 
 %Dá todos os caminhos adjacentes ao NovoCaminho
-expande_aestrela([[Nodo|Caminho]/Custo/Est | T], [[Nodo|Caminho]/Custo/Est | T]):-
-  centroDistribuicao(rua(A,B)),
-  Nodo = morada(A,B).
+expande_aestrela(_,_,_,Nodo,[[Nodo|Caminho]/Custo/Est | T], [[Nodo|Caminho]/Custo/Est | T]).
 
-expande_aestrela(Caminho, ExpCam) :-
-    findall(NovoCaminho, adjacenteAux(Caminho, NovoCaminho), ExpCam).
+expande_aestrela(Funcao, Id, Peso,_,Caminho, ExpCam) :-
+    findall(NovoCaminho, adjacenteAux(Funcao, Id, Peso, Caminho, NovoCaminho), ExpCam).
 
-adjacenteAux([Nodo|Caminho]/Custo/_, [ProxNodo, Nodo| Caminho]/NovoC/Est) :-
-    %% FIXME se o A estrela for por custo -> fazer algo
-    %%       se             for por tempo -> ver a cena de velocidade
-    adjacente(Nodo,ProxNodo,EsteCusto),
+adjacenteAux(Funcao, Id, Peso, [Nodo|Caminho]/Custo/_, [ProxNodo, Nodo| Caminho]/NovoC/Est) :-
+    adjacente(Nodo,ProxNodo,Distancia),
     \+ member(ProxNodo, Caminho),
+    call(Funcao,Id,Peso,Distancia,EsteCusto),
     NovoC is Custo+EsteCusto,
     estima(ProxNodo, Est).
 
-% TODO Converter para funcionar para o AEstrela e para o Gulosa
-%Obtem Caminho só serve para o AEstrela
-obtem_caminho([Caminho], Caminho) :- !.
-obtem_caminho([ Caminho1/Custo1/Estima1, _/Custo2/Estima2|Caminhos], MCam) :-
+obtem_caminho(_,[Caminho], Caminho) :- !.
+obtem_caminho(aestrela,[ Caminho1/Custo1/Estima1, _/Custo2/Estima2|Caminhos], MCam) :-
         Custo1+Estima1 =< Custo2+Estima2, !,
-        obtem_caminho([Caminho1/Custo1/Estima1|Caminhos], MCam).
-
-obtem_caminho([_|Caminhos], MCam) :- obtem_caminho(Caminhos, MCam).
+        obtem_caminho(aestrela,[Caminho1/Custo1/Estima1|Caminhos], MCam).
+obtem_caminho(gulosa,[ Caminho1/Custo1/Estima1, _/_/Estima2|Caminhos], MCam) :-
+        Estima1 =< Estima2, !,
+        obtem_caminho(gulosa,[Caminho1/Custo1/Estima1|Caminhos], MCam).
+obtem_caminho(A,[_|Caminhos], MCam) :- obtem_caminho(A,Caminhos, MCam).
 
 %Tira da lista dos caminhos q tinhamos o melhor caminho
 seleciona(E, [E|Xs], Xs).

@@ -4,14 +4,15 @@
 :- dynamic rua/3.
 :- dynamic morada/2.
 :- dynamic aresta/3.
-:- dynamic transporte/5.
+:- dynamic transporte/6.
 :- dynamic ranking/2.
 :- dynamic estafeta/2.
 :- dynamic ranking/3.
 :- dynamic cliente/3.
 :- dynamic encomenda/6.
 :- dynamic servico/8.
-
+:- dynamic custoTempo/4.
+:- dynamic custoGasoleo/4.
 
 :- include('base_dados.pl').
 
@@ -54,17 +55,17 @@
 
 %%%  Transportes  %%%%
 % Garantir que o id dos transportes é único
-+transporte(Id,_,_,_,_) :: (findall(Id,transporte(Id,_,_,_,_), R),
++transporte(Id,_,_,_,_,_) :: (findall(Id,transporte(Id,_,_,_,_,_), R),
                             len(R,1)).
 
 % Garantir que os dados inseridos encontram-se no formato certo
-+transporte(Id,_,V,C,E) :: (number(Id), number(V),number(C),number(E)
++transporte(Id,_,V,C,E,Q) :: (number(Id), number(V),number(C),number(E),number(Q),
                              ,-1 < V, -1 < C, -6 < E, E < 6
                             ).
 
 % Garantir que um transporte só pode ser removido no caso de não estar presente
 % em nenhum serviço
--transporte(Id,_,_,_,_) :: (findall(Id,servico(_,_,_,Id,_,_,_,_),R),
+-transporte(Id,_,_,_,_,_) :: (findall(Id,servico(_,_,_,Id,_,_,_,_),R),
                             len(R,0)).
 
 %%%  Estafeta  %%%%
@@ -147,7 +148,7 @@
 
 % Garantir que os transportes associados são válidos
 +servico(_,_,_,T,_,_,_,_) :: (
-     findall(T,transporte(T,_,_,_,_),R3),
+     findall(T,transporte(T,_,_,_,_,_),R3),
      len(R3,1)).
 
 % Garantir que os dados inseridos encontram-se no formato correto.
@@ -170,7 +171,7 @@ newRua(Nome,F,Cor):- new_predicado(rua(Nome,F,Cor)).
 
 newFreguesia(Nome):- new_predicado(freguesia(Nome)).
 
-newTransporte(Id,N,V,C,E):- new_predicado(transporte(Id,N,V,C,E)).
+newTransporte(Id,N,V,C,E,Q):- new_predicado(transporte(Id,N,V,C,E,Q)).
 
 newEstafeta(Id,Nome):- new_predicado(estafeta(Id,Nome)).
 
@@ -187,7 +188,7 @@ removeRua(Nome):- rua(Nome,F,Coor), remover_predicado(rua(Nome,F,Coor)).
 
 removeFreguesia(Nome):- freguesia(Nome), remover_predicado(freguesia(Nome)).
 
-removeTransporte(Id):- transporte(Id,N,V,C,E) , remover_predicado( transporte(Id,N,V,C,E)).
+removeTransporte(Id):- transporte(Id,N,V,C,E,Q) , remover_predicado( transporte(Id,N,V,C,E,Q)).
 
 removeRanking(Id):- ranking(Id,C),remover_predicado(ranking(Id,C)).
 

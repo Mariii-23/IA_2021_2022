@@ -31,13 +31,14 @@ writeCentroDistribuicao(Stream):- centroDistribuicao(morada(A,B)),
                           fail; true
 .
 
-writeTransporte(Stream):- transporte(Id,N,V,C,E),
+writeTransporte(Stream):- transporte(Id,N,V,C,E,Q),
                           write(Stream,'transporte('),
                           write(Stream,Id),
                           write(Stream,',\''), write(Stream,N), write(Stream,'\','),
                           write(Stream,V), write(Stream, ','),
                           write(Stream,C), write(Stream, ','),
-                          write(Stream,E), write(Stream, ').\n'),
+                          write(Stream,E), write(Stream, ','),
+                          write(Stream,Q), write(Stream, ').\n'),
                           fail; true
 .
 
@@ -100,7 +101,7 @@ saveIn(X) :-
     writeAresta(Stream),
     write(Stream, '\n% centroDistribuicao: Morada -> {V,F}\n'),
     writeCentroDistribuicao(Stream),
-    write(Stream, '\n% transporte: Id, Nome, Velocidade Média, Carga Máxima, Nível Ecológico -> {V,F}\n'),
+    write(Stream, '\n% transporte: Id, Nome, Velocidade Média, Carga Máxima, Nível Ecológico, Consumo Medio -> {V,F}\n'),
     writeTransporte(Stream),
     write(Stream, '\n% estafeta: Id, Nome -> {V,F}\n'),
     writeEstafeta(Stream),

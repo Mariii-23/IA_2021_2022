@@ -53,24 +53,24 @@ aresta(morada('Rua da Universidade', 'Braga'), morada('Rua de Santa Marta','Espo
 % centroDistribuicao: Morada
 centroDistribuicao(morada('Rua da Universidade', 'Braga')).
 
-% transporte: Id,Nome,Velocidade,Carga,Pontos_Ecologicos -> {V,F}
-transporte(1,'bicicleta',10,5,5).
-transporte(2,'mota',35,20,-2).
-transporte(3,'carro',25,100,-5).
-transporte(4,'bicicleta elétrica',40,15,3).
-transporte(5,'bicicleta elétrica',40,15,3).
-transporte(6,'bicicleta elétrica',40,15,3).
-transporte(7,'carro',25,100,-5).
-transporte(8,'carro',25,100,-5).
-transporte(9,'carro',25,100,-5).
-transporte(10,'carro',25,100,-5).
-transporte(11,'mota',35,20,-2).
-transporte(12,'mota',35,20,-2).
-transporte(13,'mota',35,20,-2).
-transporte(14,'mota',35,20,-2).
-transporte(15,'bicicleta',10,5,5).
-transporte(16,'bicicleta',10,5,5).
-transporte(17,'bicicleta',10,5,5).
+% transporte: Id,Nome,Velocidade,Carga,Pontos_Ecologicos, MediaConsumo -> {V,F}
+transporte(1,'bicicleta',10,5,5, 1).
+transporte(2,'mota',35,20,-2,6).
+transporte(3,'carro',25,100,-5,8).
+transporte(4,'bicicleta elétrica',40,15,3, 2).
+transporte(5,'bicicleta elétrica',40,15,3, 2).
+transporte(6,'bicicleta elétrica',40,15,3, 2).
+transporte(7,'carro',25,100,-5,8).
+transporte(8,'carro',25,100,-5,8).
+transporte(9,'carro',25,100,-5,8).
+transporte(10,'carro',25,100,-5,8).
+transporte(11,'mota',35,20,-2,4).
+transporte(12,'mota',35,20,-2,4).
+transporte(13,'mota',35,20,-2,4).
+transporte(14,'mota',35,20,-2,4).
+transporte(15,'bicicleta',10,5,5,1).
+transporte(16,'bicicleta',10,5,5,1).
+transporte(17,'bicicleta',10,5,5,1).
 
 % estafeta: #ID,Nome -> {V,F}
 estafeta(1,'Bernardo').
