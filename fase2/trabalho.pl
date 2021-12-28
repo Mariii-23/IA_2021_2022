@@ -1,5 +1,4 @@
 :- op(900,xfy,'::').
-
 :- dynamic freguesia/1.
 :- dynamic rua/3.
 :- dynamic morada/2.

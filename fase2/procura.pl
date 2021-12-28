@@ -81,13 +81,16 @@ dfs2(X, Y, Cam, S):-
   dfs2(Novo, Y, [Novo|Cam], S).
 
 % Damos lhe todas as moradas q queremos q ele passe e ele encontra o caminho
+% FIXME algo nao esta bem
 dfs_complex(Dest, S):-
     centroDistribuicao(X),
     dfsAux(X, Dest , [X], S).
 
 dfsAux(_, Dest, Cam, S):-
     iguais(Dest,Cam,R),
-    R = Dest,
+    sort(R,R1),
+    sort(Dest,Dest1),
+    R1 = Dest1,
     reverse(Cam,S).
 dfsAux(X, Y, Cam, S):-
   adjacente(Novo,X,_),
@@ -106,6 +109,7 @@ buscaIterativa2(X, Y, Cam, N , L ,S):-
   buscaIterativa2(Novo, Y, [Novo|Cam], N_ ,L, S).
 
 % busca dando todos os destinos a ir
+% FIXME algo nao esta bem
 buscaIterativa_complex(Dest, L, S):-
     centroDistribuicao(X),
     buscaIterativaAux(X, Dest, [X], 1 , L, S).
@@ -176,11 +180,42 @@ nodoMenorEstima( Encomendas, Nodo, R ):-
     calcular_estima(Encomendas, Nodo, Estimas),
     sort(2, @=<, Estimas, [R|_]).
 
+nodoMaiorEstima( Encomendas, Nodo, R ):-
+    calcular_estima(Encomendas, Nodo, Estimas),
+    sort(2, @>=, Estimas, [R|_]).
+
 resolve_procura_complex(Procura, Nome, Encomendas , Id, Caminho/Custo):-
     goal(Final),
     resolve_procura_complex_aux(Procura, Nome, Encomendas , Final, Id, []/0 ,Caminho/Custo).
 
-resolve_procura_complex_aux(_, _, [] , Nodo, _, Caminho/Custo,[Goal|Caminho]/Custo):- goal(Goal).
+%% FIXME Isto pode ser melhorado
+resolve_procura_complex_idaVolta(Procura, Nome, Encomendas , Id, Caminho/Custo):-
+    resolve_procura_complex(Procura, Nome, Encomendas , Id, CaminhoIda/CustoIda),
+    reverse(CaminhoIda,[Nodo|_]),
+    resolve_procura_complex(Procura, Nome, [Nodo/0] , Id, CaminhoVolta/CustoVolta),
+    reverse(CaminhoVolta, [_|CamV]),
+    append(CaminhoIda,CamV,Caminho),
+    Custo is CustoVolta + CustoIda
+.
+
+%% resolve_procura_complex_idaVolta(Procura, Nome, Encomendas , Id, CaminhoIda/CustoIda, CaminhoVolta/CustoV):-
+%%     goal(Final),
+%%     nodoMaiorEstima(Encomendas, Final, Nodo/Estima ),
+%%     ((Nome == tempo, Funcao = custoTempo) ;
+%%      (Nome == custo, Funcao = custoConsumo) ),
+%%     % Obter o caminho de volta
+%%     procura(Procura,Funcao, Id, Encomendas, Final, [[Nodo]/0/Estima], CVolta/CustoV/_),
+%%     reverse(CVolta,CaminhoVolta),
+%%     CaminhoVolta = [_|T],
+%%     removeEncomendaLista(Encomendas, T, EncAtualizadas),
+%%     % Obter o caminho de Ida
+%%     resolve_procura_complex_aux(Procura, Nome, EncAtualizadas , Nodo, Id, []/0 ,CaminhoIda/CustoIda)
+%%     %% reverse(CaminhoVolta,Cam),
+%%     %% append(CaminhoIda,Cam,Caminho),
+%%     %% Custo is CustoV + CustoIda
+%% .
+
+resolve_procura_complex_aux(_, _, [] , _, _, Caminho/Custo,[Goal|Caminho]/Custo):- goal(Goal).
 
 resolve_procura_complex_aux(Procura, Nome, Encomendas , Final, Id, CamAux/Cus ,Caminho/Custo):-
     % Ir buscar o estima menor e fazer esse o nodo Final
@@ -234,6 +269,3 @@ obtem_caminho(A,[_|Caminhos], MCam) :- obtem_caminho(A,Caminhos, MCam).
 seleciona(E, [E|Xs], Xs).
 seleciona(E, [X|Xs], [X|Ys]) :-
     seleciona(E, Xs, Ys).
-
-%% TODO fazer A estrela e agulosa a receber varias moradas e tem q passar
-%% por todas elas

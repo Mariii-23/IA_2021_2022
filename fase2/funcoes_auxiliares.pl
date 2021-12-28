@@ -74,3 +74,4 @@ freq([X | Xs], Temp, R) :-
 maxFreq(L,R):-
     freq(L,[],RL),
     sort(1, @>=, RL, [(_,R)|_]).
+

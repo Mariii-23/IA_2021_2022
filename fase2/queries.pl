@@ -231,6 +231,8 @@ totalCargaServicoCliente(Id,R):-
     cargaCliente(Id,L),
     sum(L,R).
 
+%%% Realizar encomendas
+
 %% TEMPO DE ENTREGA
 velocidadeMediaEntrega('bicicleta',Carga,R) :-
     velocidadeMediaByTransporteName('bicicleta',V),
@@ -286,3 +288,39 @@ freguesiasByIdEncomendas([A|T],R):-
 
 freguesiaByIdEncomenda(Id,Freguesia):-
     moradaByIdEncomenda(Id, morada(_,Freguesia)).
+
+
+%%% Obter Caminho atraves de Id Encomendas, Estafeta e trasnporte
+moradaAndPesoByIdEncomenda(Id, Morada/Peso):-
+    moradaByIdEncomenda(Id,Morada),
+    pesoByEncomendaId(Id,Peso).
+
+%%% PROCURA NAO INFORMADA %%%
+
+readNumber(X):-
+    write('Introduza um numero: '),
+    repeat, read(X), (X==end_of_file , !,fail;true ),
+    number(X)
+.
+
+%% Procura -> tipo de procura
+%% Enc -> lista de ids de encomendas
+%% Caminho -> resultado
+searchNaoInformadaCaminho(Procura, Enc, Caminho):-
+    maplist(moradaByIdEncomenda, Enc, Encomendas),
+    ((Procura == 'bfs', bfs_complex(Encomendas,Caminho));
+    (Procura == 'dfs', dfs_complex(Encomendas,Caminho));
+    (Procura == 'iterativa' , readNumber(X), buscaIterativa_complex(Encomendas,X,Caminho))).
+
+%%% PROCURA INFORMADA
+%% Procura -> tipo de procura
+%% Funcao -> Custo podera ser calculado atraves do "tempo" ou do "custo" (custo do gasoleo)
+%% Enc -> lista de ids de encomendas
+%% Caminho -> resultado
+searchInformadaCaminho(Procura, Funcao, Enc, Transporte,Caminho,Custo):-
+    maplist(moradaAndPesoByIdEncomenda, Enc, Encomendas),
+    resolve_procura_complex(Procura,Funcao, Encomendas ,Transporte,Caminho/Custo).
+
+searchInformadaCaminhoIdaVolta(Procura, Funcao, Enc, Transporte,Caminho,Custo):-
+    maplist(moradaAndPesoByIdEncomenda, Enc, Encomendas),
+    resolve_procura_complex_idaVolta(Procura,Funcao, Encomendas ,Transporte,Caminho/Custo).
