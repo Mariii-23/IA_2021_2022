@@ -8,7 +8,7 @@ adjacente(A,B,D) :-
 
 goal(A) :- centroDistribuicao(A).
 
-%% DISTANCIA
+%%% DISTANCIA
 distancia(coordenada(X1,Y1), coordenada(X2,Y2), R):-
     Sum is ((X1 - X2)**2) + ((Y1 - Y2)**2),
     R is sqrt(Sum).
@@ -162,29 +162,61 @@ resolve_procura(Procura, Nome, Nodo, Final, Id, Peso, Caminho/Custo):-
     estima(Nodo,  Estima),
     ((Nome == tempo, Funcao = custoTempo) ;
      (Nome == custo, Funcao = custoConsumo) ),
-    procura(Procura,Funcao, Id, Peso, Final, [[Nodo]/0/Estima], InuCam/Custo/_),
+    procura(Procura,Funcao, Id, [Nodo/Peso], Final, [[Nodo]/0/Estima], InuCam/Custo/_),
     reverse(InuCam, Caminho).
+
+calcular_estima([], _ , []).
+calcular_estima([Morada/_ | T], Nodo , [Morada/Estima | R]):-
+    distancia(Morada,Nodo,Estima),
+    calcular_estima(T, Nodo, R)
+.
+
+% Ir buscar o Nodo com menor estima em relacao a um outro dado Nodo
+nodoMenorEstima( Encomendas, Nodo, R ):-
+    calcular_estima(Encomendas, Nodo, Estimas),
+    sort(2, @=<, Estimas, [R|_]).
+
+resolve_procura_complex(Procura, Nome, Encomendas , Id, Caminho/Custo):-
+    goal(Final),
+    resolve_procura_complex_aux(Procura, Nome, Encomendas , Final, Id, []/0 ,Caminho/Custo).
+
+resolve_procura_complex_aux(_, _, [] , Nodo, _, Caminho/Custo,[Goal|Caminho]/Custo):- goal(Goal).
+
+resolve_procura_complex_aux(Procura, Nome, Encomendas , Final, Id, CamAux/Cus ,Caminho/Custo):-
+    % Ir buscar o estima menor e fazer esse o nodo Final
+    % ate percorrer todas as moradas das encomendas
+    nodoMenorEstima(Encomendas, Final, Nodo/Estima ),
+    ((Nome == tempo, Funcao = custoTempo) ;
+     (Nome == custo, Funcao = custoConsumo) ),
+    procura(Procura,Funcao, Id, Encomendas, Final, [[Nodo]/0/Estima], [Final|InuCam]/CustoP/_),
+    removeEncomendaLista(Encomendas, [Nodo|InuCam], EncAtualizadas),
+    Cus2 is Cus + CustoP,
+    append(CamAux,InuCam,Cam),
+    resolve_procura_complex_aux(Procura, Nome, EncAtualizadas , Nodo, Id, Cam/Cus2 , Caminho/Custo)
+.
 
 procura(Procura,_,_,_,Nodo,Caminhos,Caminho):-
     obtem_caminho(Procura,Caminhos,Caminho),
     Caminho=[Nodo|_]/_/_.
 
-procura(Procura, Funcao,Id,Peso,Final,Caminhos,SCaminho):-
+procura(Procura, Funcao,Id,Encomendas,Final,Caminhos,SCaminho):-
     obtem_caminho(Procura,Caminhos, MelhorCaminho),
     seleciona(MelhorCaminho, Caminhos, OutrosCam),
-    expande(Funcao, Id, Peso,Final,MelhorCaminho, ExpCam),
+    expande(Funcao, Id, Encomendas,Final,MelhorCaminho, ExpCam),
     append(OutrosCam, ExpCam, NCam),
-    procura(Procura,Funcao, Id, Peso, Final, NCam, SCaminho).
+    procura(Procura,Funcao, Id, Encomendas, Final, NCam, SCaminho).
 
 %Dá todos os caminhos adjacentes ao NovoCaminho
 expande(_,_,_,Nodo,[[Nodo|Caminho]/Custo/Est | T], [[Nodo|Caminho]/Custo/Est | T]).
 
-expande(Funcao, Id, Peso,_,Caminho, ExpCam) :-
-    findall(NovoCaminho, adjacenteAux(Funcao, Id, Peso, Caminho, NovoCaminho), ExpCam).
+expande(Funcao, Id, Encomendas,_,Caminho, ExpCam) :-
+    findall(NovoCaminho, adjacenteAux(Funcao, Id, Encomendas, Caminho, NovoCaminho), ExpCam).
 
-adjacenteAux(Funcao, Id, Peso, [Nodo|Caminho]/Custo/_, [ProxNodo, Nodo| Caminho]/NovoC/Est) :-
+adjacenteAux(Funcao, Id, Encomendas, [Nodo|Caminho]/Custo/_, [ProxNodo, Nodo| Caminho]/NovoC/Est) :-
     adjacente(Nodo,ProxNodo,Distancia),
     \+ member(ProxNodo, Caminho),
+    %% nao vamos o nodo que acabamos de chegar (ProxNodo), porque o peso da encomenda ainda conta
+    calculaPesoTotalEmFuncaoDoCaminho(Encomendas, [Nodo| Caminho], Peso),
     call(Funcao,Id,Peso,Distancia,EsteCusto),
     NovoC is Custo+EsteCusto,
     estima(ProxNodo, Est).
@@ -203,7 +235,5 @@ seleciona(E, [E|Xs], Xs).
 seleciona(E, [X|Xs], [X|Ys]) :-
     seleciona(E, Xs, Ys).
 
-%% TODO fazer A estrela que recebe varias moradas e tem q passar
+%% TODO fazer A estrela e agulosa a receber varias moradas e tem q passar
 %% por todas elas
-
-%% TODO Fazer a gulosa (ou adaptar as funcoes de cima ;)

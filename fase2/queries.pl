@@ -172,9 +172,7 @@ pesoTotalByDia(D,R):-
     pesoTotalAllEstafetaNoDia(D,L),
     pesoTotalAux(L,R).
 
-%% ESTAFETA
-
-%% pode ter repetidos
+%%% ESTAFETA
 estafetasIdByIdTransporte(Id,E):-
     findall(Id1,servico(_,Id1,_,Id,_,_,_,_),E).
 
@@ -194,7 +192,7 @@ listaEstafetasUtilizouMaisTransporte(R):-
     findall(transporte(Id,N,V,C,E,Q),transporte(Id,N,V,C,E,Q),LT),
     maplist(tupleEstafetaMaisUtilizouTransporte,LT,R).
 
-%% CARGA
+%%% CARGA
 cargaEncomendaById(Id,R):-
     findall(C,encomenda(Id,_,C,_,_,_),[R|_]).
 
@@ -255,6 +253,29 @@ custoConsumoEntrega(IdVeiculo,Dist,R) :-
     mediaConsumoByIdTransporte(IdVeiculo,Media),
     Custo = 1.45, %% preco dos combustiveis
     R is (Dist * Media * Custo) / 100.
+
+%% Calcula o peso das encomendas total que ainda nao entregou
+%% [ morada/peso ] , Caminho, Resultado
+calculaPesoTotalEmFuncaoDoCaminho( [], _, 0 ).
+% Acabou de chegar a essa morada
+calculaPesoTotalEmFuncaoDoCaminho( [ Morada/_ | T], Caminho , R ) :-
+    member(Morada,Caminho),
+    calculaPesoTotalEmFuncaoDoCaminho(T,Caminho, R).
+
+% Encomenda ainda nao foi entregue
+calculaPesoTotalEmFuncaoDoCaminho( [Morada/Peso | T], Caminho , R ):-
+    \+ member(Morada, Caminho),
+    calculaPesoTotalEmFuncaoDoCaminho(T,Caminho, R1),
+    R is Peso + R1.
+
+% Remover encomendas ja entregues
+removeEncomendaLista( [] , _, []).
+removeEncomendaLista( [M/_ | L] , Caminho , R):-
+    removeEncomendaLista( L, Caminho, R ),
+    member(M,Caminho).
+removeEncomendaLista( [M/P | L] , Caminho , [M/P | R]):-
+    removeEncomendaLista( L, Caminho, R ),
+    \+ member(M,Caminho).
 
 %% Id encomendas -> lista de freguesias a ir
 freguesiasByIdEncomendas([],[]).

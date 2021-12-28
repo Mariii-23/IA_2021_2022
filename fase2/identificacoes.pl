@@ -1,15 +1,15 @@
-%% RUA
+%%% RUA
 ruaByName(N,R):- findall(rua(N,F,C),rua(N,F,C),[R|_]).
 
 ruaByNomeFreguesia(N,R):- findall(rua(N,F,C),rua(N,F,C),R).
 
 ruaByFreguesia(freguesia(F),R):- findall(rua(N,F,C),rua(N,F,C),R).
 
-%% MORADA
+%%% MORADA
 coordenadaByMorada(morada(R,F),E):-
     findall(C, rua(R,F,C) , [E|_]).
 
-%% TRANSPORTE
+%%% TRANSPORTE
 transporteById(Id,T):-
     findall(transporte(Id,N,V,C,P,Q), transporte(Id,N,V,C,P,Q),[T|_]).
 
@@ -38,20 +38,20 @@ nivelEcologicoByIdTransporte(Id,E):-
 transportesEcologicos(R):-
     findall(transporte(I,N,V,C,P,Q), (transporte(I,N,V,C,P,Q), P > 0),R).
 
-%% ESTAFETA
+%%% ESTAFETA
 estafetaById(Id,E):-
     findall(estafeta(Id,N),estafeta(Id,N),[E|_]).
 
 estafetaByNome(N,E):-
     findall(estafeta(Id,N),estafeta(Id,N),[E|_]).
 
-%% RANKING
+%%% RANKING
 rankingByIdEstafeta(Id,R):- findall(ranking(Id,C),ranking(Id,C),[R|_]).
 
 rankingByClassificacao(C,R):- findall(ranking(Id,C),ranking(Id,C),R).
 
 
-%%%% CLIENTE
+%%% CLIENTE
 clienteById(Id, X):-
     findall(cliente(Id,N,M),cliente(Id,N,M),[X|_]).
 
@@ -73,7 +73,7 @@ clienteByIdServico(Id,C):-
     encomenda(Id1,CId,_,_,_,_),
     clienteById(CId,C).
 
-%% ENCOMENDA
+%%% ENCOMENDA
 encomendaById(Id, X):-
     findall(encomenda(Id,Id1,P,V,D,L),encomenda(Id,Id1,P,V,D,L),[X|_]).
 
@@ -119,6 +119,6 @@ servicoByDiaEntrega(D/M/Y,R):-
 servicoByClassificacao(C,R):-
     findall(servico(Id,Id1,E,T,D,C,Ca,M),servico(Id,Id1,E,T,D,C,Ca,M),R).
 
-% MORADA
+%%% MORADA
 moradaByIdEncomenda(Id,Morada):-
     clienteByIdEncomenda(Id, cliente(_,_,Morada)).

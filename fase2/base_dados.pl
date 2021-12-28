@@ -31,24 +31,24 @@ aresta(morada('Rua do Taxa','Sao Vitor'), morada('Avenida Dom João II','Nogueir
 aresta(morada('Avenida Dom João II','Nogueiró'), morada('Rua do Moinho','Caldelas')).
 aresta(morada('Rua de São Bento','Merelim'), morada('Rua Doutor José Alves Correia Da Silva','Frossos')).
 aresta(morada('Rua Dr. Lindoso','Briteiros'),  morada('Rua da Mota','Adaúfe')).
-aresta(morada('Rua do Coucão','Priscos'), morada('Rua da Universidade', 'Braga')).
-aresta(morada('Rua da Mota','Adaúfe'), morada('Rua Dr. Lindoso','Briteiros')).
+aresta(morada('Rua do Coucão','Priscos'), morada('Rua Joãozinho Azeredo','Maximinos')).
+aresta(morada('Rua da Mota','Adaúfe'), morada('Rua do Sol','Lamas')).
 aresta(morada('Rua Joãozinho Azeredo','Maximinos'), morada('Rua do Sol','Lamas')).
 aresta(morada('Rua de Santa Marta','Esporões'), morada('Rua do Sol','Lamas')).
 aresta(morada('Rua do Sol','Lamas'), morada('Rua do Moinho','Caldelas')).
 aresta(morada('Rua da Universidade', 'Braga'), morada('Rua de Santa Marta','Esporões')).
-%% aresta('Sao Vitor', 'Lamas',6 ).
-%% aresta('Nogueiró','Lamas' ,20,9).
-%% aresta('Merelim','Nogueiró' ,31, 14).
-%% aresta('Frossos', 'Merelim',19, 8).
-%% aresta('Caldelas', 'Briteiros',60,28).
-%% aresta('Briteiros', 'Priscos',53, 25).
-%% aresta('Priscos', 'Adaúfe',31,14).
-%% aresta('Adaúfe', 'Maximinos',28,11).
-%% aresta('Maximinos', 'Esporões',6,3).
-%% aresta('Esporões', 'Lamas',28,11).
-%% aresta('Lamas', 'Frossos',26,10).
-%% aresta('Caldelas', 'Braga',5, 15).
+% aresta('Sao Vitor', 'Lamas',6 ).
+% aresta('Nogueiró','Lamas' ,20,9).
+% aresta('Merelim','Nogueiró' ,31, 14).
+% aresta('Frossos', 'Merelim',19, 8).
+% aresta('Caldelas', 'Briteiros',60,28).
+% aresta('Briteiros', 'Priscos',53, 25).
+% aresta('Priscos', 'Adaúfe',31,14).
+% aresta('Adaúfe', 'Maximinos',28,11).
+% aresta('Maximinos', 'Esporões',6,3).
+% aresta('Esporões', 'Lamas',28,11).
+% aresta('Lamas', 'Frossos',26,10).
+% aresta('Caldelas', 'Braga',5, 15).
 
 % centroDistribuicao: Morada
 centroDistribuicao(morada('Rua da Universidade', 'Braga')).
