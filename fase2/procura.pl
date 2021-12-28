@@ -135,37 +135,51 @@ custoConsumo(Id,_,Dist,Custo):-
 
 %%%% A Estrela
 resolve_aestrela(Nome, Nodo, Id ,Peso, Caminho/Custo) :-
-    goal(Final),
-    resolve_aestrela(Nome, Nodo, Final, Id, Peso, Caminho/Custo).
-
+    resolve_procura('aestrela',Nome, Nodo , Id, Peso, Caminho/Custo).
 resolve_aestrela(Nome, Nodo, Final, Id, Peso, Caminho/Custo):-
+    resolve_procura('aestrela',Nome, Nodo, Final, Id, Peso, Caminho/Custo).
+
+%%%% Gulosa
+resolve_gulosa(Nome, Nodo, Id ,Peso, Caminho/Custo) :-
+    resolve_procura('gulosa',Nome, Nodo , Id, Peso, Caminho/Custo).
+resolve_gulosa(Nome, Nodo, Final, Id, Peso, Caminho/Custo):-
+    resolve_procura('gulosa',Nome, Nodo, Final, Id, Peso, Caminho/Custo).
+
+% PROCURA
+
+% No caso de nao ser dado o Nodo final, presume se que é o centro
+resolve_procura(Procura,Funcao, Nodo, Id ,Peso, Caminho/Custo) :-
+    goal(Final),
+    resolve_procura(Procura,Funcao, Nodo, Final, Id, Peso, Caminho/Custo).
+% Resolve procura
+% Procura -> é o nome do tipo de procura que queremos, pode ser gulosa ou a Aestrela
+% Nome -> Nome da Funcao que calcula o custo real
+% Nodo -> Nodo que pretendemos chegar
+% Final -> Nodo inicial do caminho
+% Peso -> Peso da encomenda
+% Caminho/Custo -> Solucao
+resolve_procura(Procura, Nome, Nodo, Final, Id, Peso, Caminho/Custo):-
     estima(Nodo,  Estima),
     ((Nome == tempo, Funcao = custoTempo) ;
      (Nome == custo, Funcao = custoConsumo) ),
-    aestrela(Funcao, Id, Peso, Final, [[Nodo]/0/Estima], InuCam/Custo/_),
+    procura(Procura,Funcao, Id, Peso, Final, [[Nodo]/0/Estima], InuCam/Custo/_),
     reverse(InuCam, Caminho).
 
-% Caso de paragem
-aestrela(_,_,_,Nodo,Caminhos,Caminho):-
-    obtem_caminho(aestrela,Caminhos,Caminho),
+procura(Procura,_,_,_,Nodo,Caminhos,Caminho):-
+    obtem_caminho(Procura,Caminhos,Caminho),
     Caminho=[Nodo|_]/_/_.
 
-% aestrela recebe
-% Funcao -> funcao que calcula o custo real de ir de um nodo para o outro
-% Id -> id do transporte
-% Peso -> Peso da encomenda
-aestrela(Funcao,Id ,Peso, Final ,Caminhos, SCaminho) :-
-    %O Caminho é o ótimo dos vários Caminhos
-    obtem_caminho(aestrela,Caminhos, MelhorCaminho),
+procura(Procura, Funcao,Id,Peso,Final,Caminhos,SCaminho):-
+    obtem_caminho(Procura,Caminhos, MelhorCaminho),
     seleciona(MelhorCaminho, Caminhos, OutrosCam),
-    expande_aestrela(Funcao, Id, Peso,Final,MelhorCaminho, ExpCam),
+    expande(Funcao, Id, Peso,Final,MelhorCaminho, ExpCam),
     append(OutrosCam, ExpCam, NCam),
-    aestrela(Funcao, Id, Peso, Final, NCam, SCaminho).
+    procura(Procura,Funcao, Id, Peso, Final, NCam, SCaminho).
 
 %Dá todos os caminhos adjacentes ao NovoCaminho
-expande_aestrela(_,_,_,Nodo,[[Nodo|Caminho]/Custo/Est | T], [[Nodo|Caminho]/Custo/Est | T]).
+expande(_,_,_,Nodo,[[Nodo|Caminho]/Custo/Est | T], [[Nodo|Caminho]/Custo/Est | T]).
 
-expande_aestrela(Funcao, Id, Peso,_,Caminho, ExpCam) :-
+expande(Funcao, Id, Peso,_,Caminho, ExpCam) :-
     findall(NovoCaminho, adjacenteAux(Funcao, Id, Peso, Caminho, NovoCaminho), ExpCam).
 
 adjacenteAux(Funcao, Id, Peso, [Nodo|Caminho]/Custo/_, [ProxNodo, Nodo| Caminho]/NovoC/Est) :-
@@ -176,12 +190,12 @@ adjacenteAux(Funcao, Id, Peso, [Nodo|Caminho]/Custo/_, [ProxNodo, Nodo| Caminho]
     estima(ProxNodo, Est).
 
 obtem_caminho(_,[Caminho], Caminho) :- !.
-obtem_caminho(aestrela,[ Caminho1/Custo1/Estima1, _/Custo2/Estima2|Caminhos], MCam) :-
+obtem_caminho('aestrela',[ Caminho1/Custo1/Estima1, _/Custo2/Estima2|Caminhos], MCam) :-
         Custo1+Estima1 =< Custo2+Estima2, !,
-        obtem_caminho(aestrela,[Caminho1/Custo1/Estima1|Caminhos], MCam).
-obtem_caminho(gulosa,[ Caminho1/Custo1/Estima1, _/_/Estima2|Caminhos], MCam) :-
+        obtem_caminho('aestrela',[Caminho1/Custo1/Estima1|Caminhos], MCam).
+obtem_caminho('gulosa',[ Caminho1/Custo1/Estima1, _/_/Estima2|Caminhos], MCam) :-
         Estima1 =< Estima2, !,
-        obtem_caminho(gulosa,[Caminho1/Custo1/Estima1|Caminhos], MCam).
+        obtem_caminho('gulosa',[Caminho1/Custo1/Estima1|Caminhos], MCam).
 obtem_caminho(A,[_|Caminhos], MCam) :- obtem_caminho(A,Caminhos, MCam).
 
 %Tira da lista dos caminhos q tinhamos o melhor caminho
