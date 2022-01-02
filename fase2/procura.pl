@@ -1,9 +1,9 @@
 % Adjacente
-adjacente(A,B,D) :-
-    aresta(A,B),
+adjacente(A,B,C,D) :-
+    aresta(A,B,C),
     distancia(A,B,D).
-adjacente(A,B,D) :-
-    aresta(B,A),
+adjacente(A,B,C,D) :-
+    aresta(B,A,C),
     distancia(A,B,D).
 
 goal(A) :- centroDistribuicao(A).
@@ -18,16 +18,16 @@ distancia(M1,M2,R):-
     distancia(C1,C2,R).
 
 estima( A ,R):-
-    coordenadaByMorada(A,M1),
-    centroDistribuicao(X),
-    coordenadaByMorada(X,M2),
-    distancia(M1,M2,R).
+     coordenadaByMorada(A,M1),
+     centroDistribuicao(X),
+     coordenadaByMorada(X,M2),
+     distancia(M1,M2,R).
 
 % caminho acíclico P, que comeca no nó A para o nó B
 caminho(A,B,P):- caminho1(A,[B],P).
 caminho1(A,[A|P1],[A|P1]).
 caminho1(A,[Y|P1],P):-
-    adjacente(X,Y,_),
+    adjacente(X,Y,_,_),
     \+ member(X,[Y|P1]),
     caminho1(A,[X,Y|P1],P).
 
@@ -40,7 +40,7 @@ bfs2(EstadoF,[EstadoA|Outros],Solucao) :-
     EstadoA = [Act|_],
     findall([X|EstadoA],
             (EstadoF\==Act,
-             adjacente(Act,X,_),
+             adjacente(Act,X,_,_),
              \+ member(X,EstadoA)),
             Novos),
     append(Outros,Novos,Todos),
@@ -65,7 +65,7 @@ bfsAux(EstadoF,[EstadoA|Outros],Solucao) :-
     EstadoA = [Act|_],
     findall([X|EstadoA],
             ( \+ member(Act,EstadoF),
-             adjacente(Act,X,_),
+             adjacente(Act,X,_,_),
              \+ member(X,EstadoA)),
             Novos),
     append(Outros,Novos,Todos),
@@ -76,7 +76,7 @@ dfs(X, Y, S):-  dfs2(X, Y, [X], S).
 
 dfs2(X, X, Cam, S):- reverse(Cam,S).
 dfs2(X, Y, Cam, S):-
-  adjacente(Novo,X,_),
+  adjacente(Novo,X,_,_),
   \+ member(Novo, Cam),
   dfs2(Novo, Y, [Novo|Cam], S).
 
@@ -93,7 +93,7 @@ dfsAux(_, Dest, Cam, S):-
     R1 = Dest1,
     reverse(Cam,S).
 dfsAux(X, Y, Cam, S):-
-  adjacente(Novo,X,_),
+  adjacente(Novo,X,_,_),
   \+ member(Novo, Cam),
   dfsAux(Novo, Y, [Novo|Cam], S).
 
@@ -103,7 +103,7 @@ buscaIterativa(X, Y, L, S):-  buscaIterativa2(X, Y, [X], 1 , L, S).
 buscaIterativa2(_, _, _, Ls , L , []):- Ls =:= (L+1) , !.
 buscaIterativa2(X, X, Cam, _ , _ , S):- reverse(Cam,S).
 buscaIterativa2(X, Y, Cam, N , L ,S):-
-  adjacente(Novo,X,_),
+  adjacente(Novo,X,_,_),
   \+ member(Novo, Cam),
   N_ is N + 1,
   buscaIterativa2(Novo, Y, [Novo|Cam], N_ ,L, S).
@@ -120,13 +120,13 @@ buscaIterativaAux(_, Dest, Cam, _ , _ , S):-
     R = Dest,
     reverse(Cam,S).
 buscaIterativaAux(X, Dest, Cam, N , L ,S):-
-  adjacente(Novo,X,_),
+  adjacente(Novo,X,_,_),
   \+ member(Novo, Cam),
   N_ is N + 1,
   buscaIterativaAux(Novo, Dest, [Novo|Cam], N_ ,L, S).
 
 %% Calcular o custo tendo em conta a distancia, o veiculo e o peso da encomenda
-custoTempo(Id,Peso,Dist,EsteCusto):-
+custoTempo(Id,Peso,Dist,_,EsteCusto):-
     transporteById(Id, transporte(_,Veiculo,_,_,_,_)),
     velocidadeMediaEntrega(Veiculo,Peso,V),
     EsteCusto is Dist / V
@@ -134,8 +134,12 @@ custoTempo(Id,Peso,Dist,EsteCusto):-
 
 %% Calcular o custo que se gastaria de gasoleo de um dado transporte
 % relacao a uma dada distancia
-custoConsumo(Id,_,Dist,Custo):-
-    custoConsumoEntrega(Id,Dist,Custo).
+custoConsumo(Id,_,Dist,CustoA,Custo):-
+    custoConsumoEntrega(Id,Dist,CustoR),
+    Custo is CustoA + CustoR.
+
+%% Calcular apenas em funcao da distancia
+custoDistancia(_,_,Dist,_,Dist).
 
 %%%% A Estrela
 resolve_aestrela(Nome, Nodo, Id ,Peso, Caminho/Custo) :-
@@ -163,9 +167,10 @@ resolve_procura(Procura,Funcao, Nodo, Id ,Peso, Caminho/Custo) :-
 % Peso -> Peso da encomenda
 % Caminho/Custo -> Solucao
 resolve_procura(Procura, Nome, Nodo, Final, Id, Peso, Caminho/Custo):-
-    estima(Nodo,  Estima),
     ((Nome == tempo, Funcao = custoTempo) ;
+     (Nome == distancia, Funcao = custoDistancia) ;
      (Nome == custo, Funcao = custoConsumo) ),
+    estima(Nodo,  Estima),
     procura(Procura,Funcao, Id, [Nodo/Peso], Final, [[Nodo]/0/Estima], InuCam/Custo/_),
     reverse(InuCam, Caminho).
 
@@ -222,6 +227,7 @@ resolve_procura_complex_aux(Procura, Nome, Encomendas , Final, Id, CamAux/Cus ,C
     % ate percorrer todas as moradas das encomendas
     nodoMenorEstima(Encomendas, Final, Nodo/Estima ),
     ((Nome == tempo, Funcao = custoTempo) ;
+     (Nome == distancia, Funcao = custoDistancia) ;
      (Nome == custo, Funcao = custoConsumo) ),
     procura(Procura,Funcao, Id, Encomendas, Final, [[Nodo]/0/Estima], [Final|InuCam]/CustoP/_),
     removeEncomendaLista(Encomendas, [Nodo|InuCam], EncAtualizadas),
@@ -248,13 +254,15 @@ expande(Funcao, Id, Encomendas,_,Caminho, ExpCam) :-
     findall(NovoCaminho, adjacenteAux(Funcao, Id, Encomendas, Caminho, NovoCaminho), ExpCam).
 
 adjacenteAux(Funcao, Id, Encomendas, [Nodo|Caminho]/Custo/_, [ProxNodo, Nodo| Caminho]/NovoC/Est) :-
-    adjacente(Nodo,ProxNodo,Distancia),
+    adjacente(Nodo,ProxNodo,CustoA,Distancia),
     \+ member(ProxNodo, Caminho),
     %% nao vamos o nodo que acabamos de chegar (ProxNodo), porque o peso da encomenda ainda conta
     calculaPesoTotalEmFuncaoDoCaminho(Encomendas, [Nodo| Caminho], Peso),
-    call(Funcao,Id,Peso,Distancia,EsteCusto),
+    call(Funcao,Id,Peso,Distancia,CustoA,EsteCusto),
     NovoC is Custo+EsteCusto,
-    estima(ProxNodo, Est).
+    %% FIXME Verificar se pode ser assim, ou se o estima, tem q ser algo que ve ate ao final
+    %% em vez de ir nodo a nodo
+    Est is EsteCusto.
 
 obtem_caminho(_,[Caminho], Caminho) :- !.
 obtem_caminho('aestrela',[ Caminho1/Custo1/Estima1, _/Custo2/Estima2|Caminhos], MCam) :-

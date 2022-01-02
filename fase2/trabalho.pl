@@ -10,8 +10,8 @@
 :- dynamic cliente/3.
 :- dynamic encomenda/6.
 :- dynamic servico/8.
-:- dynamic custoTempo/4.
-:- dynamic custoGasoleo/4.
+:- dynamic custoTempo/5.
+:- dynamic custoGasoleo/5.
 
 :- include('base_dados.pl').
 

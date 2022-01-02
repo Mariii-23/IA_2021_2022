@@ -13,42 +13,35 @@ freguesia('Lamas').
 freguesia('Braga').
 
 %rua: Nome da Rua, Freguesia, Coordenada: x, y
-rua('Rua do Taxa','Sao Vitor',coordenada(0,1)).
-rua('Avenida Dom João II','Nogueiró',coordenada(3,7)).
-rua('Rua de São Bento','Merelim',coordenada(4,5)).
-rua('Rua Doutor José Alves Correia Da Silva','Frossos',coordenada(2,6)).
-rua('Rua do Moinho','Caldelas',coordenada(3,1)).
-rua('Rua Dr. Lindoso','Briteiros',coordenada(2,3)).
-rua('Rua do Coucão','Priscos',coordenada(3,0)).
-rua('Rua da Mota','Adaúfe',coordenada(1,1)).
-rua('Rua Joãozinho Azeredo','Maximinos',coordenada(0,2)).
-rua('Rua de Santa Marta','Esporões',coordenada(1,4)).
-rua('Rua do Sol','Lamas',coordenada(1,8)).
-rua('Rua da Universidade', 'Braga',coordenada(5,1)).
+rua('Rua do Taxa','Sao Vitor',coordenada(1,4)).
+rua('Avenida Dom João II','Nogueiró',coordenada(1,1)).
+rua('Rua de São Bento','Merelim',coordenada(3,3)).
+rua('Rua Doutor José Alves Correia Da Silva','Frossos',coordenada(4,0)).
+rua('Rua do Moinho','Caldelas',coordenada(3,5)).
+rua('Rua Dr. Lindoso','Briteiros',coordenada(6,4)).
+rua('Rua do Coucão','Priscos',coordenada(5,1)).
+rua('Rua da Mota','Adaúfe',coordenada(7,2)).
+rua('Rua Joãozinho Azeredo','Maximinos',coordenada(6,0)).
+rua('Rua de Santa Marta','Esporões',coordenada(7,5)).
+rua('Rua do Sol','Lamas',coordenada(3,1)).
+rua('Rua da Universidade', 'Braga',coordenada(0,2)).
 
-%aresta: Freguesia , Freguesia -> {V,F}
-aresta(morada('Rua do Taxa','Sao Vitor'), morada('Avenida Dom João II','Nogueiró')).
-aresta(morada('Avenida Dom João II','Nogueiró'), morada('Rua do Moinho','Caldelas')).
-aresta(morada('Rua de São Bento','Merelim'), morada('Rua Doutor José Alves Correia Da Silva','Frossos')).
-aresta(morada('Rua Dr. Lindoso','Briteiros'),  morada('Rua da Mota','Adaúfe')).
-aresta(morada('Rua do Coucão','Priscos'), morada('Rua Joãozinho Azeredo','Maximinos')).
-aresta(morada('Rua da Mota','Adaúfe'), morada('Rua do Sol','Lamas')).
-aresta(morada('Rua Joãozinho Azeredo','Maximinos'), morada('Rua do Sol','Lamas')).
-aresta(morada('Rua de Santa Marta','Esporões'), morada('Rua do Sol','Lamas')).
-aresta(morada('Rua do Sol','Lamas'), morada('Rua do Moinho','Caldelas')).
-aresta(morada('Rua da Universidade', 'Braga'), morada('Rua de Santa Marta','Esporões')).
-% aresta('Sao Vitor', 'Lamas',6 ).
-% aresta('Nogueiró','Lamas' ,20,9).
-% aresta('Merelim','Nogueiró' ,31, 14).
-% aresta('Frossos', 'Merelim',19, 8).
-% aresta('Caldelas', 'Briteiros',60,28).
-% aresta('Briteiros', 'Priscos',53, 25).
-% aresta('Priscos', 'Adaúfe',31,14).
-% aresta('Adaúfe', 'Maximinos',28,11).
-% aresta('Maximinos', 'Esporões',6,3).
-% aresta('Esporões', 'Lamas',28,11).
-% aresta('Lamas', 'Frossos',26,10).
-% aresta('Caldelas', 'Braga',5, 15).
+%aresta: Freguesia , Freguesia, Custo -> {V,F}
+
+aresta(morada('Rua da Universidade', 'Braga'), morada('Rua do Taxa','Sao Vitor'),2).
+aresta(morada('Rua da Universidade', 'Braga'), morada('Avenida Dom João II','Nogueiró'),10).
+aresta(morada('Rua do Taxa','Sao Vitor'),morada('Rua do Moinho','Caldelas'),1).
+aresta(morada('Rua do Taxa','Sao Vitor'),morada('Rua de São Bento','Merelim'),2).
+aresta(morada('Avenida Dom João II','Nogueiró'), morada('Rua do Sol','Lamas'),3).
+aresta(morada('Avenida Dom João II','Nogueiró'), morada('Rua Doutor José Alves Correia Da Silva','Frossos'),3).
+aresta(morada('Rua do Moinho','Caldelas'),morada('Rua Dr. Lindoso','Briteiros'),1).
+aresta(morada('Rua de São Bento','Merelim'),morada('Rua Dr. Lindoso','Briteiros'),2).
+aresta(morada('Rua de São Bento','Merelim'),morada('Rua do Coucão','Priscos'),2).
+aresta(morada('Rua do Sol','Lamas'),morada('Rua do Coucão','Priscos'),5).
+aresta(morada('Rua Doutor José Alves Correia Da Silva','Frossos'),morada('Rua do Coucão','Priscos'),12).
+aresta(morada('Rua Doutor José Alves Correia Da Silva','Frossos'),morada('Rua Joãozinho Azeredo','Maximinos'),4).
+aresta(morada('Rua Doutor José Alves Correia Da Silva','Frossos'),morada('Rua da Mota','Adaúfe'),3).
+aresta(morada('Rua Dr. Lindoso','Briteiros'),morada('Rua da Mota','Adaúfe'),5).
 
 % centroDistribuicao: Morada
 centroDistribuicao(morada('Rua da Universidade', 'Braga')).

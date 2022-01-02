@@ -324,3 +324,36 @@ searchInformadaCaminho(Procura, Funcao, Enc, Transporte,Caminho,Custo):-
 searchInformadaCaminhoIdaVolta(Procura, Funcao, Enc, Transporte,Caminho,Custo):-
     maplist(moradaAndPesoByIdEncomenda, Enc, Encomendas),
     resolve_procura_complex_idaVolta(Procura,Funcao, Encomendas ,Transporte,Caminho/Custo).
+
+%% Query
+%% Obter Servicos com maior número de entregas (por volume e peso)
+calcularPesoByIdsEncomendas([],0).
+calcularPesoByIdsEncomendas(L,R):-
+    maplist(pesoByEncomendaId,L,Ls),
+    sum(Ls,R).
+
+calcularVolumeByIdsEncomendas([],0).
+calcularVolumeByIdsEncomendas(L,R):-
+    maplist(volumeByEncomendaId,L,Ls),
+    sum(Ls,R).
+
+
+calcularPesoByIdServico(Id,R):-
+    encomendasByIdServico(Id,L),
+    calcularPesoByIdsEncomendas(L,R).
+
+calcularVolumeByIdServico(Id,R):-
+    encomendasByIdServico(Id,L),
+    calcularVolumeByIdsEncomendas(L,R).
+
+circuitosOrderByPeso(R):-
+    findall( Id/Peso ,
+             (servico(Id,_,E,_,_,_,_,_) ,
+              calcularPesoByIdsEncomendas(E,Peso) ),L ),
+    sort(2, @>=, L, R).
+
+circuitosOrderByVolume(R):-
+    findall( Id/Volume ,
+             (servico(Id,_,E,_,_,_,_,_) ,
+              calcularVolumeByIdsEncomendas(E,Volume) ),L ),
+    sort(2, @>=, L, R).

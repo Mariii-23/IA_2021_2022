@@ -99,6 +99,9 @@ encomendaByLimite(L,R):-
 pesoByEncomendaId(Id, X):-
     findall(P,encomenda(Id,_,P,_,_,_),[X|_]).
 
+volumeByEncomendaId(Id, X):-
+    findall(V,encomenda(Id,_,_,V,_,_),[X|_]).
+
 %%% SERVICOS
 servicoById(Id,R):-
     findall(servico(Id,Id1,E,T,D,C,Ca,M),servico(Id,Id1,E,T,D,C,Ca,M),[R|_]).
@@ -119,10 +122,12 @@ servicoByDiaEntrega(D/M/Y,R):-
     findall(servico(Id,Id1,E,T,D/M/Y/H/Min,C,Ca,M),
             servico(Id,Id1,E,T,D/M/Y/H/Min,C,Ca,M),R).
 
+encomendasByIdServico(Id,R):-
+    findall(E,servico(Id,_,E,_,_,_,_,_),[R|_]).
+
 servicoByClassificacao(C,R):-
     findall(servico(Id,Id1,E,T,D,C,Ca,M),servico(Id,Id1,E,T,D,C,Ca,M),R).
 
 %%% MORADA
 moradaByIdEncomenda(Id,Morada):-
     clienteByIdEncomenda(Id, cliente(_,_,Morada)).
-
