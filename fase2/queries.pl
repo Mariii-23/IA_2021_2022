@@ -44,10 +44,9 @@ valorFaturado(Dia/Mes/Ano,Valor) :-
 %% Query 5
 getRua(morada(Rua,_), Rua).
 getFreguesia(morada(_,Freguesia), Freguesia).
-
+%% TODO MUDAR
 moradasEncomendas(R) :-
-    findall(CId, encomenda(_,CId,_,_,_,_), _),
-    findall(Morada, cliente(CId,_,Morada), R).
+    findall(Morada, (encomenda(_,CId,_,_,_,_), cliente(CId,_,Morada)), R).
 
 ruasEncomendas(R) :-
     moradasEncomendas(L),
@@ -80,7 +79,6 @@ classificacaoEstafeta(IdEstafeta, Media) :-
 % QUERY 7 - identificar o número total de entregas pelos diferentes meios de
 % transporte, num determinado intervalo de tempo
 
-% TODO Verificar se ainda se encontra correto
 total_entregas_por_transporte(D1/M1/Y1/H1/Min1,D2/M2/Y2/H2/Min2,Freq) :-
     findall(servico(A,B,C,D,E,F,Cam,Cs),
             (servico(A,B,C,D,E,F,Cam,Cs),isBetween(E,D1/M1/Y1/H1/Min1,D2/M2/Y2/H2/Min2)),
@@ -140,7 +138,8 @@ encomendasNaoEntregues(Entregues,R) :-
 
 foiEntregueEntre(encomenda(Id,A,B,C,D,E), I,F) :-
     encomenda(Id,A,B,C,D,E),
-    servico(_,_,Id,_,Data,_,_,_),
+    servico(_,_,Ids,_,Data,_,_,_),
+    member(Id,Ids),
     isBetween(Data,I,F).
 
 isBetween(D/Mon/Y/H/Min, D1/Mon1/Y1/H1/Min1, D2/Mon2/Y2/H2/Min2) :-
@@ -153,6 +152,12 @@ pesoTotalByEstafetaNoDia(estafeta(Id,Nome),D, R) :-
     totalCargaEstafetaDia(Id,D,R).
 
 tuplePesoTotalByEstafetaByDia(E,D,(E,P)):- pesoTotalByEstafetaNoDia(E,D,P).
+
+tuplePesoTotalByDia(D,R):- 
+    findall( Rs , (estafeta(Id,Nome),
+        tuplePesoTotalByEstafetaByDia(estafeta(Id,Nome),D,Rs),
+        Rs = (_,P),  P \== 0
+    ) ,R).
 
 pesoAllAux([],_,[]).
 pesoAllAux([X|T],D,[ A | R ]):-
@@ -204,12 +209,12 @@ cargaEstafeta(Id1,R):-
     maplist(cargaEncomendaById,R1,R).
 
 cargaEstafetaDia(Id1,D/M/Y,R):-
-    findall(Id,servico(_,Id1,Id,_,D/M/Y/_/_,_,_,_),R1), % buscar os ids das encomendas q ele realizou nesse dia
+    findall(Id,(servico(_,Id1,Ids,_,D/M/Y/_/_,_,_,_),member(Id,Ids)),R1), % buscar os ids das encomendas q ele realizou nesse dia
     maplist(cargaEncomendaById,R1,R).
 
 cargaCliente(Id1,R):-
     findall(Id,encomenda(Id,Id1,_,_,_,_),R2), % ids de todas as encomendas desse Cliente
-    findall(Id,servico(_,_,Id,_,_,_,_,_),Rs),
+    findall(Id,(servico(_,_,Ids,_,_,_,_,_),  member(Id,Ids)),Rs),
     junta(Rs, R1), % id de todas as encomendas feitas
     iguais(R1,R2,R3),
     maplist(cargaEncomendaById,R3,R).

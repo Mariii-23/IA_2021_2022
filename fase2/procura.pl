@@ -245,7 +245,9 @@ procura(Procura, Funcao,Id,Encomendas,Final,Caminhos,SCaminho):-
     seleciona(MelhorCaminho, Caminhos, OutrosCam),
     expande(Funcao, Id, Encomendas,Final,MelhorCaminho, ExpCam),
     append(OutrosCam, ExpCam, NCam),
-    procura(Procura,Funcao, Id, Encomendas, Final, NCam, SCaminho).
+    %% remover encomendas q ja foram entregues
+    removeEncomendaLista(Encomendas, NCam, EncAtualizadas),
+    procura(Procura,Funcao, Id, EncAtualizadas, Final, NCam, SCaminho).
 
 %Dá todos os caminhos adjacentes ao NovoCaminho
 expande(_,_,_,Nodo,[[Nodo|Caminho]/Custo/Est | T], [[Nodo|Caminho]/Custo/Est | T]).
@@ -259,10 +261,11 @@ adjacenteAux(Funcao, Id, Encomendas, [Nodo|Caminho]/Custo/_, [ProxNodo, Nodo| Ca
     %% nao vamos o nodo que acabamos de chegar (ProxNodo), porque o peso da encomenda ainda conta
     calculaPesoTotalEmFuncaoDoCaminho(Encomendas, [Nodo| Caminho], Peso),
     call(Funcao,Id,Peso,Distancia,CustoA,EsteCusto),
-    NovoC is Custo+EsteCusto,
+    estima(Nodo,Est),
+    NovoC is Custo+EsteCusto.
     %% FIXME Verificar se pode ser assim, ou se o estima, tem q ser algo que ve ate ao final
     %% em vez de ir nodo a nodo
-    Est is EsteCusto.
+    %% Est is EsteCusto.
 
 obtem_caminho(_,[Caminho], Caminho) :- !.
 obtem_caminho('aestrela',[ Caminho1/Custo1/Estima1, _/Custo2/Estima2|Caminhos], MCam) :-

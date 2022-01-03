@@ -27,12 +27,6 @@
 +freguesia(Nome) :: (findall(Nome,freguesia(Nome),R),
                      len(R,1)).
 
-
-% Garantir que o Custo, as Horas e os Minutos inseridos são números válidos
-%+freguesia(_,Custo,H/M) :: (number(Custo),number(H),number(M)
-%                            , -1 < H, H < 24 , -1 < M, M < 60, Custo > 0
-%                           ).
-
 % Garantir que não é possível remover nenhuma freguesia que pertença a uma
 % morada de algum cliente
 -freguesia(Nome) :: (findall(Nome,cliente(_,_,morada(_,Nome)),R),
@@ -41,6 +35,10 @@
 %%% Rua %%%
 % Garantir que o nome de cada rua é único
 +rua(Nome,_,_) :: (findall(Nome,rua(Nome,_,_),R),
+                       len(R,1)).
+
+% Garantir que a coordenada é única
++rua(_,_,Coord) :: (findall(Coord,rua(Coord,_,_),R),
                        len(R,1)).
 
  % Garantir que o nome de freguesia dado é verdadeiro e existe na nossa
@@ -143,7 +141,12 @@
      len(R1,1)).
 
 % Garantir que as encomendas associadas são válidos
-% TODO
+% TODO Verificar se está correto
++servico(_,_,Ids,_,_,_,_,_) :: (
+     findall(Id, (encomenda(Id,_,_,_,_,_), member(Id,Ids)),R1),
+     iguais(Ids,R1,R),
+     len(R,N), len(Ids,N1), N == N1
+     ).
 
 % Garantir que os transportes associados são válidos
 +servico(_,_,_,T,_,_,_,_) :: (
@@ -197,10 +200,8 @@ removeCliente(Id):- cliente(Id,Nome,M), remover_predicado(cliente(Id,Nome,M)).
 
 removeEncomenda(Id):- encomenda(Id,C,P,V,D,L), remover_predicado(encomenda(Id,C,P,V,D,L)).
 
-% TODO
-%removeServico(Id):-  servico(Id,E,En,C,D,C,Cam,Custo), encomenda(E,C1,P1,V1,D1,L1) ,
-%                     remover_predicado(servico(Id,E,En,C,D,C)),
-%                     remover_predicado(encomenda(E,C1,P1,V1,D1,L1)).
+removeServico(Id):-  servico(Id,E,En,C,D,C,Cam,Custo), 
+                     remover_predicado(servico(Id,E,En,C,D,C,Cam,Custo)).
 
 % ----------
 morada(R,F):- rua(R,F,_), freguesia(F).

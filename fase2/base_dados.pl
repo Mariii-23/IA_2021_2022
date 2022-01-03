@@ -31,7 +31,7 @@ rua('Rua da Universidade', 'Braga',coordenada(0,2)).
 aresta(morada('Rua da Universidade', 'Braga'), morada('Rua do Taxa','Sao Vitor'),2).
 aresta(morada('Rua da Universidade', 'Braga'), morada('Avenida Dom João II','Nogueiró'),10).
 aresta(morada('Rua do Taxa','Sao Vitor'),morada('Rua do Moinho','Caldelas'),1).
-aresta(morada('Rua do Taxa','Sao Vitor'),morada('Rua de São Bento','Merelim'),2).
+aresta(morada('Rua do Taxa','Sao Vitor'),morada('Rua de São Bento','Merelim'),3).
 aresta(morada('Avenida Dom João II','Nogueiró'), morada('Rua do Sol','Lamas'),3).
 aresta(morada('Avenida Dom João II','Nogueiró'), morada('Rua Doutor José Alves Correia Da Silva','Frossos'),3).
 aresta(morada('Rua do Moinho','Caldelas'),morada('Rua Dr. Lindoso','Briteiros'),1).
@@ -42,6 +42,7 @@ aresta(morada('Rua Doutor José Alves Correia Da Silva','Frossos'),morada('Rua d
 aresta(morada('Rua Doutor José Alves Correia Da Silva','Frossos'),morada('Rua Joãozinho Azeredo','Maximinos'),4).
 aresta(morada('Rua Doutor José Alves Correia Da Silva','Frossos'),morada('Rua da Mota','Adaúfe'),3).
 aresta(morada('Rua Dr. Lindoso','Briteiros'),morada('Rua da Mota','Adaúfe'),5).
+aresta(morada('Rua Dr. Lindoso','Briteiros'),morada('Rua de Santa Marta','Esporões'),5).
 
 % centroDistribuicao: Morada
 centroDistribuicao(morada('Rua da Universidade', 'Braga')).
@@ -110,7 +111,7 @@ encomenda(6, 2 ,25,  2,  03/12/2021/17/0, 1/0 ).
 encomenda(7, 3 ,20,  2,  03/12/2021/18/23, 2/0 ).
 encomenda(8, 4 ,17,  2,  04/12/2021/17/0, 0/10 ).
 encomenda(9, 2 ,80,  2,  10/12/2021/17/0, 0/8 ).
-encomenda(10, 6 ,3,  2,  11/12/2021/17/0, 0/9 ).
+encomenda(10, 6 ,3,  2,  04/12/2021/17/0, 0/9 ).
 
 % servico: #Id,Id_estafeta,Id_encomendas,Id Transporte,DiaEntrega:# D/M/Y/H/M,Classificacao, Caminho, CustoReal
 servico(1, 3, [1], 3, 10/11/2021/9/11, 5, [], 4).
@@ -121,4 +122,4 @@ servico(4, 2, [4], 1, 24/11/2021/20/43, 3, [], 12).
 servico(5, 6, [5], 2, 03/12/2021/13/00, 5, [], 15).
 servico(6, 2, [6], 7, 04/12/2021/07/03 ,4, [], 21).
 servico(8, 5, [8], 11, 05/12/2021/08/21 ,3,[], 41).
-servico(7, 3, [7], 14, 05/12/2021/18/23 ,1,[], 23).
+servico(7, 3, [7,10], 14, 05/12/2021/18/23 ,1,[], 23).
