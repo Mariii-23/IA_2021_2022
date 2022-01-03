@@ -12,14 +12,19 @@ writeRua(Stream):- rua(Nome,Freguesia,Coord),
                           fail; true
 .
 
-writeAresta(Stream):- aresta(morada(A,B),morada(C,D),Custo),
-                          write(Stream,'aresta('),
+writeMorada(morada(A,B),Stream):-
                           write(Stream,'morada('),
                           write(Stream,'\''), write(Stream,A), write(Stream,'\',\''),
-                          write(Stream,B), write(Stream,'\'),'),
-                          write(Stream,'morada('),
-                          write(Stream,'\''), write(Stream,C), write(Stream,'\',\''),
-                          write(Stream,D), write(Stream,'\'),'),
+                          write(Stream,B), write(Stream,'\')'),
+                          fail; true
+.
+
+writeAresta(Stream):- aresta(A,B,Custo),
+                          write(Stream,'aresta('),
+                          writeMorada(A,Stream),
+                          write(Stream,','),
+                          writeMorada(B,Stream),
+                          write(Stream,','),
                           write(Stream,Custo), write(Stream, ').\n'),
                           fail; true
 .
@@ -74,10 +79,18 @@ writeEncomenda(Stream):- encomenda(Id, C, P,V,D,L),
                           write(Stream,V), write(Stream, ','),
                           write(Stream,D), write(Stream, ','),
                           write(Stream,L), write(Stream, ').\n'),
-                          %write(Stream,'\''),write(Stream,R), write(Stream,'\'/'),
-                          %write(Stream,E), write(Stream, ').\n'),
                           fail; true
 .
+
+writeCaminho([X],Stream):-
+    writeMorada(X,Stream),
+    fail; true.
+writeCaminho([X,C|T],Stream):-
+    writeMorada(X,Stream),write(Stream, ','),
+    writeCaminho([C|T],Stream),
+    fail; true.
+writeCaminho([],_):-
+    fail; true.
 
 writeServico(Stream):- servico(Id,Es,E,T,D,C,Cam,Custo),
                           write(Stream,'servico('),
@@ -87,14 +100,14 @@ writeServico(Stream):- servico(Id,Es,E,T,D,C,Cam,Custo),
                           write(Stream,T), write(Stream, ','),
                           write(Stream,D), write(Stream, ','),
                           write(Stream,C), write(Stream, ','),
-                          write(Stream,Cam), write(Stream, ','),
+                          write(Stream, '['), writeCaminho(Cam,Stream), write(Stream, '],'),
                           write(Stream,Custo), write(Stream, ').\n'),
                           fail; true
 .
 
 saveIn(X) :-
     open(X,write,Stream),
-    write(Stream, '\n% freguesia: Nome -> {V,F}\n'),
+    write(Stream, '% freguesia: Nome -> {V,F}\n'),
     writeFreguesia(Stream),
     write(Stream, '\n% rua: Nome, Nome da Freguesia, Coordenada -> {V,F}\n'),
     writeRua(Stream),
