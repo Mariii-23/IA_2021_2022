@@ -153,7 +153,7 @@ pesoTotalByEstafetaNoDia(estafeta(Id,Nome),D, R) :-
 
 tuplePesoTotalByEstafetaByDia(E,D,(E,P)):- pesoTotalByEstafetaNoDia(E,D,P).
 
-tuplePesoTotalByDia(D,R):- 
+tuplePesoTotalByDia(D,R):-
     findall( Rs , (estafeta(Id,Nome),
         tuplePesoTotalByEstafetaByDia(estafeta(Id,Nome),D,Rs),
         Rs = (_,P),  P \== 0
@@ -369,12 +369,10 @@ servicosIdOrderByVolume(R):-
 %% FIXME o unique nao da
 caminhosMaiorPeso(R) :-
     findall(Caminho, servico(_,_,_,_,_,_,Caminho,_), X),
-    findall(Cam, unique(Cam,X), Caminhos),
-    maplist(getSomaDePesosDoCaminho,Caminhos,R)
-    %% sort(1, @>=, L, R).
-    .
+    sort(X,Caminhos),
+    maplist(getSomaDePesosDoCaminho,Caminhos,L),
+    sort(1, @>=, L, R).
 
-getSomaDePesosDoCaminho([], 0/[]).
 getSomaDePesosDoCaminho(Ca, Soma/Ca) :-
     findall(Peso, (servico(Id,Id1,E,T,D,C,Ca,M),
                    pesoTotalByServico(servico(Id,Id1,E,T,D,C,Ca,M),Peso)),X),
@@ -382,18 +380,14 @@ getSomaDePesosDoCaminho(Ca, Soma/Ca) :-
 
 caminhosMaiorVolume(R) :-
     findall(Caminho, servico(_,_,_,_,_,_,Caminho,_), X),
-    findall(Cam, unique(Cam,X), Caminhos),
-    maplist(getSomaDeVolumesDoCaminho,Caminhos,R).
+    sort(X,Caminhos),
+    maplist(getSomaDeVolumesDoCaminho,Caminhos,L),
+    sort(1, @>=, L, R).
 
-getSomaDeVolumesDoCaminho([], 0/[]).
 getSomaDeVolumesDoCaminho(Ca, Soma/Ca) :-
     findall(Peso, (servico(Id,Id1,E,T,D,C,Ca,M),
                    volumeTotalByServico(servico(Id,Id1,E,T,D,C,Ca,M),Peso)),X),
     sum(X, Soma).
-
-unique(X, L) :-
-    nth0(_, L, X, R),
-    maplist(dif(X), R).
 
 %%%%%%
 
