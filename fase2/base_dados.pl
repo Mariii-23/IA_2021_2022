@@ -118,8 +118,8 @@ servico(1, 3, [1], 3, 10/11/2021/9/11, 5, [], 4).
 servico(2, 4, [3], 1, 24/11/2021/9/0, 4,  [], 42).
 servico(3, 1, [2], 15, 24/11/2021/14/0, 3,[], 14).
 % atrasada
-servico(4, 2, [4], 1, 24/11/2021/20/43, 3, [], 12).
+servico(4, 2, [4], 1, 24/11/2021/20/43, 3, [morada('Rua da Universidade', 'Braga'), morada('Rua do Taxa', 'Sao Vitor'), morada('Rua do Moinho', 'Caldelas'), morada('Rua Dr. Lindoso', 'Briteiros')], 12).
 servico(5, 6, [5], 2, 03/12/2021/13/00, 5, [], 15).
-servico(6, 2, [6], 7, 04/12/2021/07/03 ,4, [], 21).
+servico(6, 2, [6], 7, 04/12/2021/07/03 ,4, [morada('Rua da Universidade', 'Braga'), morada('Rua do Taxa', 'Sao Vitor'), morada('Rua do Moinho', 'Caldelas'), morada('Rua Dr. Lindoso', 'Briteiros')], 21).
 servico(8, 5, [8], 11, 05/12/2021/08/21 ,3,[], 41).
 servico(7, 3, [7,10], 14, 05/12/2021/18/23 ,1,[], 23).

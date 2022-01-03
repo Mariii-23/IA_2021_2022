@@ -263,9 +263,6 @@ adjacenteAux(Funcao, Id, Encomendas, [Nodo|Caminho]/Custo/_, [ProxNodo, Nodo| Ca
     call(Funcao,Id,Peso,Distancia,CustoA,EsteCusto),
     estima(Nodo,Est),
     NovoC is Custo+EsteCusto.
-    %% FIXME Verificar se pode ser assim, ou se o estima, tem q ser algo que ve ate ao final
-    %% em vez de ir nodo a nodo
-    %% Est is EsteCusto.
 
 obtem_caminho(_,[Caminho], Caminho) :- !.
 obtem_caminho('aestrela',[ Caminho1/Custo1/Estima1, _/Custo2/Estima2|Caminhos], MCam) :-
