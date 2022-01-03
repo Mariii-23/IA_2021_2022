@@ -317,6 +317,12 @@ searchNaoInformadaCaminho(Procura, Enc, Caminho):-
     (Procura == 'dfs', dfs_complex(Encomendas,Caminho));
     (Procura == 'iterativa' , readNumber(X), buscaIterativa_complex(Encomendas,X,Caminho))).
 
+searchNaoInformadaCaminhoIdaVolta(Procura, Enc, Caminho):-
+    maplist(moradaByIdEncomenda, Enc, Encomendas),
+    ((Procura == 'bfs', bfs_complexIdaVolta(Encomendas,Caminho));
+    (Procura == 'dfs', dfs_complexIdaVolta(Encomendas,Caminho));
+    (Procura == 'iterativa' , readNumber(X), buscaIterativa_complexIdaVolta(Encomendas,X,Caminho))).
+
 %%% PROCURA INFORMADA
 %% Procura -> tipo de procura
 %% Funcao -> Custo podera ser calculado atraves do "tempo" ou do "custo" (custo do gasoleo)
@@ -383,6 +389,7 @@ caminhosMaiorVolume(R) :-
     sort(X,Caminhos),
     maplist(getSomaDeVolumesDoCaminho,Caminhos,L),
     sort(1, @>=, L, R).
+
 
 getSomaDeVolumesDoCaminho(Ca, Soma/Ca) :-
     findall(Peso, (servico(Id,Id1,E,T,D,C,Ca,M),
