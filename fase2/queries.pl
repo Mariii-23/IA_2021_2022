@@ -215,7 +215,7 @@ cargaEstafetaDia(Id1,D/M/Y,R):-
 cargaCliente(Id1,R):-
     findall(Id,encomenda(Id,Id1,_,_,_,_),R2), % ids de todas as encomendas desse Cliente
     findall(Id,(servico(_,_,Ids,_,_,_,_,_),  member(Id,Ids)),Rs),
-    junta(Rs, R1), % id de todas as encomendas feitas
+    junta(Rs, R1), % id de todas as encoendas feitas
     iguais(R1,R2,R3),
     maplist(cargaEncomendaById,R3,R).
 
@@ -317,6 +317,12 @@ searchNaoInformadaCaminho(Procura, Enc, Caminho):-
     (Procura == 'dfs', dfs_complex(Encomendas,Caminho));
     (Procura == 'iterativa' , readNumber(X), buscaIterativa_complex(Encomendas,X,Caminho))).
 
+searchNaoInformadaCaminhoIdaVolta(Procura, Enc, Caminho):-
+    maplist(moradaByIdEncomenda, Enc, Encomendas),
+    ((Procura == 'bfs', bfs_complexIdaVolta(Encomendas,Caminho));
+    (Procura == 'dfs', dfs_complexIdaVolta(Encomendas,Caminho));
+    (Procura == 'iterativa' , readNumber(X), buscaIterativa_complexIdaVolta(Encomendas,X,Caminho))).
+
 %%% PROCURA INFORMADA
 %% Procura -> tipo de procura
 %% Funcao -> Custo podera ser calculado atraves do "tempo" ou do "custo" (custo do gasoleo)
@@ -351,14 +357,64 @@ calcularVolumeByIdServico(Id,R):-
     encomendasByIdServico(Id,L),
     calcularVolumeByIdsEncomendas(L,R).
 
-circuitosOrderByPeso(R):-
+servicosIdOrderByPeso(R):-
     findall( Id/Peso ,
              (servico(Id,_,E,_,_,_,_,_) ,
               calcularPesoByIdsEncomendas(E,Peso) ),L ),
     sort(2, @>=, L, R).
 
-circuitosOrderByVolume(R):-
+servicosIdOrderByVolume(R):-
     findall( Id/Volume ,
              (servico(Id,_,E,_,_,_,_,_) ,
               calcularVolumeByIdsEncomendas(E,Volume) ),L ),
     sort(2, @>=, L, R).
+
+%% QUERY
+% Identificar quais os circuitos com maior número de entregas (por volume e peso)
+
+%% FIXME o unique nao da
+caminhosMaiorPeso(R) :-
+    findall(Caminho, servico(_,_,_,_,_,_,Caminho,_), X),
+    findall(Cam, unique(Cam,X), Caminhos),
+    maplist(getSomaDePesosDoCaminho,Caminhos,R)
+    %% sort(1, @>=, L, R).
+    .
+
+getSomaDePesosDoCaminho([], 0/[]).
+getSomaDePesosDoCaminho(Ca, Soma/Ca) :-
+    findall(Peso, (servico(Id,Id1,E,T,D,C,Ca,M),
+                   pesoTotalByServico(servico(Id,Id1,E,T,D,C,Ca,M),Peso)),X),
+    sum(X, Soma).
+
+caminhosMaiorVolume(R) :-
+    findall(Caminho, servico(_,_,_,_,_,_,Caminho,_), X),
+    findall(Cam, unique(Cam,X), Caminhos),
+    maplist(getSomaDeVolumesDoCaminho,Caminhos,R).
+
+getSomaDeVolumesDoCaminho([], 0/[]).
+getSomaDeVolumesDoCaminho(Ca, Soma/Ca) :-
+    findall(Peso, (servico(Id,Id1,E,T,D,C,Ca,M),
+                   volumeTotalByServico(servico(Id,Id1,E,T,D,C,Ca,M),Peso)),X),
+    sum(X, Soma).
+
+unique(X, L) :-
+    nth0(_, L, X, R),
+    maplist(dif(X), R).
+
+%%%%%%
+
+pesoTotalByServico(servico(_,_,E,_,_,_,_,_), Peso):-
+    maplist(pesoByEncomendaId,E,Pesos),
+    sum(Pesos,Peso).
+
+tuplePesoTotalAndCaminhoByServico(S , Peso/Caminho):-
+    S = servico(_,_,_,_,_,_,Caminho,_),
+    pesoTotalByServico(S,Peso).
+
+volumeTotalByServico(servico(_,_,E,_,_,_,_,_), Vol):-
+    maplist(volumeByEncomendaId,E,Vols),
+    sum(Vols,Vol).
+
+tupleVolumeTotalAndCaminhoByServico(S , Vol/Caminho):-
+    S = servico(_,_,_,_,_,_,Caminho,_),
+    volumeTotalByServico(S,Vol).
