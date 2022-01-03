@@ -130,36 +130,6 @@ servicoByClassificacao(C,R):-
     findall(servico(Id,Id1,E,T,D,C,Ca,M),servico(Id,Id1,E,T,D,C,Ca,M),R).
 
 
-%%
-%%
-
-%% FIXME ta a dar falso e nao sei o onde esta o problema
-%% No R tera Distancia/Custo/Tempo
-custosByCaminho(Caminho,IdsEncomendas,IdTrans,R ):-
-    maplist(moradaAndPesoByIdEncomenda, IdsEncomendas, Encomendas),
-    calcularCustosByCaminho(Caminho ,[],Encomendas,IdTrans, 0/0/0 ,R).
-
-calcularCustosByCaminho([],_,_,_, R, R).
-calcularCustosByCaminho([Nodo,ProxNodo |T],CamPercorrido,Encomendas,IdTrans, Dis/Custo/Tempo ,R):-
-    calculaPesoTotalEmFuncaoDoCaminho(Encomendas,CamPercorrido, Peso),
-    adjacente(Nodo,ProxNodo,CustoA,Distancia),
-
-    custoTempo(IdTrans,Peso,Distancia,CustoA,NewTempo1),
-    custoConsumo(IdTrans,Peso,Distancia,CustoA,NewCusto1),
-    custoDistancia(IdTrans,Peso,Distancia,CustoA,NewDis1),
-    NewDis is Dis + NewDis1,
-    NewCusto is Custo + NewCusto1,
-    NewTempo is Tempo + NewTempo1,
-
-    append(CamPercorrido,Nodo,Cam),
-    removeEncomendaLista(Encomendas, Cam, EncAtualizadas),
-    calcularCustosByCaminho([ProxNodo |T],Cam, EncAtualizadas,IdTrans, NewDis/NewCusto/NewTempo ,R)
-.
-
-%% calcularCustosByCaminho([Nodo],_,_,_, R, R).
-calcularCustosByCaminho([_],_,_,_, R, R).
-
-
 %%% MORADA
 moradaByIdEncomenda(Id,Morada):-
     clienteByIdEncomenda(Id, cliente(_,_,Morada)).

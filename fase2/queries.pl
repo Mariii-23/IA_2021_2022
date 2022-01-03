@@ -413,3 +413,31 @@ volumeTotalByServico(servico(_,_,E,_,_,_,_,_), Vol):-
 tupleVolumeTotalAndCaminhoByServico(S , Vol/Caminho):-
     S = servico(_,_,_,_,_,_,Caminho,_),
     volumeTotalByServico(S,Vol).
+
+%% Calcular os todos os custos em funcao do caminho percorrido, das encomendas que foram transportadas e
+%% por id de transporte
+%% A -> Distancia do caminho
+%% B -> Custo do caminho
+%% C -> Tempo do caminho
+custosByCaminho(Caminho,IdsEncomendas,IdTrans, A,B,C):-
+    maplist(moradaAndPesoByIdEncomenda, IdsEncomendas, Encomendas),
+    calcularCustosByCaminho(Caminho ,[],Encomendas,IdTrans, 0,0,0 ,A,B,C).
+
+calcularCustosByCaminho([],_,_,_, A,B,C,A,B,C).
+calcularCustosByCaminho([Nodo,ProxNodo |T],CamPercorrido,Encomendas,IdTrans, Dis,Custo,Tempo ,C1,C2,C3):-
+    calculaPesoTotalEmFuncaoDoCaminho(Encomendas,CamPercorrido, Peso),
+    adjacente(Nodo,ProxNodo,CustoA,Distancia),
+
+    custoTempo(IdTrans,Peso,Distancia,CustoA,NewTempo1),
+    custoConsumo(IdTrans,Peso,Distancia,CustoA,NewCusto1),
+    custoDistancia(IdTrans,Peso,Distancia,CustoA,NewDis1),
+    NewDis is Dis + NewDis1,
+    NewCusto is Custo + NewCusto1,
+    NewTempo is Tempo + NewTempo1,
+    append(CamPercorrido,Nodo,Cam),
+    removeEncomendaLista(Encomendas, Cam, EncAtualizadas),
+    calcularCustosByCaminho([ProxNodo |T], [Nodo|CamPercorrido] , EncAtualizadas,IdTrans, NewDis,NewCusto,NewTempo ,C1,C2,C3)
+.
+
+%% calcularCustosByCaminho([Nodo],_,_,_, R, R).
+calcularCustosByCaminho([_],_,_,_, A,B,C,A,B,C).
