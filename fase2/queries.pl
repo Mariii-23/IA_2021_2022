@@ -414,6 +414,9 @@ tupleVolumeTotalAndCaminhoByServico(S , Vol/Caminho):-
     S = servico(_,_,_,_,_,_,Caminho,_),
     volumeTotalByServico(S,Vol).
 
+
+%%%%%%%%%%%%%%%%%%%%%%%
+
 %% Calcular os todos os custos em funcao do caminho percorrido, das encomendas que foram transportadas e
 %% por id de transporte
 %% A -> Distancia do caminho
@@ -438,6 +441,12 @@ calcularCustosByCaminho([Nodo,ProxNodo |T],CamPercorrido,Encomendas,IdTrans, Dis
     removeEncomendaLista(Encomendas, Cam, EncAtualizadas),
     calcularCustosByCaminho([ProxNodo |T], [Nodo|CamPercorrido] , EncAtualizadas,IdTrans, NewDis,NewCusto,NewTempo ,C1,C2,C3)
 .
-
 %% calcularCustosByCaminho([Nodo],_,_,_, R, R).
 calcularCustosByCaminho([_],_,_,_, A,B,C,A,B,C).
+
+%% Calcular os custos associados a um servico
+%% Aqui basta dar o Id do servico
+custosServico(IdServico, Distancia,Custo,Tempo, ValorGanho):-
+    servicoById(IdServico,servico(_,_,Enc,IdTrans,_,_,Caminho,CGanho)),
+    custosByCaminho(Caminho,Enc,IdTrans, Distancia,Custo,Tempo),
+    ValorGanho is CGanho - Custo.
