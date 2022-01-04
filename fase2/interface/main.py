@@ -72,6 +72,7 @@ prolog.consult("../trabalho.pl")
 cprint("Bem vindo, o que deseja fazer?", 'green', attrs=["bold"])
 op = escolhe_opcoes([
     "Estafeta mais ecológico",
+    "Estafetas que entregaram",
     "Valor faturado",
     "Opção 3"
 ])
@@ -80,6 +81,13 @@ if op == 0:
     cprint("\nEstafeta mais ecológico\n", 'yellow', attrs=['bold'])
     mostra_tabela(list(prolog.query("estafetaMaisEcologico(estafeta(Id, Nome))")))
 elif op == 1:
+    # por uma forma mais fixe de pedir a lista de valores
+    ids = input("Introduza os Ids das encomendas: ")
+    # to FIX
+    mostra_tabela(list(prolog.query("estafetasQueEntregaram("+ ids + ",lR")))
+
+
+elif op == 2:
     data = input("Introduza data: ") # convert isto para sem ser string
 
     result = (list(prolog.query("valorFaturado("+ data+",Valor)"))[0]['Valor'])
