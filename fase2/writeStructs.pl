@@ -19,13 +19,15 @@ writeMorada(morada(A,B),Stream):-
                           fail; true
 .
 
-writeAresta(Stream):- aresta(A,B,Custo),
+writeAresta(Stream):- aresta(A,B,Custo,Distancia),
                           write(Stream,'aresta('),
                           writeMorada(A,Stream),
                           write(Stream,','),
                           writeMorada(B,Stream),
                           write(Stream,','),
-                          write(Stream,Custo), write(Stream, ').\n'),
+                          write(Stream,Custo),
+                          write(Stream,','),
+                          write(Stream,Distancia), write(Stream, ').\n'),
                           fail; true
 .
 
@@ -111,7 +113,7 @@ saveIn(X) :-
     writeFreguesia(Stream),
     write(Stream, '\n% rua: Nome, Nome da Freguesia, Coordenada -> {V,F}\n'),
     writeRua(Stream),
-    write(Stream, '\n% aresta: Morada, Morada, Custo -> {V,F}\n'),
+    write(Stream, '\n% aresta: Morada, Morada, Custo, Distancia Real -> {V,F}\n'),
     writeAresta(Stream),
     write(Stream, '\n% centroDistribuicao: Morada -> {V,F}\n'),
     writeCentroDistribuicao(Stream),

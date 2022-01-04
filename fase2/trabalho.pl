@@ -3,7 +3,7 @@
 :- dynamic freguesia/1.
 :- dynamic rua/3.
 :- dynamic morada/2.
-:- dynamic aresta/3.
+:- dynamic aresta/4.
 :- dynamic transporte/6.
 :- dynamic ranking/2.
 :- dynamic estafeta/2.

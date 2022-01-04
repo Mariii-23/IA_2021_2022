@@ -1,14 +1,12 @@
 % Adjacente
 adjacente(A,B,C,D) :-
-    aresta(A,B,C),
-    distancia(A,B,D).
+    aresta(A,B,C,D).
 adjacente(A,B,C,D) :-
-    aresta(B,A,C),
-    distancia(A,B,D).
+    aresta(B,A,C,D).
 
 goal(A) :- centroDistribuicao(A).
 
-%%% DISTANCIA
+%%% DISTANCIA com coordenadas
 distancia(coordenada(X1,Y1), coordenada(X2,Y2), R):-
     Sum is ((X1 - X2)**2) + ((Y1 - Y2)**2),
     R is sqrt(Sum).
@@ -136,7 +134,7 @@ buscaIterativa_complexIdaVolta(Dest, L, Cam):-
     len(S,N), N \==0,
     reverse(S,[Nodo|_]),
     LNovo is L - N,
-    buscaIterativaAux(Nodo, Dest, [Nodo], 1 , LNovo, CamVolta),
+    buscaIterativa(Nodo, X,  LNovo, [_|CamVolta]),
     len(CamVolta,N1), N1\==0,
     append(S,CamVolta,Cam).
 buscaIterativa_complexIdaVolta(_, _, []).
