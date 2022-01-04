@@ -45,6 +45,26 @@ def escolhe_opcoes(opcoes):
 
     return opcao_atual
 
+def mostra_tabela(lista):
+    colunas = {}
+    for i in lista:
+        for coluna in i.keys():
+            if coluna in colunas:
+                colunas[coluna] = max(colunas[coluna], len(str(i[coluna])))
+            else:
+                colunas[coluna] = max(len(coluna), len(str(i[coluna])))
+    # Imprimir cabeçalho
+    s = ""
+    for coluna in colunas.keys():
+        s += f" {coluna.ljust(colunas[coluna])} "
+    cprint(s, 'cyan', attrs=['bold'])
+    # Imprimir colunas
+    for linha in lista:
+        s = ""
+        for coluna in colunas.keys():
+            s += f" {str(linha[coluna]).ljust(colunas[coluna])} "
+        print(s)
+
 
 prolog = Prolog()
 prolog.consult("../trabalho.pl")
@@ -57,5 +77,5 @@ op = escolhe_opcoes([
 ])
 
 if op == 0:
-    cprint("Estafeta mais ecológico\n", 'yellow', attrs=['bold'])
-    print(list(prolog.query("estafetaMaisEcologico(estafeta(Id, Nome))")))
+    cprint("\nEstafeta mais ecológico\n", 'yellow', attrs=['bold'])
+    mostra_tabela(list(prolog.query("estafetaMaisEcologico(estafeta(Id, Nome))")))
