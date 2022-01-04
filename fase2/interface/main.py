@@ -79,3 +79,8 @@ op = escolhe_opcoes([
 if op == 0:
     cprint("\nEstafeta mais ecológico\n", 'yellow', attrs=['bold'])
     mostra_tabela(list(prolog.query("estafetaMaisEcologico(estafeta(Id, Nome))")))
+elif op == 1:
+    data = input("Introduza data: ") # convert isto para sem ser string
+
+    result = (list(prolog.query("valorFaturado("+ data+",Valor)"))[0]['Valor'])
+    print("Valor Faturado: ", result)
