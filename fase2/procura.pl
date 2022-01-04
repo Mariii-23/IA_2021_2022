@@ -117,7 +117,7 @@ dfsAux(X, Y, Cam, S):-
 % Busca Iterativa Limitada em Profundidade
 buscaIterativa(X, Y, L, S):-  buscaIterativa2(X, Y, [X], 1 , L, S).
 
-buscaIterativa2(_, _, _, Ls , L , []):- Ls =:= (L+1) , !.
+buscaIterativa2(_, _, _, Ls , L , []):- Ls =:= (L+1) , !,fail.
 buscaIterativa2(X, X, Cam, _ , _ , S):- reverse(Cam,S).
 buscaIterativa2(X, Y, Cam, N , L ,S):-
   adjacente(Novo,X,_,_),
@@ -141,7 +141,7 @@ buscaIterativa_complexIdaVolta(Dest, L, Cam):-
     append(S,CamVolta,Cam).
 buscaIterativa_complexIdaVolta(_, _, []).
 
-buscaIterativaAux(_, _, _, Ls , L , []):- Ls =:= (L+1) , !.
+buscaIterativaAux(_, _, _, Ls , L , []):- Ls =:= (L+1) , !, fail.
 buscaIterativaAux(_, Dest, Cam, _ , _ , S):-
     iguais(Dest,Cam,R),
     R = Dest,
