@@ -44,7 +44,6 @@ valorFaturado(Dia/Mes/Ano,Valor) :-
 %% Query 5
 getRua(morada(Rua,_), Rua).
 getFreguesia(morada(_,Freguesia), Freguesia).
-%% TODO MUDAR
 moradasEncomendas(R) :-
     findall(Morada, (encomenda(_,CId,_,_,_,_), cliente(CId,_,Morada)), R).
 
@@ -336,6 +335,15 @@ searchInformadaCaminhoIdaVolta(Procura, Funcao, Enc, Transporte,Caminho,Custo):-
     maplist(moradaAndPesoByIdEncomenda, Enc, Encomendas),
     resolve_procura_complex_idaVolta(Procura,Funcao, Encomendas ,Transporte,Caminho/Custo).
 
+%% Realizar encomendas
+%% Adiciona a nossa base de conhecimento
+realizarEncomendas(IdServico,IdEncomendas, IdEstafeta,IdTransporte, DiaEntrega, ValorPago, Pesquisa,Funcao,Classificacao):-
+    (( ( Pesquisa == 'bfs' ; Pesquisa == 'dfs'; Pesquisa == 'iterativa'),
+       searchNaoInformadaCaminhoIdaVolta(Pesquisa, IdEncomendas, Caminho));
+       searchInformadaCaminhoIdaVolta(Pesquisa, Funcao, IdEncomendas, IdTransporte,Caminho,_)
+    ),
+    newServico(IdServico,IdEstafeta,IdEncomendas,IdTransporte,DiaEntrega,Classificacao,Caminho,ValorPago).
+
 %% Query
 %% Obter Servicos com maior número de entregas (por volume e peso)
 calcularPesoByIdsEncomendas([],0).
@@ -371,8 +379,6 @@ servicosIdOrderByVolume(R):-
 
 %% QUERY
 % Identificar quais os circuitos com maior número de entregas (por volume e peso)
-
-%% FIXME o unique nao da
 caminhosMaiorPeso(R) :-
     findall(Caminho, servico(_,_,_,_,_,_,Caminho,_), X),
     sort(X,Caminhos),

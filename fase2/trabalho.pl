@@ -142,7 +142,6 @@
      len(R1,1)).
 
 % Garantir que as encomendas associadas são válidos
-% TODO Verificar se está correto
 +servico(_,_,Ids,_,_,_,_,_) :: (
      findall(Id, (encomenda(Id,_,_,_,_,_), member(Id,Ids)),R1),
      iguais(Ids,R1,R),
@@ -168,6 +167,13 @@
      -1 < C,
      number(Min)).
 
+%% Garantir que a encomenda ainda nao foi realizada
++servico(_,_,Ids,_,_,_,_,_) :: (
+     maplist(verificarIdEncomenda,Ids)).
+
+verificarIdEncomenda(Id):-
+    findall(Id, ( servico(_,_,Ids2,_,_,_,_,_) , member(Id,Ids2)),R),
+    len(R,1).
 
 % -------- Adicionar predicados ---
 newRua(Nome,F,Cor):- new_predicado(rua(Nome,F,Cor)).
@@ -184,7 +190,7 @@ newCliente(Id,Nome,M):- new_predicado(cliente(Id,Nome,M)).
 
 newEncomenda(Id,C,P,V,D,L):- new_predicado(encomenda(Id,C,P,V,D,L)).
 
-newServico(Id,E,En,C,D,C,Cam,Custo):- new_predicado(servico(Id,E,En,C,D,C,Cam,Custo)).
+newServico(Id,E,En,T,D,C,Cam,Custo):- new_predicado(servico(Id,E,En,T,D,C,Cam,Custo)).
 
 % -------- Remover predicados ---
 removeRua(Nome):- rua(Nome,F,Coor), remover_predicado(rua(Nome,F,Coor)).
