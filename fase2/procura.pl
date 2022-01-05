@@ -113,24 +113,39 @@ dfsAux(X, Y, Cam, S):-
   dfsAux(Novo, Y, [Novo|Cam], S).
 
 % Busca Iterativa Limitada em Profundidade
-buscaIterativa(X, Y, L, S):-  buscaIterativa2(X, Y, [X], 1 , L, S).
+buscaIterativa(X, Y, L, S):-  buscaIterativa_Control(X, Y, 1 , L, S).
 
-buscaIterativa2(_, _, _, Ls , L , []):- Ls =:= (L+1) , !,fail.
-buscaIterativa2(X, X, Cam, _ , _ , S):- reverse(Cam,S).
-buscaIterativa2(X, Y, Cam, N , L ,S):-
+buscaIterativa_Control(_,_,Ls,L,[]):- Ls =:= (L+1) , !, fail.
+buscaIterativa_Control(X,Dest,N,_,S):-
+    buscaIterativaSimplesAux(X, Dest, [X], 1 , N, S).
+buscaIterativa_Control(X,Dest,N,L,S):-
+    Ns is N + 1,
+    buscaIterativa_Control(X,Dest,Ns,L,S).
+
+buscaIterativaSimplesAux(_, _, _, Ls , L , []):- Ls =:= (L+1) , !,fail.
+buscaIterativaSimplesAux(X, X, Cam, _ , _ , S):- reverse(Cam,S).
+buscaIterativaSimplesAux(X, Y, Cam, N , L ,S):-
   adjacente(Novo,X,_,_),
   \+ member(Novo, Cam),
   N_ is N + 1,
-  buscaIterativa2(Novo, Y, [Novo|Cam], N_ ,L, S).
+  buscaIterativaSimplesAux(Novo, Y, [Novo|Cam], N_ ,L, S).
 
 % busca dando todos os destinos a ir
 buscaIterativa_complex(Dest, L, S):-
     centroDistribuicao(X),
-    buscaIterativaAux(X, Dest, [X], 1 , L, S).
+    buscaIterativa_complexControl(X,Dest,1,L,S).
+    %% buscaIterativaAux(X, Dest, [X], 1 , L, S).
+
+buscaIterativa_complexControl(_,_,Ls,L,[]):- Ls =:= (L+1) , !, fail.
+buscaIterativa_complexControl(X,Dest,N,_,S):-
+    buscaIterativaAux(X, Dest, [X], 1 , N, S).
+buscaIterativa_complexControl(X,Dest,N,L,S):-
+    Ns is N + 1,
+    buscaIterativa_complexControl(X,Dest,Ns,L,S).
 
 buscaIterativa_complexIdaVolta(Dest, L, Cam):-
     centroDistribuicao(X),
-    buscaIterativaAux(X, Dest, [X], 1 , L, S),
+    buscaIterativa_complex(Dest,L,S),
     len(S,N), N \==0,
     reverse(S,[Nodo|_]),
     LNovo is L - N,
