@@ -1,9 +1,11 @@
 import termios
 import tty
 from pyswip import Prolog
-from termcolor import cprint
+from termcolor import cprint, colored
 import sys
 
+prolog = Prolog()
+prolog.consult("../trabalho.pl")
 
 def escolhe_opcoes(opcoes):
     opcao_atual = 0
@@ -45,50 +47,84 @@ def escolhe_opcoes(opcoes):
 
     return opcao_atual
 
-def mostra_tabela(lista):
+def mostra_tabela(lista, filter_out=[], options={}):
     colunas = {}
     for i in lista:
         for coluna in i.keys():
-            if coluna in colunas:
-                colunas[coluna] = max(colunas[coluna], len(str(i[coluna])))
-            else:
-                colunas[coluna] = max(len(coluna), len(str(i[coluna])))
+            if coluna not in filter_out:
+                column_name = coluna
+                column_text = str(i[coluna])
+                if coluna in options:
+                    column_name = options[coluna][0]
+                    column_text = str(options[coluna][1](column_text))
+                if coluna in colunas:
+                    colunas[coluna] = max(colunas[coluna], len(str(column_text)))
+                else:
+                    colunas[coluna] = max(len(column_name), len(column_text))
     # Imprimir cabeçalho
     s = ""
     for coluna in colunas.keys():
-        s += f" {coluna.ljust(colunas[coluna])} "
+        column_name = coluna
+        if coluna in options:
+            column_name = options[coluna][0]
+        s += f" {column_name.ljust(colunas[coluna])} "
     cprint(s, 'cyan', attrs=['bold'])
     # Imprimir colunas
     for linha in lista:
         s = ""
         for coluna in colunas.keys():
-            s += f" {str(linha[coluna]).ljust(colunas[coluna])} "
+            column_text = str(linha[coluna])
+            if coluna in options:
+                column_text = str(options[coluna][1](column_text))
+
+            s += f" {str(column_text).ljust(colunas[coluna])} "
         print(s)
 
+def prompt(texto):
+    prompt_text = colored(" ❯ ", 'yellow', attrs=['bold']) + colored(texto + ": ", attrs=['bold'])
+    return input(prompt_text)
 
-prolog = Prolog()
-prolog.consult("../trabalho.pl")
+def format_data(data):
+    r = list(prolog.query("Dia/Mes/Ano/Hora/Minuto = " + data))[0]
+    return f"{r['Dia']:02}/{r['Mes']:02}/{r['Ano']} {r['Hora']:02}:{r['Minuto']:02}"
+def format_hora(hora):
+    r = list(prolog.query("Hora/Minuto = " + hora))[0]
+    return f"{r['Hora']:02}:{r['Minuto']:02}"
 
-cprint("Bem vindo, o que deseja fazer?", 'green', attrs=["bold"])
-op = escolhe_opcoes([
-    "Estafeta mais ecológico",
-    "Estafetas que entregaram",
-    "Valor faturado",
-    "Opção 3"
-])
+if __name__ == "__main__":
+    cprint("Bem vindo, o que deseja fazer?", 'green', attrs=["bold"])
+    op = escolhe_opcoes([
+        "Estafeta mais ecológico",
+        "Estafetas que entregaram",
+        "Valor faturado",
+        "Ver base de dados"
+    ])
 
-if op == 0:
-    cprint("\nEstafeta mais ecológico\n", 'yellow', attrs=['bold'])
-    mostra_tabela(list(prolog.query("estafetaMaisEcologico(estafeta(Id, Nome))")))
-elif op == 1:
-    # por uma forma mais fixe de pedir a lista de valores
-    ids = input("Introduza os Ids das encomendas: ")
-    # to FIX
-    mostra_tabela(list(prolog.query("estafetasQueEntregaram("+ ids + ",lR")))
+    if op == 0:
+        cprint("\nEstafeta mais ecológico\n", 'yellow', attrs=['bold'])
+        mostra_tabela(list(prolog.query("estafetaMaisEcologico(estafeta(Id, Nome))")))
+    elif op == 1:
+        # por uma forma mais fixe de pedir a lista de valores
+        ids = prompt("Introduza os Ids das encomendas")
+        mostra_tabela(list(prolog.query("member(IdEncomenda, " + ids + "), estafetaQueEntregou(IdEncomenda, estafeta(Id, Nome))")), filter_out=['R'])
+    elif op == 2:
+        data = prompt("Introduza data") # convert isto para sem ser string
 
+        result = (list(prolog.query("valorFaturado("+ data+",Valor)"))[0]['Valor'])
+        print("Valor Faturado: ", result)
+    elif op == 3:
+        # Ver base de dados
+        op = escolhe_opcoes([
+            "Estafetas",
+            "Encomendas",
+            "Ruas",
+            "Freguesias",
+        ])
 
-elif op == 2:
-    data = input("Introduza data: ") # convert isto para sem ser string
-
-    result = (list(prolog.query("valorFaturado("+ data+",Valor)"))[0]['Valor'])
-    print("Valor Faturado: ", result)
+        if op == 0:
+            mostra_tabela(list(prolog.query("estafeta(Id, Nome)")))
+        elif op == 1:
+            mostra_tabela(list(prolog.query("encomenda(Id, IdCliente, Peso, Volume, DiaPedido, Limite)")), options={
+                'DiaPedido': ("Dia Pedido", format_data),
+                'Limite': ("Hora Limite", format_hora)
+            })
