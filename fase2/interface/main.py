@@ -54,6 +54,30 @@ def servicos_por_estafeta_entre():
     data_fim = prompt("Data de fim (Dia/Mês/Ano/Hora/Minuto)")
     mostra_tabela(list(prolog.query(f"servicosPorEstafetaEntre({data_inicio}, {data_fim}, R), member((Servicos,estafeta(Id,Nome)),R)")), filter_out=['R'])
 
+def todas_encomendas_entre():
+    data_inicio = prompt("Data de início (Dia/Mês/Ano/Hora/Minuto)")
+    data_fim = prompt("Data de fim (Dia/Mês/Ano/Hora/Minuto)")
+    encomendas = (list(prolog.query(f"todasEncomendas({data_inicio}, {data_fim}, Entregues, NaoEntregues)")))[0]
+    l_entregues = f"[{','.join(list(map(lambda x: x.value, encomendas['Entregues'])))}]"
+    l_naoentregues = f"[{','.join(list(map(lambda x: x.value, encomendas['NaoEntregues'])))}]"
+    entregues = list(prolog.query(f"member(encomenda(Id,Cliente,Peso,Volume,Data,Limite), {l_entregues})"))
+    naoentregues = list(prolog.query(f"member(encomenda(Id,Cliente,Peso,Volume,Data,Limite), {l_naoentregues})"))
+
+    cprint("Entregues:", 'yellow', attrs=['bold'])
+    mostra_tabela(entregues, options={
+        'Data': ("Dia Pedido", format_data),
+        'Limite': ("Hora Limite", format_hora)
+    })
+    cprint("Não Entregues:", 'yellow', attrs=['bold'])
+    mostra_tabela(naoentregues, options={
+        'Data': ("Dia Pedido", format_data),
+        'Limite': ("Hora Limite", format_hora)
+    })
+
+def peso_estafeta_dia():
+    dia = prompt("Dia (Dia/Mês/Ano)")
+    mostra_tabela(list(prolog.query("pesoTotalByEstafetaNoDia(estafeta(Id,Nome),{dia}, Peso)")))
+
 def base_de_dados():
     # Ver base de dados
     def ver_estafetas():
@@ -92,5 +116,7 @@ if __name__ == "__main__":
         "Classificação de um estafeta": classificacao_estafeta,
         "Total de entregas por transporte": total_entregas_por_transporte,
         "Serviços por estafeta entre duas datas": servicos_por_estafeta_entre,
+        "Todas as encomendas entre duas datas": todas_encomendas_entre,
+        "Peso por estafeta no dia": peso_estafeta_dia,
         "Ver base de dados": base_de_dados
     })
