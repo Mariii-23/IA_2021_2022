@@ -21,7 +21,7 @@
 :- include('writeStructs.pl').
 :- include('queries.pl').
 :- include('procura.pl').
-
+:- use_module(library(date)).
 %%%%%%%%%%%%%%%%%%%% Validar dados %%%%%%%%%%%
 %%% Freguesia %%%
 % Garantir que o nome de cada freguesia é único

@@ -61,11 +61,12 @@ bfs_complexIdaVolta(Dest, Caminho):-
     append(Cam,CamVolta,Caminho)
 .
 
-bfsAux( Dest,[[X|T]|_],Solucao)  :-
-    iguais(Dest,[X|T],R),
-    sort(R, RSorted),
-    sort(Dest, DestSorted),
-    RSorted = DestSorted,
+%% bfsAux( Dest,[[X|T]|_],Solucao)  :-
+%%     iguais(Dest,[X|T],R),
+%%     sort(R, RSorted),
+%%     sort(Dest, DestSorted),
+%%     RSorted = DestSorted,
+bfsAux( [],[[X|T]|_],Solucao)  :-
     reverse([X|T],Solucao).
 bfsAux( EstadoF,[[X|T]|Outros],Solucao)  :-
     member(X,EstadoF),
@@ -267,7 +268,7 @@ procura(Procura,_,_,_,Nodo,Caminhos,Caminho):-
     Caminho=[Nodo|_]/_/_.
 
 procura(Procura, Funcao,Id,Encomendas,Final,Caminhos,SCaminho):-
-    obtem_caminho(Procura,Caminhos, MelhorCaminho),
+    obtem_caminho(Procura,Caminhos, MelhorCaminho),!,
     seleciona(MelhorCaminho, Caminhos, OutrosCam),
     expande(Funcao, Id, Encomendas,Final,MelhorCaminho, ExpCam),
     append(OutrosCam, ExpCam, NCam),

@@ -456,3 +456,21 @@ custosServico(IdServico, Distancia,Custo,Tempo, ValorGanho):-
     servicoById(IdServico,servico(_,_,Enc,IdTrans,_,_,Caminho,CGanho)),
     custosByCaminho(Caminho,Enc,IdTrans, Distancia,Custo,Tempo),
     ValorGanho is CGanho - Custo.
+
+%% Comparar tempos
+testNaoInformada(Procura,Enc,T,Cam,Dist,Custo,Tempo,TExecucao):-
+    (Procura == 'iterativa' , readNumber(X),
+        maplist(moradaByIdEncomenda, Enc, Encomendas),
+      get_time(Ti),
+      buscaIterativa_complexIdaVolta(Encomendas,X,Cam),
+      get_time(TF),
+      TExecucao is TF-Ti,
+    custosByCaminho(Cam,Enc,T,Dist,Custo,Tempo)
+    );
+
+    ( get_time(Ti),
+      searchNaoInformadaCaminhoIdaVolta(Procura,Enc,Cam),
+      get_time(TF),
+      TExecucao is TF-Ti,
+    custosByCaminho(Cam,Enc,T,Dist,Custo,Tempo)
+    ).
