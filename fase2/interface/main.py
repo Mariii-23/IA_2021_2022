@@ -128,3 +128,7 @@ if __name__ == "__main__":
                 'DiaPedido': ("Dia Pedido", format_data),
                 'Limite': ("Hora Limite", format_hora)
             })
+        elif op == 2:
+            mostra_tabela(list(prolog.query("rua(Rua, Freguesia, coordenada(X,Y))")))
+        elif op == 3:
+            mostra_tabela(list(prolog.query("freguesia(Freguesia)")))
