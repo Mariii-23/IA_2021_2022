@@ -63,7 +63,9 @@ bfs_complexIdaVolta(Dest, Caminho):-
 
 bfsAux( Dest,[[X|T]|_],Solucao)  :-
     iguais(Dest,[X|T],R),
-    R = Dest,
+    sort(R, RSorted),
+    sort(Dest, DestSorted),
+    RSorted = DestSorted,
     reverse([X|T],Solucao).
 bfsAux( EstadoF,[[X|T]|Outros],Solucao)  :-
     member(X,EstadoF),
@@ -157,7 +159,9 @@ buscaIterativa_complexIdaVolta(_, _, []).
 buscaIterativaAux(_, _, _, Ls , L , []):- Ls =:= (L+1) , !, fail.
 buscaIterativaAux(_, Dest, Cam, _ , _ , S):-
     iguais(Dest,Cam,R),
-    R = Dest,
+    sort(Dest, DestSorted),
+    sort(R, RSorted),
+    RSorted = DestSorted,
     reverse(Cam,S).
 buscaIterativaAux(X, Dest, Cam, N , L ,S):-
   adjacente(Novo,X,_,_),
