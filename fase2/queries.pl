@@ -474,3 +474,11 @@ testNaoInformada(Procura,Enc,T,Cam,Dist,Custo,Tempo,TExecucao):-
       TExecucao is TF-Ti,
     custosByCaminho(Cam,Enc,T,Dist,Custo,Tempo)
     ).
+
+testInformada(Procura,Funcao,Enc,T,Cam,Dist,Custo,Tempo,TExecucao):-
+    maplist(moradaAndPesoByIdEncomenda, Enc, Encomendas),
+    get_time(Ti),
+    resolve_procura_complex_idaVolta(Procura,Funcao, Encomendas ,T,Cam/_),
+    get_time(TF),
+    TExecucao is TF-Ti,
+    custosByCaminho(Cam,Enc,T,Dist,Custo,Tempo).
