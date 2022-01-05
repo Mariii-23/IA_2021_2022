@@ -13,12 +13,11 @@ def format_hora(hora):
     return f"{r['Hora']:02}:{r['Minuto']:02}"
 
 def estafeta_ecologico():
-    cprint("\nEstafeta mais ecológico\n", 'yellow', attrs=['bold'])
     mostra_tabela(list(prolog.query("estafetaMaisEcologico(estafeta(Id, Nome))")))
 
 def estafetas_que_entregaram():
-    ids = prompt("Introduza os Ids das encomendas")
-    mostra_tabela(list(prolog.query("member(IdEncomenda, " + ids + "), estafetaQueEntregou(IdEncomenda, estafeta(Id, Nome))")), filter_out=['R'])
+    ids = prompt("Introduza os ids das encomendas (formato [x, y, ...])")
+    mostra_tabela(list(prolog.query("member(Encomenda, " + ids + "), estafetaQueEntregou(IdEncomenda, estafeta(Id, Nome))")), filter_out=['R'])
 
 def clientes_servidos_por_estafeta():
     estafeta = prompt("ID do estafeta")
@@ -27,7 +26,7 @@ def clientes_servidos_por_estafeta():
 def valor_faturado():
     data = prompt("Introduza data (Dia/Mês/Ano/Hora/Minuto)") # convert isto para sem ser string
     result = (list(prolog.query("valorFaturado("+ data+",Valor)"))[0]['Valor'])
-    print(colored(" ❯ ", 'yellow', attrs=['bold']) + colored("Valor faturado: ", attrs=['bold']) + result)
+    print(colored(" ❯ ", 'yellow', attrs=['bold']) + colored("Valor faturado: ", attrs=['bold']) + str(result))
 
 def moradas_mais_frequentes():
     mostra_tabela(list(prolog.query(f"moradasMaisFrequentes(R), member((Ocorrencias, morada(Rua, Freguesia)), R)")), filter_out=['R'])
@@ -63,12 +62,12 @@ def todas_encomendas_entre():
     entregues = list(prolog.query(f"member(encomenda(Id,Cliente,Peso,Volume,Data,Limite), {l_entregues})"))
     naoentregues = list(prolog.query(f"member(encomenda(Id,Cliente,Peso,Volume,Data,Limite), {l_naoentregues})"))
 
-    cprint("Entregues:", 'yellow', attrs=['bold'])
+    cprint(" Entregues:", 'yellow', attrs=['bold'])
     mostra_tabela(entregues, options={
         'Data': ("Dia Pedido", format_data),
         'Limite': ("Hora Limite", format_hora)
     })
-    cprint("Não Entregues:", 'yellow', attrs=['bold'])
+    cprint(" Não Entregues:", 'yellow', attrs=['bold'])
     mostra_tabela(naoentregues, options={
         'Data': ("Dia Pedido", format_data),
         'Limite': ("Hora Limite", format_hora)
@@ -105,7 +104,7 @@ def base_de_dados():
     })
 
 if __name__ == "__main__":
-    cprint("Bem vindo, o que deseja fazer?", 'green', attrs=["bold"])
+    cprint("Bem vindo, o que deseja fazer?", 'yellow', attrs=["bold"])
     escolhe_opcoes({
         "Estafeta mais ecológico": estafeta_ecologico,
         "Estafetas que entregaram": estafetas_que_entregaram,

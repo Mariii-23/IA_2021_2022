@@ -40,6 +40,9 @@ def escolhe_opcoes(opcoes):
                 print(f'\x1b[{len(opcoes)}F', end='', flush=True)
     finally:
         termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+    
+    print(f'\x1b[{len(opcoes)}F\x1b[0J', end='')
+    cprint(list(opcoes.keys())[opcao_atual], 'yellow', attrs=['bold'])
 
     list(opcoes.values())[opcao_atual]()
 
