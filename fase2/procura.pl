@@ -285,13 +285,13 @@ adjacenteAux(Funcao, Id, Encomendas, [Nodo|Caminho]/Custo/_, [ProxNodo, Nodo| Ca
     estima(Nodo,Est),
     NovoC is Custo+EsteCusto.
 
-obtem_caminho(_,[Caminho], Caminho) :- !.
 obtem_caminho('aestrela',[ Caminho1/Custo1/Estima1, _/Custo2/Estima2|Caminhos], MCam) :-
         Custo1+Estima1 =< Custo2+Estima2, !,
         obtem_caminho('aestrela',[Caminho1/Custo1/Estima1|Caminhos], MCam).
 obtem_caminho('gulosa',[ Caminho1/Custo1/Estima1, _/_/Estima2|Caminhos], MCam) :-
         Estima1 =< Estima2, !,
         obtem_caminho('gulosa',[Caminho1/Custo1/Estima1|Caminhos], MCam).
+obtem_caminho(_,[Caminho], Caminho) :- !.
 obtem_caminho(A,[_|Caminhos], MCam) :- obtem_caminho(A,Caminhos, MCam).
 
 %Tira da lista dos caminhos q tinhamos o melhor caminho

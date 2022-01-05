@@ -27,21 +27,21 @@ rua('Rua do Sol','Lamas',coordenada(3,1)).
 rua('Rua da Universidade', 'Braga',coordenada(0,2)).
 
 %aresta: Freguesia , Freguesia, Custo, Distancia Real -> {V,F}
-aresta(morada('Rua da Universidade', 'Braga'), morada('Rua do Taxa','Sao Vitor'),2,1).
-aresta(morada('Rua da Universidade', 'Braga'), morada('Avenida Dom João II','Nogueiró'),10,2).
-aresta(morada('Rua do Taxa','Sao Vitor'),morada('Rua do Moinho','Caldelas'),1,3).
-aresta(morada('Rua do Taxa','Sao Vitor'),morada('Rua de São Bento','Merelim'),3,4).
-aresta(morada('Avenida Dom João II','Nogueiró'), morada('Rua do Sol','Lamas'),3,3).
+aresta(morada('Rua da Universidade', 'Braga'), morada('Rua do Taxa','Sao Vitor'),2,11).
+aresta(morada('Rua da Universidade', 'Braga'), morada('Avenida Dom João II','Nogueiró'),10,12).
+aresta(morada('Rua do Taxa','Sao Vitor'),morada('Rua do Moinho','Caldelas'),1,13).
+aresta(morada('Rua do Taxa','Sao Vitor'),morada('Rua de São Bento','Merelim'),3,14).
+aresta(morada('Avenida Dom João II','Nogueiró'), morada('Rua do Sol','Lamas'),3,13).
 aresta(morada('Avenida Dom João II','Nogueiró'), morada('Rua Doutor José Alves Correia Da Silva','Frossos'),3,10).
-aresta(morada('Rua do Moinho','Caldelas'),morada('Rua Dr. Lindoso','Briteiros'),1,3).
-aresta(morada('Rua de São Bento','Merelim'),morada('Rua Dr. Lindoso','Briteiros'),2,5).
-aresta(morada('Rua de São Bento','Merelim'),morada('Rua do Coucão','Priscos'),2,2).
-aresta(morada('Rua do Sol','Lamas'),morada('Rua do Coucão','Priscos'),5,3).
-aresta(morada('Rua Doutor José Alves Correia Da Silva','Frossos'),morada('Rua do Coucão','Priscos'),12,3).
-aresta(morada('Rua Doutor José Alves Correia Da Silva','Frossos'),morada('Rua Joãozinho Azeredo','Maximinos'),4,3).
-aresta(morada('Rua Doutor José Alves Correia Da Silva','Frossos'),morada('Rua da Mota','Adaúfe'),3,5).
-aresta(morada('Rua Dr. Lindoso','Briteiros'),morada('Rua da Mota','Adaúfe'),5,10).
-aresta(morada('Rua Dr. Lindoso','Briteiros'),morada('Rua de Santa Marta','Esporões'),5,3).
+aresta(morada('Rua do Moinho','Caldelas'),morada('Rua Dr. Lindoso','Briteiros'),1,13).
+aresta(morada('Rua de São Bento','Merelim'),morada('Rua Dr. Lindoso','Briteiros'),2,15).
+aresta(morada('Rua de São Bento','Merelim'),morada('Rua do Coucão','Priscos'),2,12).
+aresta(morada('Rua do Sol','Lamas'),morada('Rua do Coucão','Priscos'),5,13).
+aresta(morada('Rua Doutor José Alves Correia Da Silva','Frossos'),morada('Rua do Coucão','Priscos'),12,13).
+aresta(morada('Rua Doutor José Alves Correia Da Silva','Frossos'),morada('Rua Joãozinho Azeredo','Maximinos'),4,13).
+aresta(morada('Rua Doutor José Alves Correia Da Silva','Frossos'),morada('Rua da Mota','Adaúfe'),3,15).
+aresta(morada('Rua Dr. Lindoso','Briteiros'),morada('Rua da Mota','Adaúfe'),5,12).
+aresta(morada('Rua Dr. Lindoso','Briteiros'),morada('Rua de Santa Marta','Esporões'),5,10).
 
 % centroDistribuicao: Morada
 centroDistribuicao(morada('Rua da Universidade', 'Braga')).
