@@ -458,27 +458,36 @@ custosServico(IdServico, Distancia,Custo,Tempo, ValorGanho):-
     ValorGanho is CGanho - Custo.
 
 %% Comparar tempos
-testNaoInformada(Procura,Enc,T,Cam,Dist,Custo,Tempo,TExecucao):-
+testNaoInformada(Procura,Enc,T,Cam,Dist,Custo,Tempo,TExecucao,MemDif):-
     (Procura == 'iterativa' , readNumber(X),
         maplist(moradaByIdEncomenda, Enc, Encomendas),
       get_time(Ti),
+      malloc_property('generic.current_allocated_bytes'(MemInicial)),
       buscaIterativa_complexIdaVolta(Encomendas,X,Cam),
       get_time(TF),
+      malloc_property('generic.current_allocated_bytes'(MemFinal)),
+      MemDif is MemFinal-MemInicial,
       TExecucao is TF-Ti,
     custosByCaminho(Cam,Enc,T,Dist,Custo,Tempo)
     );
 
     ( get_time(Ti),
+      malloc_property('generic.current_allocated_bytes'(MemInicial)),
       searchNaoInformadaCaminhoIdaVolta(Procura,Enc,Cam),
       get_time(TF),
+      malloc_property('generic.current_allocated_bytes'(MemFinal)),
+      MemDif is MemFinal-MemInicial,
       TExecucao is TF-Ti,
     custosByCaminho(Cam,Enc,T,Dist,Custo,Tempo)
     ).
 
-testInformada(Procura,Funcao,Enc,T,Cam,Dist,Custo,Tempo,TExecucao):-
+testInformada(Procura,Funcao,Enc,T,Cam,Dist,Custo,Tempo,TExecucao,MemDif):-
     maplist(moradaAndPesoByIdEncomenda, Enc, Encomendas),
     get_time(Ti),
+    malloc_property('generic.current_allocated_bytes'(MemInicial)),
     resolve_procura_complex_idaVolta(Procura,Funcao, Encomendas ,T,Cam/_),
     get_time(TF),
+    malloc_property('generic.current_allocated_bytes'(MemFinal)),
+    MemDif is MemFinal-MemInicial,
     TExecucao is TF-Ti,
     custosByCaminho(Cam,Enc,T,Dist,Custo,Tempo).
