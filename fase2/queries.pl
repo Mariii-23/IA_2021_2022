@@ -406,7 +406,7 @@ getSomaDeVolumesDoCaminho(Ca, Soma/Ca) :-
 
 pesoTotalByServico(servico(_,_,E,_,_,_,_,_), Peso):-
     maplist(pesoByEncomendaId,E,Pesos),
-    sum(Pesos,Peso).
+    sum_list(Pesos,Peso).
 
 tuplePesoTotalAndCaminhoByServico(S , Peso/Caminho):-
     S = servico(_,_,_,_,_,_,Caminho,_),
@@ -414,7 +414,7 @@ tuplePesoTotalAndCaminhoByServico(S , Peso/Caminho):-
 
 volumeTotalByServico(servico(_,_,E,_,_,_,_,_), Vol):-
     maplist(volumeByEncomendaId,E,Vols),
-    sum(Vols,Vol).
+    sum_list(Vols,Vol).
 
 tupleVolumeTotalAndCaminhoByServico(S , Vol/Caminho):-
     S = servico(_,_,_,_,_,_,Caminho,_),

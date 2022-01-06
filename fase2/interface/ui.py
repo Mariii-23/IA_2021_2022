@@ -82,3 +82,43 @@ def mostra_tabela(lista, filter_out=[], options={}):
 def prompt(texto):
     prompt_text = colored(" ❯ ", 'yellow', attrs=['bold']) + colored(texto + ": ", attrs=['bold'])
     return input(prompt_text)
+
+def prompt_multiplechoice(texto, opcoes):
+    opcao_atual = 0
+    done = False
+
+    fd = sys.stdin.fileno()
+    old_settings = termios.tcgetattr(fd)
+    try:
+        tty.setraw(sys.stdin.fileno())
+        while not done:
+            print("\x1b[2K\x1b[0G", end='')
+            print(colored(" ❯ ", 'yellow', attrs=['bold']) + colored(texto + ": ", attrs=['bold']), end='')
+            for i in range(len(opcoes.keys())):
+                if i == opcao_atual:
+                    cprint(f"❮", 'yellow', end='', attrs=['bold'])
+                    cprint(f"{list(opcoes.keys())[i]}", end='', attrs=['bold'])
+                    cprint(f"❯", 'yellow', end='', attrs=['bold'])
+                else:
+                    print(f' {list(opcoes.keys())[i]} ', end='')
+            
+            print('', end='', flush=True)
+
+            ch = sys.stdin.read(1)
+            if ch == '\x1b':
+                ch2 = sys.stdin.read(1)
+                if ch2 == '[':
+                    ch3 = sys.stdin.read(1)
+                    if ch3 == 'D':
+                        opcao_atual = (opcao_atual - 1) % len(opcoes)
+                    elif ch3 == 'C':
+                        opcao_atual = (opcao_atual + 1) % len(opcoes)
+            elif ch == '\r':
+                done = True
+    finally:
+        termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+    
+    print("\x1b[2K\x1b[0G", end='')
+    print(colored(" ❯ ", 'yellow', attrs=['bold']) + colored(texto + ": ", attrs=['bold']) + list(opcoes.keys())[opcao_atual])
+
+    return list(opcoes.values())[0]
