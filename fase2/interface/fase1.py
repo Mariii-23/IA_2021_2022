@@ -84,7 +84,7 @@ def fase1_menu(prolog):
         "Classificação de um estafeta": classificacao_estafeta,
         "Total de entregas por transporte": total_entregas_por_transporte,
         "Serviços por estafeta entre duas datas": servicos_por_estafeta_entre,
-        "Todas as encomendas entre duas datas": todas_encomendas_entre,
+        "Todas as encomendas entregues entre duas datas": todas_encomendas_entre,
         "Peso por estafeta no dia": peso_estafeta_dia,
         "Voltar": lambda: None
     })
