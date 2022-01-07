@@ -40,7 +40,9 @@
                        len(R,1)).
 
 % Garantir que a coordenada é única
-+rua(_,_,Coord) :: (findall(Coord,rua(_,_,Coord),R),
++rua(_,_,Coord) :: (
+     Coord = coordenada(X,Y), number(X), number(Y),
+     findall(Coord,rua(_,_,Coord),R),
                        len(R,1)).
 
  % Garantir que o nome de freguesia dado é verdadeiro e existe na nossa
