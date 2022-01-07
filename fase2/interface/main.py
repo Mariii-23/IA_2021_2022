@@ -113,6 +113,18 @@ def base_de_dados():
         else:
             cprint("Invariante falhou, cliente não foi apagado", 'red', attrs=['bold'])
     
+    def ver_arestas():
+        mostra_tabela(list(prolog.query("aresta(morada(Rua1,Freguesia1),morada(Rua2,Freguesia2),Custo,Distancia)")))
+    def nova_aresta():
+        rua1 = prompt("Nome da rua 1")
+        rua2 = prompt("Nome da rua 2")
+        custo = prompt("Custo")
+        distancia = prompt("Distância")
+        if len(list(prolog.query(f"newAresta(morada('{rua1}',_),morada('{rua2}',_),{custo},{distancia})"))) != 0:
+            cprint("Aresta criada", attrs=['bold'])
+        else:
+            cprint("Invariante falhou, aresta não foi criada", 'red', attrs=['bold'])
+    
     def guarda_bd():
         ficheiro = prompt("Ficheiro")
         if len(list(prolog.query(f"saveIn('{ficheiro}')"))) != 0:
@@ -143,6 +155,9 @@ def base_de_dados():
         "Ver clientes": ver_clientes,
         "Novo cliente": novo_cliente,
         "Apagar um cliente": apaga_cliente,
+
+        "Ver arestas": ver_arestas,
+        "Nova aresta": nova_aresta,
 
         "Guardar base de dados": guarda_bd,
 
