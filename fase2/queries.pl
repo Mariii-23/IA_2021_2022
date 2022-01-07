@@ -310,17 +310,17 @@ readNumber(X):-
 %% Procura -> tipo de procura
 %% Enc -> lista de ids de encomendas
 %% Caminho -> resultado
-searchNaoInformadaCaminho(Procura, Enc, Caminho):-
+searchNaoInformadaCaminho(Numero, Procura, Enc, Caminho):-
     maplist(moradaByIdEncomenda, Enc, Encomendas),
     ((Procura == 'bfs', bfs_complex(Encomendas,Caminho));
     (Procura == 'dfs', dfs_complex(Encomendas,Caminho));
-    (Procura == 'iterativa' , readNumber(X), buscaIterativa_complex(Encomendas,X,Caminho))).
+    (Procura == 'iterativa' , buscaIterativa_complex(Encomendas,Numero,Caminho))).
 
-searchNaoInformadaCaminhoIdaVolta(Procura, Enc, Caminho):-
+searchNaoInformadaCaminhoIdaVolta(Numero, Procura, Enc, Caminho):-
     maplist(moradaByIdEncomenda, Enc, Encomendas),
     ((Procura == 'bfs', bfs_complexIdaVolta(Encomendas,Caminho));
     (Procura == 'dfs', dfs_complexIdaVolta(Encomendas,Caminho));
-    (Procura == 'iterativa' , readNumber(X), buscaIterativa_complexIdaVolta(Encomendas,X,Caminho))).
+    (Procura == 'iterativa' , buscaIterativa_complexIdaVolta(Encomendas,Numero,Caminho))).
 
 %%% PROCURA INFORMADA
 %% Procura -> tipo de procura
