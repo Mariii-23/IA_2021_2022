@@ -2,36 +2,64 @@ from ui import *
 
 def fase2_menu(prolog):
     def search_informada_caminho():
+        mostrar_todas = prompt_multiplechoice("Mostrar todos os caminhos?", {'Sim': True, 'Não': False})
         tipo = prompt_multiplechoice("Tipo de pesquisa", {'A*': 'aestrela', 'Gulosa': 'gulosa'})
         funcao = prompt_multiplechoice("Calcular custo em função de", {'Tempo': 'tempo', 'Preço': 'custo'})
         transporte = prompt("ID do transporte")
         encomendas = prompt("IDs das encomendas (Formato [a, b, ...])")
-        res = list(prolog.query(f"searchInformadaCaminho('{tipo}', '{funcao}', {encomendas}, {transporte}, Caminho, Custo)"))[0]
-        caminho = list(map(lambda x: {'Rua': x[0], 'Localidade': x[1]}, map(lambda x: list(map(str, x.args)), res['Caminho'])))
-        mostra_tabela(caminho)
-        print(colored(" ❯ ", 'yellow', attrs=['bold']) + colored("Custo: ", attrs=['bold']) + str(res['Custo']))
+        res = list(prolog.query(f"searchInformadaCaminho('{tipo}', '{funcao}', {encomendas}, {transporte}, Caminho, Custo)"))
+        for i, r in enumerate(res):
+            if i % 2 != 0:
+                continue
+            caminho = list(map(lambda x: {'Rua': x[0], 'Localidade': x[1]}, map(lambda x: list(map(str, x.args)), r['Caminho'])))
+            mostra_tabela(caminho)
+            print(colored(" ❯ ", 'yellow', attrs=['bold']) + colored("Custo: ", attrs=['bold']) + str(r['Custo']))
+            if not mostrar_todas:
+                break
         
     def search_informada_caminho_volta():
+        mostrar_todas = prompt_multiplechoice("Mostrar todos os caminhos?", {'Sim': True, 'Não': False})
         tipo = prompt_multiplechoice("Tipo de pesquisa", {'A*': 'aestrela', 'Gulosa': 'gulosa'})
         funcao = prompt_multiplechoice("Calcular custo em função de", {'Tempo': 'tempo', 'Preço': 'custo', 'Distância': 'distancia'})
         transporte = prompt("ID do transporte")
         encomendas = prompt("IDs das encomendas (Formato [a, b, ...])")
-        res = list(prolog.query(f"searchInformadaCaminhoIdaVolta('{tipo}', '{funcao}', {encomendas}, {transporte}, Caminho, Custo)"))[0]
+        res = list(prolog.query(f"searchInformadaCaminhoIdaVolta('{tipo}', '{funcao}', {encomendas}, {transporte}, Caminho, Custo)"))
         caminho = list(map(lambda x: {'Rua': x[0], 'Localidade': x[1]}, map(lambda x: list(map(str, x.args)), res['Caminho'])))
         mostra_tabela(caminho)
         print(colored(" ❯ ", 'yellow', attrs=['bold']) + colored("Custo: ", attrs=['bold']) + str(res['Custo']))
+        for i, r in enumerate(res):
+            if i % 2 != 0:
+                continue
+            caminho = list(map(lambda x: {'Rua': x[0], 'Localidade': x[1]}, map(lambda x: list(map(str, x.args)), r['Caminho'])))
+            mostra_tabela(caminho)
+            print(colored(" ❯ ", 'yellow', attrs=['bold']) + colored("Custo: ", attrs=['bold']) + str(r['Custo']))
+            if not mostrar_todas:
+                break
+ 
 
     def search_nao_informada_caminho():
+        mostrar_todas = prompt_multiplechoice("Mostrar todos os caminhos?", {'Sim': True, 'Não': False})
         tipo = prompt_multiplechoice("Tipo de pesquisa", {'Depth-First Search': 'dfs', 'Breadth-First Search': 'bfs', 'Iterative Deepening Search': 'ids'})
         encomendas = prompt("IDs das encomendas (Formato [a, b, ...])")
-        caminho = list(prolog.query(f"searchNaoInformadaCaminho('{tipo}', {encomendas}, R)"))[0]['R']
-        mostra_tabela(list(map(lambda x: {'Rua': x[0], 'Localidade': x[1]}, map(lambda x: list(map(str, x.args)), caminho))))
+        caminho = list(prolog.query(f"searchNaoInformadaCaminho('{tipo}', {encomendas}, R)"))
+        for i, r in enumerate(caminho):
+            if i % 2 != 0:
+                continue
+            mostra_tabela(list(map(lambda x: {'Rua': x[0], 'Localidade': x[1]}, map(lambda x: list(map(str, x.args)), r['R']))))
+            if not mostrar_todas:
+                break
 
     def search_nao_informada_caminho_volta():
+        mostrar_todas = prompt_multiplechoice("Mostrar todos os caminhos?", {'Sim': True, 'Não': False})
         tipo = prompt_multiplechoice("Tipo de pesquisa", {'Depth-First Search': 'dfs', 'Breadth-First Search': 'bfs', 'Iterative Deepening Search': 'ids'})
         encomendas = prompt("IDs das encomendas (Formato [a, b, ...]")
-        caminho = list(prolog.query(f"searchNaoInformadaCaminhoIdaVolta('{tipo}', {encomendas}, R)"))[0]['R']
-        mostra_tabela(list(map(lambda x: {'Rua': x[0], 'Localidade': x[1]}, map(lambda x: list(map(str, x.args)), caminho))))
+        caminho = list(prolog.query(f"searchNaoInformadaCaminhoIdaVolta('{tipo}', {encomendas}, R)"))
+        for i, r in enumerate(caminho):
+            if i % 2 != 0:
+                continue
+            mostra_tabela(list(map(lambda x: {'Rua': x[0], 'Localidade': x[1]}, map(lambda x: list(map(str, x.args)), r['R']))))
+            if not mostrar_todas:
+                break
     
     def realizar_encomenda():
         id_servico = prompt("ID do serviço")

@@ -121,4 +121,4 @@ def prompt_multiplechoice(texto, opcoes):
     print("\x1b[2K\x1b[0G", end='')
     print(colored(" ❯ ", 'yellow', attrs=['bold']) + colored(texto + ": ", attrs=['bold']) + list(opcoes.keys())[opcao_atual])
 
-    return list(opcoes.values())[0]
+    return list(opcoes.values())[opcao_atual]
