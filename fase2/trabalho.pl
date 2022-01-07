@@ -50,7 +50,17 @@
 % Garantir que não é possível remover nenhuma rua no caso de esta encontrar-se
 % associada a alguma morada de um cliente
 -rua(Nome,_,_) :: (findall(Nome,cliente(_,_,morada(Nome,_)),R),
-                       len(R,0)).
+                   len(R,0)).
+
+%% Garantir que não existem arestas com dois nós iguais
++aresta(Morada1, Morada2,_,_) :: (
+     findall(Morada1, (aresta(Morada2,Morada1,_,_);
+                       aresta(Morada1,Morada2,_,_)),R),
+     len(R,1)).
+
+%% Garantir que os dados são válidos
++aresta(Morada1, Morada2,Custo,Dist) :: (
+     Morada1, Morada2, number(Custo), number(Dist)).
 
 %%%  Transportes  %%%%
 % Garantir que o id dos transportes é único
@@ -180,6 +190,9 @@ verificarIdEncomenda(Id):-
 newRua(Nome,F,Cor):- new_predicado(rua(Nome,F,Cor)).
 
 newFreguesia(Nome):- new_predicado(freguesia(Nome)).
+
+newAresta(Morada1,Morada2,Custo,Coord):-
+    new_predicado(aresta(Morada1,Morada2,Custo,Coord)).
 
 newTransporte(Id,N,V,C,E,Q):- new_predicado(transporte(Id,N,V,C,E,Q)).
 
