@@ -21,7 +21,7 @@ def fase1_menu(prolog):
         mostra_tabela(list(prolog.query(f"clientesServidosIdEstafeta({estafeta}, R), member(cliente(Id, Nome, morada(Rua, Freguesia)), R)")), filter_out=['R'])
 
     def valor_faturado():
-        data = prompt("Introduza data (Dia/Mês/Ano/Hora/Minuto)") # convert isto para sem ser string
+        data = prompt("Introduza data (Dia/Mês/Ano)") # convert isto para sem ser string
         result = (list(prolog.query("valorFaturado("+ data+",Valor)"))[0]['Valor'])
         print(colored(" ❯ ", 'yellow', attrs=['bold']) + colored("Valor faturado: ", attrs=['bold']) + str(result))
 
