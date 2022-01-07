@@ -93,6 +93,18 @@ def fase2_menu(prolog):
         servico = prompt("ID do serviço")
         r = next(prolog.query(f"servico({servico},_,E,_,_,_,_,_), volumeTotalByServico(servico(_,_,E,_,_,_,_,_), R)"))['R']
         print(colored(" ❯ ", 'yellow', attrs=['bold']) + colored("Volume total: ", attrs=['bold']) + str(r))
+    
+    def servicos_order_peso():
+        mostra_tabela(list(prolog.query("servicosIdOrderByPeso(R), member(Servico/Peso, R)")), filter_out=['R'], options={'Servico': ('Serviço', lambda x: x)})
+    def servicos_order_volume():
+        mostra_tabela(list(prolog.query("servicosIdOrderByVolume(R), member(Servico/Volume, R)")), filter_out=['R'], options={'Servico': ('Serviço', lambda x: x)})
+
+    def custos_servico():
+        servico = prompt("ID do serviço")
+        mostra_tabela(list(prolog.query(f"custosServico({servico}, Distancia, Custo, Tempo, ValorGanho)")), options={
+            'Distancia': ('Distância', lambda x: x),
+            'ValorGanho': ('Valor Ganho', lambda x: x)
+        })
 
     escolhe_opcoes({
         'Pesquisa informada de caminho': search_informada_caminho,
@@ -111,6 +123,11 @@ def fase2_menu(prolog):
 
         'Peso total por serviço': peso_total_by_servico,
         'Volume total por serviço': volume_total_by_servico,
+
+        'Serviços ordenados por peso': servicos_order_peso,
+        'Serviços ordenados por volume': servicos_order_volume,
+
+        'Custos de um serviço': custos_servico,
 
         'Voltar': lambda: None
     })
