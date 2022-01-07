@@ -86,12 +86,12 @@ def fase2_menu(prolog):
     
     def peso_total_by_servico():
         servico = prompt("ID do serviço")
-        r = next(prolog.query(f"pesoTotalByServico(servico({servico},_,_,_,_,_,_,_), R)"))['R']
+        r = next(prolog.query(f"servico({servico},_,E,_,_,_,_,_), pesoTotalByServico(servico(_,_,E,_,_,_,_,_), R)"))['R']
         print(colored(" ❯ ", 'yellow', attrs=['bold']) + colored("Peso total: ", attrs=['bold']) + str(r))
 
     def volume_total_by_servico():
         servico = prompt("ID do serviço")
-        r = next(prolog.query(f"volumeTotalByServico(servico({servico},_,_,_,_,_,_,_), R)"))['R']
+        r = next(prolog.query(f"servico({servico},_,E,_,_,_,_,_), volumeTotalByServico(servico(_,_,E,_,_,_,_,_), R)"))['R']
         print(colored(" ❯ ", 'yellow', attrs=['bold']) + colored("Volume total: ", attrs=['bold']) + str(r))
 
     escolhe_opcoes({
