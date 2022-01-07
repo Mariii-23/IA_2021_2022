@@ -168,7 +168,7 @@ buscaIterativaAux(X, Dest, Cam, N , L ,S):-
 custoTempo(Id,Peso,Dist,_,EsteCusto):-
     transporteById(Id, transporte(_,Veiculo,_,_,_,_)),
     velocidadeMediaEntrega(Veiculo,Peso,V),
-    EsteCusto is V / Dist
+    EsteCusto is Dist / V
 .
 
 %% Calcular o custo que se gastaria de gasoleo de um dado transporte
