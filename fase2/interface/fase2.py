@@ -39,7 +39,7 @@ def fase2_menu(prolog):
 
     def search_nao_informada_caminho():
         mostrar_todas = prompt_multiplechoice("Mostrar todos os caminhos?", {'Sim': True, 'Não': False})
-        tipo = prompt_multiplechoice("Tipo de pesquisa", {'Depth-First Search': 'dfs', 'Breadth-First Search': 'bfs', 'Iterative Deepening Search': 'ids'})
+        tipo = prompt_multiplechoice("Tipo de pesquisa", {'Depth-First Search': 'dfs', 'Breadth-First Search': 'bfs', 'Iterative Deepening Search': 'iterativa'})
         encomendas = prompt("IDs das encomendas (Formato [a, b, ...])")
         caminho = list(prolog.query(f"searchNaoInformadaCaminho('{tipo}', {encomendas}, R)"))
         for i, r in enumerate(caminho):
@@ -51,7 +51,7 @@ def fase2_menu(prolog):
 
     def search_nao_informada_caminho_volta():
         mostrar_todas = prompt_multiplechoice("Mostrar todos os caminhos?", {'Sim': True, 'Não': False})
-        tipo = prompt_multiplechoice("Tipo de pesquisa", {'Depth-First Search': 'dfs', 'Breadth-First Search': 'bfs', 'Iterative Deepening Search': 'ids'})
+        tipo = prompt_multiplechoice("Tipo de pesquisa", {'Depth-First Search': 'dfs', 'Breadth-First Search': 'bfs', 'Iterative Deepening Search': 'iterativa'})
         encomendas = prompt("IDs das encomendas (Formato [a, b, ...]")
         caminho = list(prolog.query(f"searchNaoInformadaCaminhoIdaVolta('{tipo}', {encomendas}, R)"))
         for i, r in enumerate(caminho):
