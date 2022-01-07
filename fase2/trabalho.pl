@@ -2,6 +2,7 @@
 :- op(920,fy, *).
 :- dynamic freguesia/1.
 :- dynamic rua/3.
+:- dynamic coordenada/2.
 :- dynamic morada/2.
 :- dynamic aresta/4.
 :- dynamic transporte/6.
@@ -39,12 +40,12 @@
                        len(R,1)).
 
 % Garantir que a coordenada é única
-+rua(_,_,Coord) :: (findall(Coord,rua(Coord,_,_),R),
++rua(_,_,Coord) :: (findall(Coord,rua(_,_,Coord),R),
                        len(R,1)).
 
  % Garantir que o nome de freguesia dado é verdadeiro e existe na nossa
  % base de conhecimento
-+rua(_,NomeFreguesia,_) :: (freguesia(NomeFreguesia,_,_)).
++rua(_,NomeFreguesia,_) :: (freguesia(NomeFreguesia)).
 
 % Garantir que não é possível remover nenhuma rua no caso de esta encontrar-se
 % associada a alguma morada de um cliente

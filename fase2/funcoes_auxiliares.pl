@@ -28,14 +28,16 @@ new_predicado(P):-
     %% not(P),
     findall(X,+P::X,R),
     inserir(P),
-    valid(R).
+    valid(R),
+    !.
 
 % Remover um dado conhecimento, garantindo que este pode ser removido
 remover_predicado(P):-
     %% P,
     findall(X,-P::X,R),
     remover(P),
-    valid(R).
+    valid(R),
+    !.
 
 % Retorna apenas os elementos iguais
 iguais([],_,[]).
