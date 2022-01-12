@@ -170,6 +170,6 @@ if __name__ == "__main__":
         escolhe_opcoes({
             'Queries Fase 1': lambda: fase1_menu(prolog),
             'Queries Fase 2': lambda: fase2_menu(prolog),
-            'Consultar e modificar base de dados': base_de_dados,
+            'Consultar e modificar base de conhecimento': base_de_dados,
             'Sair': exit
         })
