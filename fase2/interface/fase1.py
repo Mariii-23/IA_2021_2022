@@ -73,6 +73,12 @@ def fase1_menu(prolog):
     def peso_estafeta_dia():
         dia = prompt("Dia (Dia/Mês/Ano)")
         mostra_tabela(list(prolog.query("pesoTotalByEstafetaNoDia(estafeta(Id,Nome),{dia}, Peso)")))
+    def estafetas_transporte():
+        id = prompt("ID do transporte")
+        mostra_tabela(list(prolog.query(f"estafetasIdByIdTransporte({id}, Estafetas), member(IdEstafeta, Estafetas)")), filter_out=["Estafetas"])
+    def estafeta_mais_transporte():
+        id = prompt("ID do transporte")
+        mostra_tabela(list(prolog.query(f"estafetaMaisUtilizouIdTransporte({id}, Estafeta)")))
 
     escolhe_opcoes({
         "Estafeta mais ecológico": estafeta_ecologico,
@@ -86,5 +92,7 @@ def fase1_menu(prolog):
         "Serviços por estafeta entre duas datas": servicos_por_estafeta_entre,
         "Todas as encomendas entregues entre duas datas": todas_encomendas_entre,
         "Peso por estafeta no dia": peso_estafeta_dia,
+        "Estafetas que utilizaram um dado transporte": estafetas_transporte,
+        "Estafeta que mais utilizou um transporte": estafeta_mais_transporte,
         "Voltar": lambda: None
     })
